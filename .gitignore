@@ -1,0 +1,17 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+
+# Corpus, transcripts, and outputs are personal — exclude from open source
+corpus/
+transcripts/
+output/
+
+# Keep the folder structure
+!corpus/.gitkeep
+!transcripts/.gitkeep
+!output/.gitkeep
+!output/youtube/.gitkeep
