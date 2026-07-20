@@ -1,0 +1,62 @@
+{
+  "topic": "Prompt Engineering",
+  "tier": "Tier 1 · ~85% of postings",
+  "sources": [
+    {"name": "Claude Platform Docs", "url": "https://platform.claude.com/docs"},
+    {"name": "OpenAI Platform Docs", "url": "https://platform.openai.com/docs"},
+    {"name": "Prompt Caching: Cut Your AI Cost by 90% (already in corpus)", "url": "https://www.youtube.com/watch?v=HDMqDV7mmGo"},
+    {"name": "Kevin Weil — OpenAI CPO on model maximalism (already in corpus)", "url": "https://www.youtube.com/watch?v=scsW6_2SPC4"}
+  ],
+  "cards": [
+    {
+      "type": "Recall",
+      "front": "What is chain-of-thought (CoT) prompting?",
+      "back": "Instructing the model to reason step-by-step before giving a final answer rather than jumping straight to it — generating intermediate reasoning tokens measurably improves accuracy on multi-step problems, especially math and logic."
+    },
+    {
+      "type": "Why",
+      "front": "Why do system prompts matter more than user-turn instructions for consistent behavior?",
+      "back": "The system prompt sets persistent context, persona, and constraints that apply across the entire conversation, while user turns are one-off requests. Putting stable rules (tone, format, boundaries) in the system prompt keeps behavior consistent even as users phrase requests differently turn to turn."
+    },
+    {
+      "type": "Recall",
+      "front": "What is few-shot prompting, and when does it help most?",
+      "back": "Providing 2-5 example input/output pairs in the prompt before the real request — most useful when the desired output format or style is unusual or hard to describe in words alone; the examples do the specifying that instructions can't."
+    },
+    {
+      "type": "Why",
+      "front": "What is structured output (e.g. forced JSON) and why does it matter for production systems?",
+      "back": "Constraining the model's output to a specific schema rather than free text. Critical for production because downstream code needs to parse the response reliably — free text requires fragile regex/parsing that breaks on format drift."
+    },
+    {
+      "type": "Why",
+      "front": "Why is \"tool calling\" considered a prompt-engineering skill, not just an API feature?",
+      "back": "How you name and describe a tool — its parameters, when to use it vs. not — directly determines whether the model calls it correctly and at the right moment. A poorly described tool gets misused or ignored regardless of how good the underlying function is; the tool description IS a prompt."
+    },
+    {
+      "type": "Application",
+      "front": "When should you use XML-style tags to structure a prompt versus plain prose?",
+      "back": "When a prompt has multiple distinct sections the model needs to treat differently (e.g. <context>, <instructions>, <examples>) — tags give the model unambiguous boundaries, reducing the chance it conflates instructions with reference material, especially in long prompts."
+    },
+    {
+      "type": "Recall",
+      "front": "What is prompt caching, and what's the practical benefit?",
+      "back": "Marking a portion of the prompt — a long system prompt or document — as reusable across calls so the model doesn't reprocess it from scratch each time. Cuts both cost and latency significantly for repeated or similar requests."
+    },
+    {
+      "type": "Why",
+      "front": "Why does \"put it in context\" usually beat \"hope the model remembers it\" for anything important?",
+      "back": "The context window is the model's working memory — directly accessible and precise. Parametric/trained-in knowledge is more like vague recollection, prone to blending facts or hallucinating specifics. If a fact matters, include it explicitly rather than trusting recall."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between zero-shot, few-shot, and fine-tuned approaches to getting a specific model behavior?",
+      "back": "Zero-shot: instructions only, fastest to try, least reliable for unusual formats. Few-shot: instructions plus examples, better format-fidelity, costs context tokens every call. Fine-tuned: the behavior is baked into the weights — most reliable and cheapest per-call at scale, but requires training data and infrastructure."
+    },
+    {
+      "type": "Why",
+      "front": "Why does \"model maximalism\" change how you should prompt-engineer today?",
+      "back": "Building elaborate prompt scaffolding to work around a model's current weaknesses is a bet that pays off short-term but gets obsoleted as the model improves every 2-3 months — the scaffolding becomes dead weight. Design for where the model is heading, not just where it is today."
+    }
+  ]
+}

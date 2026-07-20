@@ -1,0 +1,61 @@
+{
+  "topic": "Agentic AI / Multi-Agent Systems",
+  "tier": "Tier 1 · ~90% of postings",
+  "sources": [
+    {"name": "LangGraph / LangChain docs", "url": "https://docs.langchain.com"},
+    {"name": "Stanford CS224G Lecture 7 — Agent Orchestration & Workflow Design", "url": "https://web.stanford.edu/class/cs224g"},
+    {"name": "Harrison Chase — 3 ingredients for building reliable enterprise agents", "url": "https://www.youtube.com/watch?v=kTnfJszFxCg"}
+  ],
+  "cards": [
+    {
+      "type": "Recall",
+      "front": "What is the ReAct pattern in agent design?",
+      "back": "Reason + Act: the model alternates between generating a reasoning trace and taking an action (tool call), observing the result, then reasoning again — interleaving thought and action instead of planning everything upfront."
+    },
+    {
+      "type": "Recall",
+      "front": "How does a \"planning\" agent differ from ReAct?",
+      "back": "Planning agents decompose a goal into a sequence of subgoals upfront before executing any of them, then execute the plan (possibly replanning on failure) — more structured and predictable than ReAct's step-by-step improvisation, but less adaptive to surprises mid-execution."
+    },
+    {
+      "type": "Recall",
+      "front": "What does a \"reflection\" agent add on top of basic execution?",
+      "back": "A self-critique step: after producing output, the agent evaluates its own work against the goal/criteria and iterates before finalizing — trading extra latency/cost for higher output quality."
+    },
+    {
+      "type": "Why",
+      "front": "Why did LangGraph get built as a separate framework instead of just extending LangChain's chains?",
+      "back": "LangChain's chains are linear/DAG pipelines; robust agents need explicit state, branching, loops, retries, and human-in-the-loop interrupts. LangGraph models the agent as an explicit state graph — nodes are steps, edges are transitions — so you can pause, resume, and control flow precisely instead of hoping a chain figures it out."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between a stateful and stateless agent?",
+      "back": "Stateless: each call is independent, no memory across turns/sessions — simple, but can't do multi-step or long-running work. Stateful: maintains context across the interaction, required for anything beyond single-shot Q&A."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between the Supervisor and Peer orchestration patterns?",
+      "back": "Supervisor: one central coordinator delegates tasks to specialist sub-agents and synthesizes their outputs — clear accountability, single point of control. Peer: agents communicate directly as equals with no central coordinator — more flexible, harder to debug and keep aligned."
+    },
+    {
+      "type": "Why",
+      "front": "Why do LangGraph, CrewAI, and AutoGen/MAF differ in philosophy, and how do you choose?",
+      "back": "LangGraph: low-level, explicit state graphs — maximum control, production-grade, steeper learning curve. CrewAI: role-based abstraction (assign agents \"roles\" like a team) — faster to prototype, less fine-grained control. AutoGen/MAF: Microsoft's conversation-centric framework, strong in enterprise/Azure ecosystems. Pick based on control needed vs. speed to prototype."
+    },
+    {
+      "type": "Application",
+      "front": "When would you choose a hierarchical multi-agent pattern over a flat supervisor pattern?",
+      "back": "When the task naturally decomposes into layers of abstraction — a manager agent delegates to team-lead agents, who each delegate to specialist agents. Hierarchical scales better for complex, multi-domain tasks than one supervisor coordinating everything directly."
+    },
+    {
+      "type": "Recall",
+      "front": "What is \"tool use\" / \"function calling\" in the context of agents?",
+      "back": "The model is given structured definitions of available tools (name, description, parameters) and can emit a structured call to one instead of, or alongside, natural language — the runtime executes the real function and feeds the result back into context."
+    },
+    {
+      "type": "Why",
+      "front": "Why is state management the hardest part of production agent systems, not the model itself?",
+      "back": "Real agent work spans multiple calls, tool executions, and potentially human interrupts over minutes to hours — you need durable state that survives restarts, clear rollback/retry semantics on failure, and a way to resume exactly where you left off. That's systems engineering, not prompting."
+    }
+  ]
+}

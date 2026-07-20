@@ -1,0 +1,64 @@
+{
+  "topic": "LLM Evaluation Frameworks",
+  "tier": "Tier 1 · ~88% of postings",
+  "sources": [
+    {"name": "RAGAS docs", "url": "https://docs.ragas.io"},
+    {"name": "TruLens", "url": "https://trulens.org"},
+    {"name": "DeepEval docs", "url": "https://deepeval.com/docs"},
+    {"name": "Promptfoo docs", "url": "https://promptfoo.dev"},
+    {"name": "Hamel Husain & Shreya Shankar — Why AI evals are the hottest new skill", "url": "https://www.youtube.com/watch?v=BsWxPI9UM4c"}
+  ],
+  "note": "This complements the Hamel/Shreya video already in the corpus, which covers the error-analysis PROCESS (open/axial coding, benevolent dictator). This deck covers the specific FRAMEWORKS and METRICS — the vocabulary an interviewer expects you to name.",
+  "cards": [
+    {
+      "type": "Recall",
+      "front": "What does RAGAS's \"faithfulness\" metric measure?",
+      "back": "Whether every claim in the generated answer is actually supported by the retrieved context — computed by decomposing the answer into individual claims, then checking each against the context for entailment. Catches hallucination even when the answer sounds fluent."
+    },
+    {
+      "type": "Recall",
+      "front": "What does RAGAS's \"answer relevancy\" measure?",
+      "back": "Whether the answer actually addresses the question asked — computed by generating several synthetic questions the answer would answer, then measuring embedding similarity to the original question. Low relevancy means the answer is accurate but off-topic or evasive."
+    },
+    {
+      "type": "Why",
+      "front": "Why is \"context precision\" alone not enough to judge a RAG system?",
+      "back": "You can have perfectly relevant retrieved chunks (high precision) but still miss chunks that were needed (low recall) — an answer built on relevant-but-incomplete context. You need both dimensions, broken down by failure type, not one composite score."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the core architectural difference between DeepEval and Promptfoo?",
+      "back": "DeepEval is Python/pytest-native — evals run as unit tests and fail your CI build on a metric threshold breach. Promptfoo is a config-driven (YAML), language-agnostic CLI built for side-by-side prompt/model comparison and has a much stronger red-teaming/security-scanning engine (40+ attack types)."
+    },
+    {
+      "type": "Why",
+      "front": "Why do mature eval stacks run both DeepEval and Promptfoo instead of picking one?",
+      "back": "They answer different questions: Promptfoo answers \"can an attacker break this\" (jailbreaks, injection, excessive agency); DeepEval answers \"does this meet our quality bar\" (faithfulness, hallucination, relevancy). Different failure modes, different tools, both run as CI gates before deploy."
+    },
+    {
+      "type": "Application",
+      "front": "In an LLM-as-judge setup, why should the judge always output binary pass/fail rather than a 1-5 score?",
+      "back": "1-5 scores collapse into noise — humans and models disagree on what a \"3\" means, and the score doesn't map to an action. Binary forces a decision and can be directly validated against human labels with a confusion matrix."
+    },
+    {
+      "type": "Why",
+      "front": "Why must you validate an LLM judge against human labels before trusting it in production?",
+      "back": "A judge can silently be biased — e.g., always saying \"pass\" — and still show high raw agreement if real failures are rare. A confusion matrix breaks that down cell by cell so you see exactly where the judge is wrong, not just an aggregate percentage."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between a \"unit eval\" and a \"regression eval\"?",
+      "back": "Unit eval tests a single LLM call/component in isolation before deploy, like a unit test. Regression eval runs continuously against production traffic or a fixed dataset to catch silent drift — a model or prompt change degrading quality without an obvious error."
+    },
+    {
+      "type": "Recall",
+      "front": "What is G-Eval (used in DeepEval)?",
+      "back": "A metric that uses an LLM with chain-of-thought reasoning to score outputs against a custom rubric you define in natural language — more flexible than fixed metrics like BLEU/ROUGE, but still needs validation against human judgment like any LLM-judge."
+    },
+    {
+      "type": "Why",
+      "front": "Why is evals now a core product-building skill instead of a QA afterthought?",
+      "back": "You can't productively iterate on a model or prompt without a way to measure whether a change helped — evals are the feedback loop, not a compliance checkbox. Teams that skip them end up debugging by vibes."
+    }
+  ]
+}

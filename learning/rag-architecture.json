@@ -1,0 +1,60 @@
+{
+  "topic": "RAG Architecture",
+  "tier": "Tier 1 · ~95% of postings",
+  "sources": [
+    {"name": "LlamaIndex framework docs", "url": "https://developers.llamaindex.ai/python/framework/"},
+    {"name": "Jerry Liu — Building Production-Ready RAG Applications", "url": "https://www.youtube.com/watch?v=TRjq7t2Ms5I"}
+  ],
+  "cards": [
+    {
+      "type": "Why",
+      "front": "Why does chunk size matter so much in RAG, and how do you pick it?",
+      "back": "Too small loses context and answers feel fragmented; too large dilutes the embedding's signal and retrieval gets noisy. It's dataset-specific and empirically tuned — start around 512-1024 tokens with 10-20% overlap, then measure retrieval precision/recall as you adjust."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between fixed-size and semantic chunking?",
+      "back": "Fixed-size splits by token count regardless of content boundaries. Semantic chunking splits at natural breakpoints (paragraph, topic shift) detected via embedding similarity between adjacent sentences — better coherence, more expensive to compute."
+    },
+    {
+      "type": "Why",
+      "front": "Why combine BM25 (sparse) with dense embedding retrieval instead of using just one?",
+      "back": "BM25 catches exact keyword/entity matches (SKUs, names, acronyms) that embeddings can blur together. Dense embeddings catch semantic/paraphrase matches BM25 misses entirely. Hybrid covers both failure modes."
+    },
+    {
+      "type": "Recall",
+      "front": "What is Reciprocal Rank Fusion (RRF)?",
+      "back": "A method for merging ranked result lists from multiple retrievers by scoring each document as the sum of 1/(k + rank) across all lists — a document ranked high in either list rises to the top of the merged list, without needing to normalize disparate score scales."
+    },
+    {
+      "type": "Why",
+      "front": "Why add a reranking step after initial retrieval instead of just retrieving more precisely upfront?",
+      "back": "Initial retrieval (BM25/dense) has to be fast across millions of docs, trading precision for speed. A reranker (often a cross-encoder) re-scores only the top-k candidates with a far more expensive, accurate model — you get retrieval's speed and reranking's precision."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between a bi-encoder and a cross-encoder for retrieval?",
+      "back": "Bi-encoder embeds query and document separately, then compares vectors — fast, used for initial retrieval at scale. Cross-encoder feeds query+document together into one model for a joint relevance score — slow but far more accurate, used only on the small reranking shortlist."
+    },
+    {
+      "type": "Why",
+      "front": "Why do low precision and low recall in retrieval require different fixes?",
+      "back": "Low precision (irrelevant chunks retrieved) drives hallucination risk — fix with better reranking/filtering. Low recall (missing necessary info) causes incomplete answers — fix with chunking strategy, higher k, or query expansion."
+    },
+    {
+      "type": "Recall",
+      "front": "What is \"small-to-big\" retrieval?",
+      "back": "Embed and search over small units (sentences) for retrieval precision, but expand to a larger surrounding window (parent paragraph/section) at synthesis time — precise matching, full context for the answer."
+    },
+    {
+      "type": "Application",
+      "front": "When would you fine-tune an embedding model instead of just swapping to a better off-the-shelf one?",
+      "back": "When your domain vocabulary is highly specialized (legal, medical, internal jargon) and general embeddings cluster your domain's distinct concepts together — fine-tuning on synthetic query-document pairs from your own corpus teaches the model your domain's actual semantic distinctions."
+    },
+    {
+      "type": "Recall",
+      "front": "What does \"context precision\" measure in a RAG eval, and how does it differ from \"context recall\"?",
+      "back": "Precision: of the chunks you retrieved, what fraction were actually relevant (signal-to-noise). Recall: of the chunks needed to answer, what fraction did you actually retrieve (completeness). A system can have perfect precision and terrible recall."
+    }
+  ]
+}
