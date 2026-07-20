@@ -1,0 +1,62 @@
+{
+  "topic": "LlamaIndex — Framework & Platform",
+  "tier": "Tool deep-dive · maps to RAG (Tier 1) + Document AI strength area",
+  "sources": [
+    {"name": "LlamaIndex developer docs", "url": "https://developers.llamaindex.ai/python/framework/"},
+    {"name": "LlamaIndex Agent Workflows", "url": "https://www.llamaindex.ai/workflows"},
+    {"name": "Jerry Liu — Building Production-Ready RAG Applications (already in corpus)", "url": "https://www.youtube.com/watch?v=TRjq7t2Ms5I"}
+  ],
+  "note": "Verified live — LlamaCloud is transitioning to be branded under LlamaParse during 2026, so if you see either name in a posting or a slightly older resource, they're referring to the same product family.",
+  "cards": [
+    {
+      "type": "Recall",
+      "front": "What is a LlamaIndex \"Workflow,\" architecturally?",
+      "back": "Event-driven step composition: execution is modeled as steps that consume and emit typed Events, with the runtime routing each event to whichever step subscribes to it. This is the framework's recommended way to build anything beyond a trivial single-shot RAG query — supports branching, parallelism, and human-in-the-loop review."
+    },
+    {
+      "type": "Why",
+      "front": "Why does LlamaIndex model workflows as typed events rather than a simple linear pipeline?",
+      "back": "Real document/agent pipelines need branching (different document types need different handling), parallelism (process multiple documents concurrently), and durability (resume after a failure) — a linear pipeline can't express any of that. Typed events let each step declare exactly what it consumes and produces, making the whole workflow composable and independently testable."
+    },
+    {
+      "type": "Recall",
+      "front": "What is LlamaParse, specifically?",
+      "back": "LlamaIndex's document parsing product, powered by vision-language models (VLMs) rather than plain OCR — built to preserve semantic structure through complex layouts: nested tables, embedded charts/images, multi-column forms. This is the piece most directly relevant to Document AI work specifically."
+    },
+    {
+      "type": "Recall",
+      "front": "What do LlamaSplit, LlamaClassify, and LlamaExtract each do?",
+      "back": "LlamaSplit: intelligently separates and categorizes pages within a multi-document file (e.g. a scanned batch containing several distinct forms). LlamaClassify: classifies individual documents against custom labels you define. LlamaExtract: pulls structured data out of unstructured/semi-structured documents into a defined schema."
+    },
+    {
+      "type": "Application",
+      "front": "You're building a pipeline to process a batch of scanned mixed documents (invoices, contracts, ID forms) into structured records. Which LlamaIndex pieces compose that pipeline?",
+      "back": "LlamaParse to extract text/layout from the scans, LlamaSplit to separate the batch into individual documents, LlamaClassify to tag each by document type, and LlamaExtract to pull each type's specific fields into structured output — a genuinely representative Document AI pipeline, not a hypothetical."
+    },
+    {
+      "type": "Why",
+      "front": "Why would you reach for LlamaIndex specifically over LangGraph for a given project, architecturally?",
+      "back": "LlamaIndex is optimized for data-heavy, document-centric applications — 300+ data connectors, deep parsing/extraction tooling, retrieval as a first-class concern. LangGraph is optimized for orchestration-heavy agents — multi-step branching logic, durable state, retries — where the data layer is secondary to the control flow. Production stacks often use both: LlamaIndex for retrieval, LangGraph for orchestration on top."
+    },
+    {
+      "type": "Recall",
+      "front": "What does \"fan-out/fan-in\" mean in a LlamaIndex Agent Workflow, and why does it matter for document processing at scale?",
+      "back": "Fan-out: splitting one input into many parallel sub-tasks (e.g. one per document in a batch). Fan-in: merging their results back into a single output. This is the pattern that lets a workflow process hundreds of documents concurrently instead of one at a time, with a defined point where results converge."
+    },
+    {
+      "type": "Recall",
+      "front": "What agent patterns does LlamaIndex's agent layer support?",
+      "back": "ReAct, function-calling, and general tool-use patterns — agents are built on top of Workflows, and a RAG pipeline itself can be exposed to an agent as just one of several tools it can choose to call."
+    },
+    {
+      "type": "Why",
+      "front": "Why is human-in-the-loop review a first-class feature in LlamaIndex Workflows rather than something bolted on?",
+      "back": "Document AI use cases (contracts, compliance, financial records) frequently can't tolerate fully autonomous decisions — a workflow needs to be able to pause, surface a low-confidence extraction for human review, and resume once approved. Building this as a native workflow primitive (not custom glue code) is what makes it usable in regulated/enterprise contexts."
+    },
+    {
+      "type": "Recall",
+      "front": "What is observability, as a built-in Agent Workflow feature (not a bolted-on tool)?",
+      "back": "The workflow runtime natively tracks which steps ran, what events they consumed/produced, and where failures occurred — giving you a debuggable trace of a multi-step document pipeline without needing to instrument it yourself with a separate tracing tool from day one."
+    }
+  ]
+}

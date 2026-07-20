@@ -1,0 +1,62 @@
+{
+  "topic": "LLM Architecture & Tradeoffs",
+  "tier": "Tier 1 · ~85% of postings",
+  "sources": [
+    {"name": "Stanford CME 295 — Transformers & LLMs (Amidi brothers, Fall 2025)", "url": "https://www.youtube.com/watch?v=Ub3GoFaUcds"},
+    {"name": "Deep Dive into LLMs like ChatGPT — Karpathy (already in corpus)", "url": "https://www.youtube.com/watch?v=7xTGNNLPyMI"},
+    {"name": "Jay Alammar — The Illustrated Transformer", "url": "https://jalammar.github.io/illustrated-transformer/"}
+  ],
+  "note": "Foundational — watch the Amidi CME 295 lecture 1 for this one, not just cards. These give you the vocabulary; the lecture gives you the intuition an interviewer will probe for.",
+  "cards": [
+    {
+      "type": "Recall",
+      "front": "What is self-attention, in one sentence?",
+      "back": "A mechanism where every token in a sequence computes a weighted relevance score against every other token, letting the model decide which other words matter for understanding this one — regardless of distance between them."
+    },
+    {
+      "type": "Why",
+      "front": "Why did Transformers replace RNNs/LSTMs as the dominant architecture?",
+      "back": "RNNs process tokens sequentially, so training can't parallelize across the sequence and long-range dependencies decay. Self-attention lets every token attend to every other token in one parallel step — much faster to train at scale, and no distance penalty for relating far-apart tokens."
+    },
+    {
+      "type": "Recall",
+      "front": "What are the Q, K, V (Query, Key, Value) vectors in attention?",
+      "back": "Each token produces three learned projections of itself: a Query (what am I looking for), a Key (what do I offer), and a Value (what information do I actually carry). Attention score = similarity between one token's Query and another's Key; that score weights how much of the second token's Value gets mixed in."
+    },
+    {
+      "type": "Why",
+      "front": "Why does context window size directly affect both cost and quality, not just \"how much you can paste in\"?",
+      "back": "Attention cost scales roughly quadratically with sequence length (every token attends to every other token), so cost and latency grow fast as context grows. Quality also degrades well before the technical limit — models reliably use maybe the first 100-200K tokens well; beyond that, attention gets diluted and retrieval from the middle of a long context becomes unreliable (the \"lost in the middle\" effect)."
+    },
+    {
+      "type": "Recall",
+      "front": "What is a Mixture-of-Experts (MoE) architecture, and why do frontier models use it?",
+      "back": "Instead of every token passing through the full dense network, the model routes each token to a small subset of specialized \"expert\" sub-networks. Lets you scale total parameter count (and thus capacity) without scaling the compute cost of every forward pass — you only pay for the experts actually activated."
+    },
+    {
+      "type": "Application",
+      "front": "How do you decide between a frontier model, a mid-tier model, and a small/fast model for a given feature?",
+      "back": "Route by task difficulty and cost sensitivity: frontier (Opus-class) for complex reasoning/synthesis where errors are expensive; mid-tier (Sonnet-class) for the bulk of production traffic — the best cost/quality balance; small/fast (Haiku-class) for classification, routing, and high-volume simple tasks where latency and cost dominate."
+    },
+    {
+      "type": "Why",
+      "front": "Why does token economics matter architecturally, not just as a billing detail?",
+      "back": "Cost and latency are both roughly proportional to tokens processed, so architectural choices — context length, prompt caching, model routing, retrieval instead of stuffing full documents in context — are cost-engineering decisions as much as quality decisions. A design that ignores token economics doesn't survive contact with a production budget."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the practical difference between open-weight models (Llama, Qwen, DeepSeek) and closed/proprietary APIs (Claude, GPT)?",
+      "back": "Open-weight: you can self-host, fine-tune freely, and control data residency — but you own the infrastructure, serving, and update burden. Closed API: zero infrastructure, always current, typically higher ceiling capability — but you depend on the vendor's uptime, pricing, and data-handling terms."
+    },
+    {
+      "type": "Why",
+      "front": "Why do reasoning models (o1/o3, DeepSeek R1) behave differently from standard chat models architecturally?",
+      "back": "They're trained with reinforcement learning on verifiable problems (math, code) to discover effective reasoning strategies through trial and error, rather than just imitating human-written responses. This produces emergent behaviors like backtracking and self-correction — but makes them slower and more expensive per response, since they spend tokens \"thinking\" before answering."
+    },
+    {
+      "type": "Recall",
+      "front": "What is tokenization, and what's one practical failure mode it causes?",
+      "back": "Text gets broken into sub-word chunks (tokens) before the model ever sees it — the model reasons over tokens, not characters. This causes blind spots on character-level tasks: a model can fail to count letters in a word correctly because it never actually \"sees\" the individual characters, only the token they're bundled into."
+    }
+  ]
+}

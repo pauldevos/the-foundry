@@ -1,0 +1,62 @@
+{
+  "topic": "Fine-Tuning vs. RAG Decision Framework",
+  "tier": "Tier 2 · ~80% of postings",
+  "sources": [
+    {"name": "Sebastian Raschka — Ahead of AI (Substack)", "url": "https://magazine.sebastianraschka.com/"},
+    {"name": "Anthropic fine-tuning docs", "url": "https://platform.claude.com/docs"},
+    {"name": "OpenAI fine-tuning guide", "url": "https://platform.openai.com/docs"}
+  ],
+  "note": "Per Paul's map: study for conversational fluency here, not hands-on mastery (Tier 3 depth on the raw fine-tuning mechanics). The decision framework itself is Tier 2 and worth knowing cold.",
+  "cards": [
+    {
+      "type": "Why",
+      "front": "What's the core rule for choosing RAG vs. fine-tuning?",
+      "back": "Put volatile knowledge in retrieval, put stable behavior in fine-tuning. RAG changes what the model knows without touching the model; fine-tuning changes how the model behaves (tone, format, task specialization) without needing to re-supply facts every call."
+    },
+    {
+      "type": "Application",
+      "front": "When would you use both RAG and fine-tuning together?",
+      "back": "RAG supplies the knowledge (facts, documents, current information), fine-tuning shapes how the model uses and presents that knowledge (consistent output format, domain-specific tone, following your organization's conventions). Common in production: fine-tune for style/format, retrieve for facts."
+    },
+    {
+      "type": "Recall",
+      "front": "What is LoRA (Low-Rank Adaptation)?",
+      "back": "Instead of updating all of a model's weights during fine-tuning, LoRA freezes the original weights and trains a much smaller pair of low-rank matrices that get added on top — dramatically cheaper to train and store, and you can swap different LoRA adapters onto the same base model for different tasks."
+    },
+    {
+      "type": "Recall",
+      "front": "What does QLoRA add on top of LoRA?",
+      "back": "Quantizes the frozen base model to lower precision (e.g. 4-bit) before applying LoRA adapters — cuts memory requirements further, making it possible to fine-tune large models on much smaller hardware, with a small quality tradeoff from the quantization."
+    },
+    {
+      "type": "Why",
+      "front": "Why is \"context-first\" sometimes the right call before reaching for RAG at all?",
+      "back": "If your knowledge base is small enough to fit in the model's context window, prompt caching plus full context can be simpler and cheaper than building a retrieval pipeline — no chunking, no embedding drift, no retrieval-quality tuning. RAG earns its complexity when the knowledge base genuinely exceeds what fits in context."
+    },
+    {
+      "type": "Recall",
+      "front": "What is distillation, and when is it the right use case?",
+      "back": "Training a smaller, cheaper model to imitate a larger frontier model's outputs on your specific task — you get most of the quality at a fraction of the inference cost. Right use case: high-volume, narrow tasks where the frontier model's full generality is wasted (e.g. classification, extraction) and cost/latency matters more than open-ended capability."
+    },
+    {
+      "type": "Why",
+      "front": "What is \"catastrophic forgetting\" in fine-tuning, and why does it matter?",
+      "back": "Fine-tuning too aggressively on a narrow dataset can degrade the model's general capabilities outside that narrow task — it \"forgets\" broader skills while overfitting to the new one. Mitigated by techniques like LoRA (which touches far fewer parameters) and keeping fine-tuning datasets diverse enough to avoid overly narrow specialization."
+    },
+    {
+      "type": "Recall",
+      "front": "What is DPO (Direct Preference Optimization), and how does it differ from standard supervised fine-tuning?",
+      "back": "Standard fine-tuning trains on example input/output pairs. DPO trains on pairs of outputs where one is preferred over the other, directly optimizing the model to prefer the better response — a simpler, more stable alternative to full RLHF for alignment-style tuning."
+    },
+    {
+      "type": "Application",
+      "front": "Your RAG-based support bot gives factually correct answers but in an inconsistent tone/format. Do you fine-tune or improve the prompt?",
+      "back": "Try prompting first — it's free and fast. Reach for fine-tuning only if prompting can't reliably enforce the format at scale (e.g. subtle stylistic consistency across thousands of varied queries that instructions alone don't reliably capture), since fine-tuning adds real infrastructure and maintenance cost that a better prompt or few-shot examples might avoid entirely."
+    },
+    {
+      "type": "Why",
+      "front": "Why does \"knowledge changes frequently\" push you toward RAG and away from fine-tuning, structurally?",
+      "back": "Fine-tuning bakes information into model weights — updating it means re-training, which is slow and expensive to repeat often. RAG's knowledge lives in an external, swappable index — updating a document is instant and doesn't touch the model at all. Frequent-change knowledge and fine-tuning are structurally mismatched."
+    }
+  ]
+}

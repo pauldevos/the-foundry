@@ -1,0 +1,51 @@
+{
+  "topic": "AI Roadmap & Strategy",
+  "tier": "Tier 2 · ~70% of postings",
+  "sources": [
+    {"name": "Kevin Weil — OpenAI CPO on AI product strategy (already in corpus)", "url": "https://www.youtube.com/watch?v=scsW6_2SPC4"},
+    {"name": "Sherwin Wu — OpenAI platform engineering, on why AI deployments fail (already in corpus)", "url": "https://www.youtube.com/watch?v=B26CwKm5C1k"}
+  ],
+  "note": "Genuinely the thinnest-sourced topic in this set — it's more judgment than fact, and the map itself flags it as weaker. Treat these as starting frames to argue from in an interview, not settled answers.",
+  "cards": [
+    {
+      "type": "Why",
+      "front": "Why do negative-ROI AI deployments usually trace back to a top-down mandate rather than a bad model choice?",
+      "back": "Per Sherwin Wu: mandated rollouts without bottoms-up adoption skip the step where real users find real use cases. Successful implementations need internal tiger teams of enthusiasts who evangelize concrete workflows — the technology succeeding is rarely the bottleneck; adoption and use-case fit is."
+    },
+    {
+      "type": "Recall",
+      "front": "What is an AI opportunity assessment / feasibility analysis, as a roadmap step?",
+      "back": "Before committing engineering time, systematically evaluate candidate use cases against: is the data available and clean, is the cost of being wrong tolerable for this task, does a model actually solve this better than existing tooling, and what's the realistic ROI timeline — filters enthusiasm down to what's actually worth building."
+    },
+    {
+      "type": "Why",
+      "front": "Why does \"build for where models are heading, not where they are today\" matter for roadmap decisions specifically?",
+      "back": "A roadmap built around today's model limitations (elaborate workarounds, heavy scaffolding) becomes technical debt within months as models improve — the constraint you designed around disappears, but the complexity you added to handle it doesn't. Roadmap bets should target capability that's imminent, not just current."
+    },
+    {
+      "type": "Application",
+      "front": "How do you frame ROI for an AI initiative to a skeptical executive who's seen AI hype before?",
+      "back": "Anchor to a specific, measurable business metric the initiative moves (cycle time, cost per ticket, conversion rate) rather than \"AI capability\" in the abstract — and pair it with the cost of the status quo (what does NOT doing this cost, in the same units), since \"AI is exciting\" doesn't survive a budget conversation but \"this saves $X/quarter\" does."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between a build, buy, and partner decision for an AI capability?",
+      "back": "Build: you have genuine differentiation in this specific capability and the engineering capacity to own it long-term. Buy: the capability is commoditized (a vector DB, an eval framework) — paying for a mature tool beats reinventing it. Partner: the capability requires domain expertise or infrastructure you don't have and won't build (e.g. a specialized data provider) — a vendor relationship is faster and often better than either building or buying a generic tool."
+    },
+    {
+      "type": "Why",
+      "front": "Why is \"we should use AI for X\" usually the wrong starting frame for a roadmap conversation?",
+      "back": "It starts from the technology and searches for a problem, which is backwards — the stronger frame starts from a real, costly business problem and asks whether AI is actually the best available solution (sometimes it isn't). Roadmaps built technology-first tend to ship demos; roadmaps built problem-first tend to ship things people actually use."
+    },
+    {
+      "type": "Recall",
+      "front": "What does \"vendor selection\" actually involve for an enterprise AI roadmap, beyond picking a model provider?",
+      "back": "Model provider is one decision among several: orchestration framework, vector store, observability/eval tooling, and increasingly a managed-agents platform — each with its own build-vs-buy tradeoff, lock-in risk, and compliance posture (data retention, residency) that needs evaluating independently, not bundled into one \"AI vendor\" decision."
+    },
+    {
+      "type": "Why",
+      "front": "Why should an AI roadmap explicitly budget for evals and observability infrastructure, not just model/feature development?",
+      "back": "Without measurement infrastructure, you can't tell if a shipped feature is actually working, can't catch regressions from model updates, and can't make the ROI case for the next initiative — eval/observability work is often treated as overhead and cut first, which is exactly backwards, since it's what makes every other roadmap bet legible."
+    }
+  ]
+}
