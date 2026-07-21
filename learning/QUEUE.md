@@ -45,7 +45,7 @@ Just need the same treatment CME295 L7/L8 got: read transcript → write study n
 | `t6r4U0SlnPc` | How to Process Documents at Scale with LLMs |
 | `jkon5HsAq30` | Product Discovery Meets AI Evals with Teresa Torres |
 | `qH1dZ8JLLdU` | Intro To Error Analysis: Creating Custom Data Annotation Apps |
-| `LwLxlEwrtRA` | The Evals That Made GitHub Copilot |
+| ~~`LwLxlEwrtRA`~~ | ✅ done — The Evals That Made GitHub Copilot |
 | `7kXY-2fYdHI` | Graph Databases: When to Use Them (And When to Run Away) |
 | `DgPr3HVp0eg` | SolveIt: The Thinking Developer's Environment w/ Jeremy Howard & Johno Whitaker |
 | `aqKUwPKBkB0` | Build Your Own Eval Tools With Notebooks! |
@@ -53,12 +53,12 @@ Just need the same treatment CME295 L7/L8 got: read transcript → write study n
 | `GL0XhAj5LPE` | LLM Evals: Common Mistakes |
 | `SnbGD677_u0` | Instrumenting & Evaluating LLMs |
 | `0pnEUAwoDP0` | How to Build, Evaluate, and Iterate on LLM Agents |
-| `Xfl50508LZM` | Ship Real Agents: Hands-On Evals for Agentic Applications — Laurie Voss, Arize |
+| ~~`Xfl50508LZM`~~ | ✅ done — Ship Real Agents: Hands-On Evals — Laurie Voss, Arize |
 
 **RAG:**
 | Video ID | Title |
 |---|---|
-| `sVcwVQRHIc8` | Learn RAG From Scratch — Python AI Tutorial from a LangChain Engineer |
+| ~~`sVcwVQRHIc8`~~ | ✅ done — Learn RAG From Scratch (routing, proposition indexing, RAPTOR) |
 
 **Others:**
 | Video ID | Title |
@@ -68,12 +68,15 @@ Just need the same treatment CME295 L7/L8 got: read transcript → write study n
 | `agSRMrhNTf4` | Why Enterprise AI Adoption Is Slower Than You Think — Aaron Levie (Box) + Harrison Chase |
 | `uCKhOmth2ms` | The best AI agents are simpler than you think |
 
-**Suggested processing order** (Document AI heavy areas first, per Paul's stated priority):
-1. CME295 L6 (reasoning) — rounds out the CME295 architecture sequence
-2. Evals batch — especially Inspect, GitHub Copilot evals, and the agent-evals videos (Xfl50508LZM, 0pnEUAwoDP0)
-3. Agent/adoption others — especially Lance Martin (controllable agents) and the LangChain agent Q&A
-4. RAG-from-scratch tutorial
-5. Remaining CME295 lectures (L2-L5, L9) in course order
+**Processing order (updated per Paul's direction)**: finish every locally-pulled
+transcript — evals batch, RAG-from-scratch, agents/others — before touching CME295
+L2-L5/L9 or anything new from YouTube (which is blocked anyway). CME295 remainder is
+explicitly deprioritized, not cancelled.
+1. Evals batch (9 remaining: t6r4U0SlnPc, jkon5HsAq30, qH1dZ8JLLdU, 7kXY-2fYdHI, DgPr3HVp0eg, aqKUwPKBkB0, GL0XhAj5LPE, SnbGD677_u0, 0pnEUAwoDP0)
+2. Agent/others (4 videos, none started: ib-wTAvCZqg, kkL_y5t1jo4, agSRMrhNTf4, uCKhOmth2ms)
+3. ~~RAG-from-scratch~~ ✅ done
+4. Only then: remaining CME295 lectures (L2-L5, L9)
+5. Only then: retry Queue A once unblocked
 
 ---
 

@@ -5,13 +5,59 @@ structured source; this file is a readable render of the same content.
 
 See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md) (pending work tracker), and lecture/talk notes:
 
-**Total: 221 cards (110 starred) across 18 decks. Plus 5 lecture/talk-notes files.**
+**Total: 251 cards (130 starred) across 21 decks. Plus 8 lecture/talk-notes files.**
 
 - [lecture-notes-cme295-l1.md](lecture-notes-cme295-l1.md)
 - [lecture-notes-cme295-l6.md](lecture-notes-cme295-l6.md)
 - [lecture-notes-cme295-l7.md](lecture-notes-cme295-l7.md)
 - [lecture-notes-cme295-l8.md](lecture-notes-cme295-l8.md)
+- [notes-agentic-evals-arize.md](notes-agentic-evals-arize.md)
+- [notes-github-copilot-evals.md](notes-github-copilot-evals.md)
 - [notes-inspect-eval-framework.md](notes-inspect-eval-framework.md)
+- [notes-rag-from-scratch-langchain.md](notes-rag-from-scratch-langchain.md)
+
+## Agentic Evals — Arize Workshop
+*Tier 1 · LLM Evaluation + Agentic AI · 11 cards (8 starred) · [agentic-evals-arize-cards.json](agentic-evals-arize-cards.json)*
+
+> Hands-on workshop content — capability-vs-regression eval lifecycle is the standout concept here, not covered anywhere else in this repo.
+
+**Sources:**
+- [Ship Real Agents: Hands-On Evals for Agentic Applications — Laurie Voss, Arize](https://www.youtube.com/watch?v=Xfl50508LZM)
+
+**[Why]** ⭐ Why do agents make evaluation harder than a single LLM call?
+> A single call has one input/output to grade. An agent produces a whole trace of tool calls and intermediate decisions — any step of which could be where things actually went wrong, not just the final answer, so you have to evaluate the process, not just the outcome.
+
+**[Recall]** ⭐ What is a "capability eval" versus a "regression eval"?
+> A capability eval is a hill to climb — something the agent currently mostly fails at, that you iterate to improve. Once it hits ~100%, it graduates into a regression eval — folded into the permanent suite to guard against silently losing that capability, while a new capability eval targets the next thing to improve.
+
+**[Why]** ⭐ Why should you spend the most on capability evals and aggressively trim regression evals, cost-wise?
+> Capability evals are where the agent is actually getting better right now — that's worth the expense. Regression evals are guardrails against known-solved problems; a representative sample (e.g. 20% of a large regression suite) protects nearly as well at a fraction of the cost.
+
+**[Why]** ⭐ What is the "over-prescriptive eval" trap in agent evaluation?
+> Hard-coding an expected sequence of tool calls/decisions in an eval. Agents — especially after a model upgrade — often find shorter or smarter valid paths to the same correct outcome, and an overly rigid eval will fail a genuinely better trace just because it didn't match the expected process.
+
+**[Application]** ⭐ A user asked for BUDGET Tokyo travel recommendations; the agent gave good recommendations but omitted costs. Why would a naive eval miss this failure, and how would an LLM-judge catch it?
+> A naive check ("did it recommend Tokyo travel?") would pass, missing that the response ignored the budget constraint specifically. An LLM judge with an explanation can catch that subtler, constraint-specific failure and explain exactly what was missing — the rationale is what makes the eval result actionable.
+
+**[Recall]** What is meta-evaluation, and what are its two forms discussed in this talk?
+> Evaluating your evaluators. Form one: using an LLM to judge whether another LLM judge's verdict was actually correct. Form two: using consistency across repeated independent runs of the same task as a proxy signal for reliability.
+
+**[Why]** ⭐ Why should you build a new eval suite one eval at a time rather than several at once?
+> Introducing multiple new evals simultaneously means a single prompt change can shift several eval results at once, making it impossible to attribute cause and effect — you can't tell which eval's signal actually drove the observed change.
+
+**[Application]** ⭐ What's the practical signal that tells you it's actually time to invest in building evals?
+> The point where vibe-checking becomes the bottleneck — specifically, the first time changing one thing breaks something else without you noticing. That's when the cost of building evals is justified.
+
+**[Why]** ⭐ Why run experiments on a small curated set instead of the full regression corpus during iteration?
+> Experiments let you hill-climb rapidly on a smaller, focused set. Once you believe you've reached a stopping point, you validate against the full dataset to catch any accidental overfitting or regression the smaller experiment set didn't reveal — you don't need full-corpus reruns on every single change.
+
+**[Why]** Why should you only run regression evals (not capability evals) against live production traces?
+> A capability eval measures something that — by definition, once it's graduated to a capability eval status — isn't expected to be actively changing during normal operation; running it repeatedly on live traffic burns cost without producing new signal.
+
+**[Application]** How do you decide whether to bundle several criteria into one eval or split them into separate single-criterion evals?
+> It's context-dependent, resolved by asking stakeholders what the actual definition of "correct" is versus what merely contributes to correctness. A specific stakeholder-required signal deserves its own eval; a nice-to-have that just helps get there doesn't need separate measurement.
+
+---
 
 ## Agentic AI / Multi-Agent Systems
 *Tier 1 · ~90% of postings · 10 cards (4 starred) · [agentic-multi-agent.json](agentic-multi-agent.json)*
@@ -347,6 +393,46 @@ See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md) (pending work tracker
 
 **[Why]** ⭐ Why does "knowledge changes frequently" push you toward RAG and away from fine-tuning, structurally?
 > Fine-tuning bakes information into model weights — updating it means re-training, which is slow and expensive to repeat often. RAG's knowledge lives in an external, swappable index — updating a document is instant and doesn't touch the model at all. Frequent-change knowledge and fine-tuning are structurally mismatched.
+
+---
+
+## GitHub Copilot — Real-World Evals
+*Tier 1 · LLM Evaluation (~88%) · 10 cards (6 starred) · [github-copilot-evals-cards.json](github-copilot-evals-cards.json)*
+
+> A real production case study, not a framework or theory talk — concrete numbers and named systems from actual GitHub Copilot team members.
+
+**Sources:**
+- [The Evals That Made GitHub Copilot — John Bryman & Sean Simster](https://www.youtube.com/watch?v=LwLxlEwrtRA)
+
+**[Recall]** ⭐ What are GitHub's four eval categories, from easiest to most subjective?
+> Algorithmic (deterministic checks — equality, JSON schema, length limits), verifiable evaluations (objectively gradable by execution — code compiles, tests pass — but not a simple equality check), LLM-as-judge (subjective — preference, hallucination detection), and A/B testing (real-world validation once shipped).
+
+**[Why]** ⭐ What makes "verifiable evaluations" a distinct category from both algorithmic checks and LLM-as-judge?
+> It's not a simple equality/schema check, but it's still objectively gradable by actually running something — does generated code compile, does it pass its unit tests, does generated SQL return the correct rows regardless of exact query text. Objective like algorithmic checks, but requires execution rather than pattern matching.
+
+**[Recall]** How did Harness Lib (GitHub's code-completion eval system) generate test cases?
+> Pull real open-source repos → keep only ones where the existing test suite fully passes → use code coverage tooling to map functions to their covering tests → filter to functions with real test coverage, a reasonable line limit, and a docstring.
+
+**[Recall]** What was Harness Lib's actual evaluation mechanic?
+> Take a candidate function, remove its implementation, have the model regenerate it, then re-run the original unit test against the regenerated code — a genuinely verifiable pass/fail rather than a judgment call.
+
+**[Why]** ⭐ Why did GitHub need to know the model's training-data cutoff date when selecting eval repos?
+> To filter out repos the model might already have memorized during training — evaluating on code the model has seen before doesn't measure generalization, it measures recall, and would inflate scores misleadingly.
+
+**[Why]** ⭐ Why can a contamination-safe eval set still be systematically unrepresentative of production traffic?
+> Repos excluded for being outside the training window tend to be newer, and newer repos skew smaller and structurally different from what's typically seen in real production usage — so avoiding contamination can inadvertently introduce a different bias.
+
+**[Application]** ⭐ Why is a rigid, fully headless eval harness sometimes the wrong choice early in a new product capability's life?
+> When a genuinely new capability launches, you often don't yet know how people will actually use it — a flexible, experimental evaluation approach is needed to explore usage patterns first. Locking into a rigid, exhaustive harness too early wraps a not-yet-understood capability in premature rigor.
+
+**[Recall]** What were GitHub Copilot's three key A/B testing metrics?
+> Completion acceptance rate (did the user accept the suggestion), characters retained (how much of it survived after editing), and latency.
+
+**[Why]** ⭐ Why did GitHub track "characters retained" alongside acceptance rate rather than relying on acceptance rate alone?
+> Some users mindlessly accept every suggestion and then heavily edit it afterward — raw acceptance rate alone would overstate quality for that usage pattern. Characters retained after editing captures whether the acceptance actually reflected genuine quality, not just passive acceptance.
+
+**[Recall]** How did GitHub distinguish key metrics from guardrail metrics in production monitoring?
+> A deliberately small set of key metrics (three) drove actual decisions, while a much larger set (high tens to ~100) of guardrail metrics were tracked purely for drift-monitoring — not hard pass/fail gates, just signals to catch anything moving unexpectedly.
 
 ---
 
@@ -829,6 +915,43 @@ See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md) (pending work tracker
 
 **[Why]** ⭐ Is parent-document retrieval the same thing as small-to-big retrieval?
 > Same underlying idea, different framing: both embed at a small, precise granularity but expand context at synthesis time. "Small-to-big" describes it as a granularity ladder; "parent-document retrieval" names the mechanism (return the parent chunk/document containing the matched child chunk) — worth knowing both terms, since different sources use different names for essentially the same technique.
+
+---
+
+## RAG From Scratch — Routing, Proposition Indexing & RAPTOR
+*Tier 1 · RAG Architecture (~95%) · 9 cards (6 starred) · [rag-from-scratch-cards.json](rag-from-scratch-cards.json)*
+
+> Deliberately non-overlapping with rag-architecture.json — covers only routing, proposition/multi-representation indexing, and RAPTOR, which that deck doesn't include.
+
+**Sources:**
+- [RAG From Scratch — Lance Martin, LangChain](https://www.youtube.com/watch?v=sVcwVQRHIc8)
+
+**[Recall]** What is "routing" as a distinct RAG pipeline stage, separate from retrieval itself?
+> Deciding which data source or prompt a question should go to — e.g. a vector store vs. a relational DB vs. a graph DB — before retrieval within that source even happens. It's a separate architectural decision from chunking/retrieval mechanics within one source.
+
+**[Recall]** ⭐ What's the difference between logical routing and semantic routing?
+> Logical routing: an LLM chooses a destination via structured output/function calling, constrained to a fixed schema of valid sources. Semantic routing: embed the question and a set of candidate destinations ahead of time, then route to whichever candidate has the highest embedding similarity — no LLM call needed at routing time.
+
+**[Why]** ⭐ Why would you choose semantic routing over logical routing?
+> Semantic routing is just a similarity computation against pre-embedded candidates — no LLM inference call needed at routing time, making it faster and cheaper. Logical routing costs an LLM call but can reason more flexibly about ambiguous or compound queries.
+
+**[Recall]** What is multi-representation (proposition) indexing?
+> Decoupling the unit you embed for retrieval from the unit you feed the LLM at generation time — an LLM distills a document into an optimized "proposition"/summary that gets embedded for search, while the full raw document is stored separately and returned at generation time once that proposition matches.
+
+**[Why]** ⭐ Why does proposition indexing pair especially well with long-context models?
+> The summary/proposition's only job is being a good retrieval key — finding the right document. The full original document, no longer needing to be chunked, becomes the generation input directly, since a long-context model can comfortably handle an entire document at once. This separates "easy to search over" from "needed to actually answer well."
+
+**[Why]** ⭐ What problem does RAPTOR solve that a fixed top-k retrieval can't?
+> A single k value can't serve both low-level questions (answerable from one chunk) and high-level questions (requiring consolidation across many chunks/documents) well — a high-level question may need information spread across more chunks than any reasonable k would retrieve.
+
+**[Recall]** How does RAPTOR build its hierarchical index?
+> Start with raw chunks as leaves, cluster similar ones, summarize each cluster, then repeat clustering-and-summarizing recursively on the summaries themselves, climbing toward progressively higher-level abstractions until reaching a limit or a single top-level summary of the whole corpus.
+
+**[Application]** ⭐ In RAPTOR, why are all levels of the hierarchy — raw chunks AND every summary level — indexed together in one vector store?
+> So that a low-level question's embedding naturally matches closely with detailed raw chunks, while a high-level question's embedding naturally matches closely with higher-level summary nodes — giving semantic coverage across the full abstraction hierarchy without needing to manually detect and route between "detail mode" and "overview mode."
+
+**[Application]** ⭐ You're designing RAG for a corpus that needs to answer both narrow factual questions and broad synthesis questions ("summarize what changed across all Q3 reports"). What technique addresses this directly?
+> RAPTOR-style hierarchical indexing — plain flat chunking with one fixed k structurally cannot serve both narrow and broad questions well, since the two question types need fundamentally different amounts of consolidated context.
 
 ---
 
