@@ -2,6 +2,18 @@
 
 Working state for the learning-deck build-out. Two separate queues — don't conflate them.
 
+## Format rule (as of this update)
+
+**Videos (narrative/case-study/workshop content)** → notes with real verified clip-timestamp
+links to the 4-8 highest-value moments, **no forced flashcards**. Exception: if a video's
+content is itself crisply definitional (a named algorithm, a specific formula, a bias
+taxonomy — like CME295's GRPO/ReAct/eval-bias-taxonomy lectures), a small card set is still
+fine, since that content isn't actually narrative even though the source is a video.
+
+**Docs/reference/papers (LangGraph docs, RAGAS docs, Claude/OpenAI docs, vendor comparisons,
+etc.)** → this is now the primary source for flashcards going forward, not videos. Need to
+go find these sources — separate task from the video queue below.
+
 ---
 
 ## Queue A — Not yet pulled (blocked by YouTube IP rate-limit)
@@ -50,7 +62,7 @@ Just need the same treatment CME295 L7/L8 got: read transcript → write study n
 | `DgPr3HVp0eg` | SolveIt: The Thinking Developer's Environment w/ Jeremy Howard & Johno Whitaker |
 | `aqKUwPKBkB0` | Build Your Own Eval Tools With Notebooks! |
 | ~~`_UY49Q_qFhs`~~ | ✅ done — Inspect eval framework (JJ Allaire) |
-| `GL0XhAj5LPE` | LLM Evals: Common Mistakes |
+| ~~`GL0XhAj5LPE`~~ | ✅ done — notes+clips only (Hamel Husain interview, narrative format) |
 | `SnbGD677_u0` | Instrumenting & Evaluating LLMs |
 | `0pnEUAwoDP0` | How to Build, Evaluate, and Iterate on LLM Agents |
 | ~~`Xfl50508LZM`~~ | ✅ done — Ship Real Agents: Hands-On Evals — Laurie Voss, Arize |
