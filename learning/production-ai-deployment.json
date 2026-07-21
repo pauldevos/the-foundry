@@ -1,61 +1,75 @@
 {
   "topic": "Production AI Deployment",
-  "tier": "Tier 1 · ~88% of postings",
+  "tier": "Tier 1 \u00b7 ~88% of postings",
   "sources": [
-    {"name": "Sherwin Wu — OpenAI head of platform engineering (already in corpus)", "url": "https://www.youtube.com/watch?v=B26CwKm5C1k"},
-    {"name": "AWS Bedrock docs", "url": "https://docs.aws.amazon.com/bedrock/"},
-    {"name": "Google Vertex AI docs", "url": "https://cloud.google.com/vertex-ai/docs"}
+    {
+      "name": "Sherwin Wu \u2014 OpenAI head of platform engineering (already in corpus)",
+      "url": "https://www.youtube.com/watch?v=B26CwKm5C1k"
+    },
+    {
+      "name": "AWS Bedrock docs",
+      "url": "https://docs.aws.amazon.com/bedrock/"
+    },
+    {
+      "name": "Google Vertex AI docs",
+      "url": "https://cloud.google.com/vertex-ai/docs"
+    }
   ],
   "cards": [
     {
       "type": "Recall",
       "front": "What's the practical difference between batch and streaming inference deployment?",
-      "back": "Batch: process many requests together on a schedule, optimized for throughput and cost — fine when latency doesn't matter (nightly report generation). Streaming: process each request as it arrives, optimized for low latency — required for interactive chat/agent experiences where a user is waiting."
+      "back": "Batch: process many requests together on a schedule, optimized for throughput and cost \u2014 fine when latency doesn't matter (nightly report generation). Streaming: process each request as it arrives, optimized for low latency \u2014 required for interactive chat/agent experiences where a user is waiting."
     },
     {
       "type": "Why",
       "front": "Why does a model-serving layer exist separately from the model itself in production architecture?",
-      "back": "The serving layer handles request batching, load balancing across replicas, caching, rate limiting, and version routing — concerns that are about running the model reliably at scale, not about the model's intelligence. Conflating the two makes both harder to reason about and scale independently."
+      "back": "The serving layer handles request batching, load balancing across replicas, caching, rate limiting, and version routing \u2014 concerns that are about running the model reliably at scale, not about the model's intelligence. Conflating the two makes both harder to reason about and scale independently.",
+      "starred": true
     },
     {
       "type": "Recall",
       "front": "What is a canary deployment, applied to an AI model or prompt change?",
-      "back": "Route a small percentage of production traffic to the new model/prompt version while the majority stays on the current one — lets you catch quality regressions on real traffic before a full rollout, with limited blast radius if something's wrong."
+      "back": "Route a small percentage of production traffic to the new model/prompt version while the majority stays on the current one \u2014 lets you catch quality regressions on real traffic before a full rollout, with limited blast radius if something's wrong."
     },
     {
       "type": "Why",
       "front": "Why do latency, reliability, and cost trade off against each other in model selection for a production feature?",
-      "back": "A more capable model is usually slower and more expensive per call; a faster/cheaper model may need more retries or fallback logic to hit the same reliability bar. There's rarely a model that wins on all three — the right choice depends on which constraint is tightest for that specific feature (a real-time chat needs latency; a batch analysis job needs cost efficiency)."
+      "back": "A more capable model is usually slower and more expensive per call; a faster/cheaper model may need more retries or fallback logic to hit the same reliability bar. There's rarely a model that wins on all three \u2014 the right choice depends on which constraint is tightest for that specific feature (a real-time chat needs latency; a batch analysis job needs cost efficiency).",
+      "starred": true
     },
     {
       "type": "Recall",
       "front": "What does \"model versioning\" actually protect you against in production?",
-      "back": "Silent behavior drift — a vendor updating a model behind an API alias, or your own prompt change, subtly altering outputs in ways that don't throw errors but degrade quality. Pinning to a specific version and testing before upgrading is how you catch this before users do."
+      "back": "Silent behavior drift \u2014 a vendor updating a model behind an API alias, or your own prompt change, subtly altering outputs in ways that don't throw errors but degrade quality. Pinning to a specific version and testing before upgrading is how you catch this before users do."
     },
     {
       "type": "Application",
       "front": "Your AI feature works fine in testing but is unreliable in production under load. What's the first thing to check?",
-      "back": "Rate limits and timeout handling under concurrency — AI API calls are slow relative to typical web requests, so load that's fine for a normal API can exhaust connection pools or hit provider rate limits fast. Check retry/backoff logic and whether failures degrade gracefully (fallback response) or cascade."
+      "back": "Rate limits and timeout handling under concurrency \u2014 AI API calls are slow relative to typical web requests, so load that's fine for a normal API can exhaust connection pools or hit provider rate limits fast. Check retry/backoff logic and whether failures degrade gracefully (fallback response) or cascade.",
+      "starred": true
     },
     {
       "type": "Why",
       "front": "Why is a fallback/degraded-mode path a required part of AI production architecture, not a nice-to-have?",
-      "back": "AI providers have outages and rate limits like any external dependency, but an AI feature failing often means a core user-facing capability just disappears. A defined fallback (cached response, simpler rule-based behavior, clear error state) keeps the product functional instead of broken when the model call fails."
+      "back": "AI providers have outages and rate limits like any external dependency, but an AI feature failing often means a core user-facing capability just disappears. A defined fallback (cached response, simpler rule-based behavior, clear error state) keeps the product functional instead of broken when the model call fails.",
+      "starred": true
     },
     {
       "type": "Recall",
       "front": "What's the role of Docker/containerization specifically for AI model deployment, versus general software?",
-      "back": "Same core benefit as any software — reproducible environments, dependency isolation — but matters more for AI because of heavy, version-sensitive dependencies (specific CUDA/PyTorch versions, model weight files) that are easy to get subtly wrong outside a pinned container."
+      "back": "Same core benefit as any software \u2014 reproducible environments, dependency isolation \u2014 but matters more for AI because of heavy, version-sensitive dependencies (specific CUDA/PyTorch versions, model weight files) that are easy to get subtly wrong outside a pinned container."
     },
     {
       "type": "Why",
       "front": "Why does CI/CD for AI systems need to include evals as a gate, not just standard unit tests?",
-      "back": "Standard tests check that code doesn't crash and logic is correct; they can't catch \"the model's answers got subtly worse\" after a prompt or model change. Evals-as-CI-gate (running your eval suite before merge/deploy) is the AI-specific addition that catches quality regression the way unit tests catch functional regression."
+      "back": "Standard tests check that code doesn't crash and logic is correct; they can't catch \"the model's answers got subtly worse\" after a prompt or model change. Evals-as-CI-gate (running your eval suite before merge/deploy) is the AI-specific addition that catches quality regression the way unit tests catch functional regression.",
+      "starred": true
     },
     {
       "type": "Recall",
       "front": "What's the difference between horizontal scaling for a typical web service and for an AI-serving system?",
-      "back": "Typical web services scale by adding stateless application replicas behind a load balancer — cheap and fast. AI serving often needs GPU-backed replicas, which are expensive and slower to spin up, so autoscaling has to account for cold-start time and cost much more carefully — over-provisioning is expensive, under-provisioning causes queueing/latency spikes."
+      "back": "Typical web services scale by adding stateless application replicas behind a load balancer \u2014 cheap and fast. AI serving often needs GPU-backed replicas, which are expensive and slower to spin up, so autoscaling has to account for cold-start time and cost much more carefully \u2014 over-provisioning is expensive, under-provisioning causes queueing/latency spikes."
     }
   ]
 }

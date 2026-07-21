@@ -1,52 +1,68 @@
 {
   "topic": "MCP, A2A & Agent Governance",
-  "tier": "Tier 2 · MCP ~65%, Governance ~78%",
+  "tier": "Tier 2 \u00b7 MCP ~65%, Governance ~78%",
   "sources": [
-    {"name": "Model Context Protocol spec", "url": "https://modelcontextprotocol.io"},
-    {"name": "A2A Protocol spec", "url": "https://a2a-protocol.org"},
-    {"name": "Mahesh Murag — Building Agents with MCP (full workshop)", "url": "https://www.youtube.com/watch?v=kQmXtrmQ5Zg"},
-    {"name": "Where AI governance is headed — Databricks / ThoughtWorks", "url": "https://www.youtube.com/watch?v=UrhnwOPJG4w"}
+    {
+      "name": "Model Context Protocol spec",
+      "url": "https://modelcontextprotocol.io"
+    },
+    {
+      "name": "A2A Protocol spec",
+      "url": "https://a2a-protocol.org"
+    },
+    {
+      "name": "Mahesh Murag \u2014 Building Agents with MCP (full workshop)",
+      "url": "https://www.youtube.com/watch?v=kQmXtrmQ5Zg"
+    },
+    {
+      "name": "Where AI governance is headed \u2014 Databricks / ThoughtWorks",
+      "url": "https://www.youtube.com/watch?v=UrhnwOPJG4w"
+    }
   ],
   "cards": [
     {
       "type": "Recall",
       "front": "What are the three core interfaces MCP defines?",
-      "back": "Tools (model-controlled actions the agent can invoke), Resources (application-controlled data the client exposes), and Prompts (user-controlled templates) — each serves a distinct role in the client-server interaction."
+      "back": "Tools (model-controlled actions the agent can invoke), Resources (application-controlled data the client exposes), and Prompts (user-controlled templates) \u2014 each serves a distinct role in the client-server interaction."
     },
     {
       "type": "Why",
       "front": "Why does MCP separate \"tools\" from \"resources\" instead of treating everything as one kind of capability?",
-      "back": "Tools are actions with side effects that the model decides to invoke; resources are read-only data the application decides to expose. Different control planes need different permission models — you don't want a model deciding what data to expose, or an app deciding what actions to take."
+      "back": "Tools are actions with side effects that the model decides to invoke; resources are read-only data the application decides to expose. Different control planes need different permission models \u2014 you don't want a model deciding what data to expose, or an app deciding what actions to take.",
+      "starred": true
     },
     {
       "type": "Why",
       "front": "What problem does MCP solve architecturally?",
-      "back": "Before MCP, every AI app needed a custom integration for every tool/data source — N apps x M tools = N x M integrations. MCP standardizes the interface so one MCP server works with any MCP-compatible client, collapsing N x M into N + M."
+      "back": "Before MCP, every AI app needed a custom integration for every tool/data source \u2014 N apps x M tools = N x M integrations. MCP standardizes the interface so one MCP server works with any MCP-compatible client, collapsing N x M into N + M.",
+      "starred": true
     },
     {
       "type": "Recall",
       "front": "What is \"sampling\" in MCP?",
-      "back": "An MCP server can request an LLM completion FROM the client rather than needing its own model access — servers stay lightweight (no API key, no model management) while the client controls cost, privacy, and model choice."
+      "back": "An MCP server can request an LLM completion FROM the client rather than needing its own model access \u2014 servers stay lightweight (no API key, no model management) while the client controls cost, privacy, and model choice."
     },
     {
       "type": "Why",
       "front": "How does MCP differ from A2A, and why do you need both?",
-      "back": "MCP connects an agent to its tools/data (agent-to-tool). A2A connects independent agents to each other so they can discover, delegate to, and collaborate with agents built on different frameworks (agent-to-agent). Use MCP to equip one agent; use A2A to let that agent work with other agents outside your system."
+      "back": "MCP connects an agent to its tools/data (agent-to-tool). A2A connects independent agents to each other so they can discover, delegate to, and collaborate with agents built on different frameworks (agent-to-agent). Use MCP to equip one agent; use A2A to let that agent work with other agents outside your system.",
+      "starred": true
     },
     {
       "type": "Recall",
       "front": "What does \"composability\" mean in MCP's architecture?",
-      "back": "Any application can be both an MCP client and an MCP server simultaneously — enabling layered/hierarchical architectures where one agent's output becomes another agent's tool, without a different protocol at each layer."
+      "back": "Any application can be both an MCP client and an MCP server simultaneously \u2014 enabling layered/hierarchical architectures where one agent's output becomes another agent's tool, without a different protocol at each layer."
     },
     {
       "type": "Application",
       "front": "Why does fixed role-based permissions (RBAC) fail for AI agents in enterprise governance?",
-      "back": "An agent's permissions need to be scoped to the specific task/context at runtime, not a fixed role like \"support-agent-can-read-all-customers.\" Fixed roles are too broad for agents operating across many different contexts moment to moment — capabilities need to be short-lived and use-case specific."
+      "back": "An agent's permissions need to be scoped to the specific task/context at runtime, not a fixed role like \"support-agent-can-read-all-customers.\" Fixed roles are too broad for agents operating across many different contexts moment to moment \u2014 capabilities need to be short-lived and use-case specific.",
+      "starred": true
     },
     {
       "type": "Recall",
       "front": "What is \"tainting\" as an agent sandboxing technique?",
-      "back": "If an agent reads from a sensitive data source, it gets flagged/tainted and is then prevented from writing to any non-sensitive downstream location — stops sensitive data from silently leaking through an agent's output path."
+      "back": "If an agent reads from a sensitive data source, it gets flagged/tainted and is then prevented from writing to any non-sensitive downstream location \u2014 stops sensitive data from silently leaking through an agent's output path."
     },
     {
       "type": "Recall",
@@ -56,7 +72,8 @@
     {
       "type": "Why",
       "front": "Why must token/resource costs for agents be controlled in real time rather than reconciled after the fact?",
-      "back": "Agents can loop, retry, and compound costs unpredictably in ways a human-driven system never would — a runaway loop can burn thousands of dollars before a monthly bill would surface the problem. Cost needs to be a live control surface (circuit breakers, budgets), not an accounting exercise."
+      "back": "Agents can loop, retry, and compound costs unpredictably in ways a human-driven system never would \u2014 a runaway loop can burn thousands of dollars before a monthly bill would surface the problem. Cost needs to be a live control surface (circuit breakers, budgets), not an accounting exercise.",
+      "starred": true
     }
   ]
 }
