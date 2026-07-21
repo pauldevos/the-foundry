@@ -55,6 +55,196 @@
       "type": "Recall",
       "front": "What does \"context precision\" measure in a RAG eval, and how does it differ from \"context recall\"?",
       "back": "Precision: of the chunks you retrieved, what fraction were actually relevant (signal-to-noise). Recall: of the chunks needed to answer, what fraction did you actually retrieve (completeness). A system can have perfect precision and terrible recall."
+    },
+    {
+      "type": "Recall",
+      "front": "What is hierarchical chunking?",
+      "back": "Building multiple levels of chunks over the same document — e.g. document-level, section-level, paragraph-level — so retrieval can match at whichever granularity fits the query, rather than committing to one fixed chunk size for every kind of question."
+    },
+    {
+      "type": "Why",
+      "front": "Why use overlapping chunks instead of clean, non-overlapping splits?",
+      "back": "A clean split can sever a sentence or idea exactly at the boundary, losing context on both sides. A 10-20% overlap means the same content appears in two adjacent chunks, so a fact split awkwardly by the boundary is still fully present in at least one chunk."
+    },
+    {
+      "type": "Application",
+      "front": "How should you chunk a document containing a large table differently from prose?",
+      "back": "Splitting a table by token count mid-row destroys its meaning — a chunk needs to preserve enough row/column context to be interpretable alone (e.g. keep headers attached to every chunk of the table, or treat the whole table as one chunk with a text summary). Prose chunking rules don't transfer to structured content."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between document parsing and chunking as pipeline stages?",
+      "back": "Parsing extracts clean, structured text (and layout information) from a raw file format — PDF, scanned image, HTML. Chunking then splits that already-clean text into retrieval units. Skipping good parsing (e.g. naive PDF text extraction that mangles tables) undermines every later stage no matter how good your chunking strategy is."
+    },
+    {
+      "type": "Why",
+      "front": "Why does extracting metadata during ingestion (not just raw text) matter for retrieval quality?",
+      "back": "Metadata (date, author, document type, section title) enables filtering that pure semantic search can't do on its own — \"policy documents from after 2024\" isn't a semantic concept, it's a structured filter. Metadata extracted once at ingestion time is reused on every future query for free."
+    },
+    {
+      "type": "Recall",
+      "front": "What is multimodal RAG?",
+      "back": "Retrieving over more than plain text — embedding and indexing images, tables, and charts alongside prose so a query can surface a relevant diagram or figure, not just paragraphs. Requires embedding models capable of representing non-text content in a comparable vector space."
+    },
+    {
+      "type": "Why",
+      "front": "What problem does \"late chunking\" solve that standard chunking doesn't?",
+      "back": "Standard chunking embeds each chunk in isolation, so a chunk loses access to context from the rest of the document while being embedded. Late chunking embeds the full document first (capturing full-document context in each token's representation), then splits into chunks afterward — each chunk's embedding still reflects the whole document's context."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between sentence-level and document-level embeddings, and when does each fit?",
+      "back": "Sentence-level: fine-grained, precise matching, but loses surrounding context and can be noisy for broad questions. Document-level: captures overall theme and context, but is too coarse to pinpoint a specific fact. Most production systems embed at a middle granularity (paragraph/section) as the practical compromise."
+    },
+    {
+      "type": "Why",
+      "front": "What is embedding drift, and why is it an operational risk, not just a modeling detail?",
+      "back": "If you change your embedding model version, every previously-indexed vector is now in a different semantic space than newly-embedded content — mixing them silently degrades retrieval quality with no obvious error. This is why embedding model upgrades require a deliberate re-index, not a casual swap."
+    },
+    {
+      "type": "Recall",
+      "front": "What are Matryoshka embeddings, and why do they matter for cost?",
+      "back": "Embeddings trained so that truncating the vector to a shorter length (e.g. 256 dimensions instead of 1536) still produces a usable, if less precise, representation. Lets you trade retrieval quality for storage/compute cost dynamically, without needing a separate smaller model."
+    },
+    {
+      "type": "Application",
+      "front": "How would you choose between OpenAI, Cohere, and an open-source embedding model for a new RAG system?",
+      "back": "Benchmark on your own eval set, not a public leaderboard — embedding quality is domain-dependent. Factor in data residency (open-source/self-hosted keeps data in-house), cost at your expected query volume, and whether you'll eventually want to fine-tune (open-source models are fine-tunable, most hosted APIs are not)."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between symmetric and asymmetric embedding setups?",
+      "back": "Symmetric: query and document are embedded with the same model/approach, assuming they're similar in length and style (e.g. matching two similar sentences). Asymmetric: uses separate encoders tuned for queries (short, question-like) versus documents (long, statement-like) — matches the real mismatch in RAG, where a short question retrieves long passages."
+    },
+    {
+      "type": "Recall",
+      "front": "What is Maximal Marginal Relevance (MMR), and what problem does it solve?",
+      "back": "A retrieval re-ranking method that balances relevance against diversity — instead of returning the top-k most similar chunks (which can be near-duplicates of each other), MMR penalizes redundancy so the returned set covers more distinct information relevant to the query."
+    },
+    {
+      "type": "Recall",
+      "front": "What is query expansion / query rewriting in RAG?",
+      "back": "Using an LLM to reformulate or expand the user's raw query before retrieval — adding synonyms, resolving ambiguous pronouns, or breaking a compound question into sub-queries — because the user's literal wording is often a worse retrieval query than a cleaned-up version of their intent."
+    },
+    {
+      "type": "Recall",
+      "front": "What is HyDE (Hypothetical Document Embeddings)?",
+      "back": "Instead of embedding the user's question directly, first ask an LLM to generate a hypothetical answer to the question, then embed and search using that hypothetical answer. Works because a plausible answer is often closer in embedding space to real answer documents than the question itself is."
+    },
+    {
+      "type": "Recall",
+      "front": "What is multi-query retrieval?",
+      "back": "Generating several rephrased versions of the user's query (via an LLM), running retrieval for each independently, then merging and deduplicating the results — increases recall by covering multiple phrasings of the same underlying information need."
+    },
+    {
+      "type": "Application",
+      "front": "How do you tune the \"k\" parameter (number of retrieved chunks) for a production RAG system?",
+      "back": "There's a real tradeoff, not just \"more is safer\": too low risks missing needed context (low recall); too high adds noise, cost, and can push relevant content into the \"lost in the middle\" zone of the prompt. Tune empirically against your eval set — start conservative (k=3-5), measure, and increase only if recall is the demonstrated bottleneck."
+    },
+    {
+      "type": "Recall",
+      "front": "What is self-query retrieval?",
+      "back": "An LLM parses the user's natural-language query into two parts: a structured metadata filter (e.g. date range, category) and a semantic search query — then both are applied together. Lets users ask naturally (\"recent policy docs about X\") while still getting the precision of structured filtering."
+    },
+    {
+      "type": "Why",
+      "front": "In one sentence each, how do sparse, dense, and hybrid retrieval differ?",
+      "back": "Sparse (BM25): exact keyword/term matching, no semantic understanding. Dense (embeddings): semantic similarity, can miss exact terms. Hybrid: runs both and fuses results, covering each approach's blind spot."
+    },
+    {
+      "type": "Recall",
+      "front": "What is GraphRAG, and when does it beat plain vector search?",
+      "back": "Building a knowledge graph of entities and their relationships from your documents, then retrieving by traversing that graph rather than (or alongside) vector similarity. Beats vector search when answers require multi-hop reasoning across explicitly related entities — \"who reports to the person who approved X\" is a graph traversal, not a similarity match."
+    },
+    {
+      "type": "Why",
+      "front": "What is the \"lost in the middle\" problem, and why does it matter for RAG specifically?",
+      "back": "LLMs reliably attend to information at the start and end of a long context but are measurably worse at using information buried in the middle. In RAG, this means naively stuffing many retrieved chunks into the prompt can cause the model to miss the one chunk that actually answers the question — ordering and chunk count both matter, not just retrieval accuracy."
+    },
+    {
+      "type": "Recall",
+      "front": "What is map-reduce synthesis in a RAG context?",
+      "back": "For questions requiring information spread across many chunks/documents: independently summarize or answer from each chunk (\"map\"), then combine those partial answers into one final answer (\"reduce\") — used when too much retrieved content to fit in one context window at once."
+    },
+    {
+      "type": "Recall",
+      "front": "What is refine-based synthesis, and how does it differ from map-reduce?",
+      "back": "Process retrieved chunks sequentially, updating a running draft answer with each new chunk rather than summarizing chunks independently in parallel. More context-aware than map-reduce (each step sees the evolving answer) but strictly sequential, so slower."
+    },
+    {
+      "type": "Why",
+      "front": "Why does citation/attribution matter in a RAG answer beyond just \"nice to have\"?",
+      "back": "It's the mechanism that lets a user verify a claim without trusting the model blindly — critical in any regulated or high-stakes domain, and it also gives you a built-in signal for catching hallucination: if the answer cites nothing, or cites a chunk that doesn't actually support the claim, that's a detectable failure mode."
+    },
+    {
+      "type": "Why",
+      "front": "What's the risk of \"context stuffing\" — just retrieving generously and cramming everything into the prompt?",
+      "back": "Beyond cost, it actively degrades answer quality via the lost-in-the-middle effect and dilutes the signal-to-noise ratio the model has to reason over — more context is not free, and past a point it makes answers worse, not just more expensive."
+    },
+    {
+      "type": "Recall",
+      "front": "What is a router / query engine in a RAG system?",
+      "back": "A component (often LLM-driven) that decides, per incoming query, which retrieval strategy or data source to use — e.g. route factual lookups to a vector index but analytical questions to a SQL engine. Lets one system handle heterogeneous query types instead of forcing everything through one retrieval path."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between offline and online RAG evaluation?",
+      "back": "Offline: run your eval suite against a fixed, curated dataset before deploying a change — controlled, repeatable, catches regressions pre-release. Online: monitor real production traffic and outcomes continuously — catches issues offline eval can't anticipate (real user phrasing, data drift, edge cases you didn't think to test)."
+    },
+    {
+      "type": "Recall",
+      "front": "What is a \"golden dataset\" for RAG evaluation?",
+      "back": "A curated set of representative queries paired with verified correct answers and/or the specific source chunks that should be retrieved for each — your ground truth for measuring retrieval and answer quality objectively, rather than eyeballing outputs."
+    },
+    {
+      "type": "Why",
+      "front": "Why does retrieval latency budget matter as a distinct concern from retrieval quality?",
+      "back": "A more thorough retrieval strategy (multi-query, reranking, graph traversal) generally takes longer — in an interactive product, users have a latency tolerance that caps how much retrieval sophistication you can afford, independent of whether it would improve answer quality. Production RAG design is a joint optimization, not quality-only."
+    },
+    {
+      "type": "Why",
+      "front": "Why do stale embeddings become a real production problem as source documents update?",
+      "back": "If a source document changes but its vector index entry doesn't get re-embedded, retrieval keeps serving outdated content indefinitely with no obvious symptom — the system just quietly gives wrong answers about anything that changed. Requires a defined re-indexing trigger tied to document updates, not a one-time ingestion job."
+    },
+    {
+      "type": "Recall",
+      "front": "What does incremental indexing solve that a full re-index doesn't?",
+      "back": "Full re-indexing reprocesses the entire corpus, which becomes slow and expensive as it grows. Incremental indexing updates, adds, or deletes only the specific vectors affected by a specific document change — necessary for any system where the underlying document set changes frequently."
+    },
+    {
+      "type": "Why",
+      "front": "Why is access control a RAG-specific architectural concern, not just a general app-security checkbox?",
+      "back": "A retrieval system can surface exactly the sensitive content a user shouldn't see if permissions aren't enforced at the retrieval layer itself — filtering only at the UI layer after retrieval is too late, since the content already reached the LLM's context and could leak into the generated answer."
+    },
+    {
+      "type": "Application",
+      "front": "What should a RAG system do when retrieval finds no genuinely relevant documents for a query?",
+      "back": "Explicitly say so rather than forcing an answer from irrelevant chunks — a defined fallback behavior (\"I don't have information on that\") is safer than letting the model generate a plausible-sounding but ungrounded answer, which is one of the most common and damaging RAG failure modes."
+    },
+    {
+      "type": "Recall",
+      "front": "What is agentic RAG?",
+      "back": "Instead of a fixed retrieve-then-generate pipeline, an agent decides whether to retrieve at all, what to retrieve, and whether the retrieved information is sufficient before answering — potentially retrieving iteratively, reformulating queries, or querying multiple sources based on what it finds."
+    },
+    {
+      "type": "Recall",
+      "front": "What's the difference between single-hop and multi-hop RAG?",
+      "back": "Single-hop: one retrieval step answers the question directly. Multi-hop: answering requires chaining several retrieval steps, where the result of one retrieval informs what to search for next (e.g. \"who is the CEO of the company that acquired X\" requires finding the acquirer, then finding its CEO)."
+    },
+    {
+      "type": "Why",
+      "front": "What is Corrective RAG (CRAG), and why add a self-evaluation step?",
+      "back": "The system evaluates the quality/relevance of retrieved documents before generating an answer, and if retrieval quality is judged poor, it can trigger a fallback (broader search, web search, or an explicit \"insufficient information\" response) instead of generating from weak context — catches bad retrieval before it becomes a bad answer."
+    },
+    {
+      "type": "Recall",
+      "front": "What is a multi-document agent, and how does it differ from a standard multi-document retrieval?",
+      "back": "Instead of treating documents as passive text chunks to search over, each document is modeled as its own tool (e.g. \"summarize\" and \"Q&A\" functions scoped to that one document) that an agent can choose to call — enables more complex, multi-step reasoning across documents than a single retrieval pass allows."
+    },
+    {
+      "type": "Why",
+      "front": "Is parent-document retrieval the same thing as small-to-big retrieval?",
+      "back": "Same underlying idea, different framing: both embed at a small, precise granularity but expand context at synthesis time. \"Small-to-big\" describes it as a granularity ladder; \"parent-document retrieval\" names the mechanism (return the parent chunk/document containing the matched child chunk) — worth knowing both terms, since different sources use different names for essentially the same technique."
     }
   ]
 }
