@@ -3,10 +3,13 @@
 Generated card sets for the AI Director / FDE skills map. Each `.json` is the
 structured source; this file is a readable render of the same content.
 
-See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md) (pending work tracker), and lecture/talk notes
-(narrative/case-study videos get notes + verified clip links here, not forced flashcards):
+See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md) (pending work tracker),
+[WATCH_GUIDE.md](WATCH_GUIDE.md) (which videos are actually worth watching vs. reading
+notes for — checked against real visual/code-walkthrough content, not guessed), and
+lecture/talk notes (narrative/case-study videos get notes + verified clip links here,
+not forced flashcards):
+**Total: 251 cards (130 starred) across 21 decks. Plus 10 lecture/talk-notes files.**
 
-**Total: 251 cards (130 starred) across 21 decks. Plus 9 lecture/talk-notes files.**
 
 - [lecture-notes-cme295-l1.md](lecture-notes-cme295-l1.md)
 - [lecture-notes-cme295-l6.md](lecture-notes-cme295-l6.md)
@@ -15,6 +18,7 @@ See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md) (pending work tracker
 - [notes-agentic-evals-arize.md](notes-agentic-evals-arize.md)
 - [notes-github-copilot-evals.md](notes-github-copilot-evals.md)
 - [notes-inspect-eval-framework.md](notes-inspect-eval-framework.md)
+- [notes-jerry-liu-rag.md](notes-jerry-liu-rag.md)
 - [notes-llm-evals-common-mistakes.md](notes-llm-evals-common-mistakes.md)
 - [notes-rag-from-scratch-langchain.md](notes-rag-from-scratch-langchain.md)
 
