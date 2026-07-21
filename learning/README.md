@@ -3,13 +3,15 @@
 Generated card sets for the AI Director / FDE skills map. Each `.json` is the
 structured source; this file is a readable render of the same content.
 
-See also: [glossary.md](glossary.md) (85 terms so far) and lecture notes:
+See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md) (pending work tracker), and lecture/talk notes:
 
-**Total: 202 cards (102 starred) across 16 decks. Plus 3 lecture-notes files.**
+**Total: 221 cards (110 starred) across 18 decks. Plus 5 lecture/talk-notes files.**
 
 - [lecture-notes-cme295-l1.md](lecture-notes-cme295-l1.md)
+- [lecture-notes-cme295-l6.md](lecture-notes-cme295-l6.md)
 - [lecture-notes-cme295-l7.md](lecture-notes-cme295-l7.md)
 - [lecture-notes-cme295-l8.md](lecture-notes-cme295-l8.md)
+- [notes-inspect-eval-framework.md](notes-inspect-eval-framework.md)
 
 ## Agentic AI / Multi-Agent Systems
 *Tier 1 · ~90% of postings · 10 cards (4 starred) · [agentic-multi-agent.json](agentic-multi-agent.json)*
@@ -125,6 +127,46 @@ See also: [glossary.md](glossary.md) (85 terms so far) and lecture notes:
 
 **[Recall]** What's a practical reason a managed agent platform might be disqualified for a given enterprise use case?
 > Compliance requirements like zero data retention or HIPAA BAA — managed agent platforms are stateful by design (they persist session state, memory, logs), which can conflict directly with those requirements. Worth checking before committing architecture to a managed platform in a regulated industry.
+
+---
+
+## CME 295 L6 — Reasoning Models & GRPO
+*Tier 1 · LLM Architecture & Tradeoffs (~85%) · 10 cards (5 starred) · [cme295-l6-reasoning-cards.json](cme295-l6-reasoning-cards.json)*
+
+> Completes the L6-L7-L8 arc (reasoning -> tools/agents -> evals) alongside the L7 and L8 decks already in this repo.
+
+**Sources:**
+- [CME 295 Lecture 6 — Amidi brothers, Stanford](https://www.youtube.com/watch?v=k5Fh-UgTuCo)
+
+**[Recall]** What does GRPO stand for, and what problem was it built to remove?
+> Group Relative Policy Optimization. It removes PPO's requirement to jointly train a separate value function to estimate advantage — a major compute and complexity bottleneck.
+
+**[Why]** ⭐ How does GRPO compute advantage without a value function?
+> It samples multiple completions (a "group") for the same prompt, scores each, then computes each completion's advantage as (its reward minus the group's average reward) divided by the group's standard deviation — a purely relative measure within that group, no separate model required.
+
+**[Why]** ⭐ Why does comparing a completion against its own group (rather than an absolute reward) suit reasoning tasks specifically?
+> A high reward on an easy problem isn't very informative, while a correct answer on a hard problem should be upweighted much more strongly. Group-relative comparison against other attempts at the *same* prompt captures this naturally without needing to explicitly model problem difficulty.
+
+**[Recall]** What are "verifiable rewards," and why do they matter for training reasoning models?
+> Rewards computed deterministically without any learned reward model — for code, whether the solution passes test cases; for math, whether the final answer matches ground truth. Removes reward-model training entirely for domains where correctness is checkable.
+
+**[Recall]** What two reward signals combine to train a model like DeepSeek R1 via RL?
+> A formatting reward (checking that reasoning/"think" tokens are present in the expected structure) and a correctness reward (checking the final answer is right) — both verifiable, neither requiring a learned reward model.
+
+**[Application]** ⭐ What does pass@k measure, and why is it more useful than single-shot accuracy for reasoning/code models?
+> The probability that at least one of k randomly selected attempts (out of n total sampled attempts) is correct. More useful than single-shot accuracy because reasoning/code tasks are often evaluated on "can the model get this right within k tries," which single-shot accuracy doesn't capture.
+
+**[Why]** Why is pass@k estimated by sampling many attempts (n) and computing analytically, rather than just running k attempts directly and checking?
+> Running only k attempts and checking correctness directly gives a noisy, high-variance estimate. Sampling a larger n and computing the exact combinatorial probability — 1 minus the probability all k selected are incorrect — gives a stable estimate instead.
+
+**[Why]** ⭐ Why is controlling how much a reasoning model "thinks" per prompt an open problem?
+> Not all prompts deserve equal reasoning effort — an easy factual question doesn't need the same token budget as a hard proof, and overthinking wastes latency and cost. Proposed fixes (like a lightweight prompt-difficulty classifier setting a dynamic thinking budget) exist but are explicitly framed as unsolved, not standard practice yet.
+
+**[Why]** ⭐ Why does a reasoning model's context window become a hard constraint in a way it isn't for standard chat models?
+> Reasoning chains themselves consume context window tokens — a model that reasons for a long time before answering runs into the same finite context ceiling as any long-input use case, except here it's the model's own generated reasoning eating the budget, not external content.
+
+**[Recall]** Why do RL-trained reasoning models tend to produce longer and longer outputs over training, even after benchmark performance plateaus?
+> Traced to how the loss formulation weights tokens differently depending on whether they belong to a short or long response — this creates pressure toward longer outputs as an artifact of the training dynamics, independent of whether the added length is actually improving answer quality.
 
 ---
 
@@ -305,6 +347,43 @@ See also: [glossary.md](glossary.md) (85 terms so far) and lecture notes:
 
 **[Why]** ⭐ Why does "knowledge changes frequently" push you toward RAG and away from fine-tuning, structurally?
 > Fine-tuning bakes information into model weights — updating it means re-training, which is slow and expensive to repeat often. RAG's knowledge lives in an external, swappable index — updating a document is instant and doesn't touch the model at all. Frequent-change knowledge and fine-tuning are structurally mismatched.
+
+---
+
+## Inspect — Eval Framework
+*Tier 1 · LLM Evaluation (~88%) · 9 cards (3 starred) · [inspect-framework-cards.json](inspect-framework-cards.json)*
+
+> Fills a real gap — Inspect wasn't covered by the existing evals-frameworks deck (RAGAS/TruLens/DeepEval/Promptfoo).
+
+**Sources:**
+- [Inspect — JJ Allaire (UK AI Security Institute)](https://www.youtube.com/watch?v=_UY49Q_qFhs)
+
+**[Recall]** Who built Inspect, and where?
+> JJ Allaire, founder of RStudio/Posit, built it while working at the UK AI Security Institute — an organization that runs an unusually large volume of pre-deployment frontier-model evaluations.
+
+**[Recall]** Which organizations use Inspect internally?
+> Anthropic, DeepMind, and Grok, plus safety-focused orgs including Epoch, METR, and Apollo.
+
+**[Why]** ⭐ Why is Inspect explicitly NOT positioned as a production monitoring tool?
+> Its actual users (frontier labs, AI safety institutes) only run evals, not production LLM pipelines — the framework deliberately doesn't build out production-serving features, even though its components could technically be repurposed that way.
+
+**[Recall]** What are Inspect's three core concepts?
+> Dataset (input plus grading guidance/ground truth), Solver (whatever elicits the model's final output — a prompt, chain-of-thought plus self-critique, an agent scaffold, or tool use), and Scorer (grades the solver's output — LLM-as-judge, JSON-schema match, or text comparison).
+
+**[Why]** ⭐ Why is the Solver described as "the heart of the system" in Inspect's architecture?
+> It's the flexible, composable layer that determines how the model is actually elicited to produce its answer — everything from a simple prompt template to a full agent scaffold with tool use lives here, which is what lets the same framework cover both trivial benchmarks and complex agentic evals.
+
+**[Application]** ⭐ When would you reach for Inspect specifically over MLflow/LangSmith/Arize?
+> For rigorous, research-grade, or pre-deployment safety-style evaluation — not for production monitoring/observability, which is what MLflow/LangSmith/Arize are built for. Knowing this split is itself a signal of real fluency in an interview, not just naming tools.
+
+**[Recall]** What are Inspect's two modes of use?
+> "Snap-together" — compose pre-built dataset/solver/scorer pieces for standard benchmarks (roughly 70 ship with the framework). "Facilities" — use lower-level infrastructure (universal LLM provider interface, sandboxes, parallel execution, statistics) and write custom Python eval logic on top.
+
+**[Why]** Why does Inspect build in multi-epoch execution (running an eval multiple times and aggregating)?
+> A single run of an eval involving model sampling is noisy — multi-epoch execution and result aggregation is needed to get a statistically reliable score rather than trusting one run's outcome.
+
+**[Recall]** How does Inspect support agentic evals specifically?
+> Solvers can give the model real tool access (e.g. bash and Python) inside a sandboxed environment (e.g. Docker) — the cited example is a capture-the-flag security challenge, evaluated on whether the model actually completes it, not just produces a plausible-sounding answer.
 
 ---
 

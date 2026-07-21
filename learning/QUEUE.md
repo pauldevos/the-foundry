@@ -29,14 +29,14 @@ These are safe on disk in `transcripts/` already — no re-pull needed, no block
 Just need the same treatment CME295 L7/L8 got: read transcript → write study notes
 (20-30 points) → write a card deck (aim 15-50 cards depending on depth of source).
 
-**CME 295 — rest of the course** (L1, L7, L8 already done):
+**CME 295 — rest of the course** (L1, L6, L7, L8 done):
 | Video ID | Lecture | Topic (from transcript intro) |
 |---|---|---|
 | `yT84Y5zCnaA` | L2 | continuation of Transformer architecture |
 | `Q5baLehv5So` | L3 | "finally introduce large language models" |
 | `VlA_jt_3Qc4` | L4 | pre-midterm content |
 | `PmW_TMQ3l0I` | L5 | post-midterm content |
-| `k5Fh-UgTuCo` | L6 | LLM reasoning (GRPO, RL) |
+| ~~`k5Fh-UgTuCo`~~ | ~~L6~~ | ✅ done — GRPO, verifiable rewards, pass@k |
 | `Q86qzJ1K1Ss` | L9 | final lecture, special format |
 
 **Evals batch (12 videos)** — titles confirmed via oEmbed:
@@ -49,7 +49,7 @@ Just need the same treatment CME295 L7/L8 got: read transcript → write study n
 | `7kXY-2fYdHI` | Graph Databases: When to Use Them (And When to Run Away) |
 | `DgPr3HVp0eg` | SolveIt: The Thinking Developer's Environment w/ Jeremy Howard & Johno Whitaker |
 | `aqKUwPKBkB0` | Build Your Own Eval Tools With Notebooks! |
-| `_UY49Q_qFhs` | Inspect — LLM Eval Framework used by Anthropic, DeepMind, Grok |
+| ~~`_UY49Q_qFhs`~~ | ✅ done — Inspect eval framework (JJ Allaire) |
 | `GL0XhAj5LPE` | LLM Evals: Common Mistakes |
 | `SnbGD677_u0` | Instrumenting & Evaluating LLMs |
 | `0pnEUAwoDP0` | How to Build, Evaluate, and Iterate on LLM Agents |

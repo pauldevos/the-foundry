@@ -1,0 +1,19 @@
+{
+  "topic": "Inspect — Eval Framework",
+  "tier": "Tier 1 · LLM Evaluation (~88%)",
+  "sources": [
+    {"name": "Inspect — JJ Allaire (UK AI Security Institute)", "url": "https://www.youtube.com/watch?v=_UY49Q_qFhs"}
+  ],
+  "note": "Fills a real gap — Inspect wasn't covered by the existing evals-frameworks deck (RAGAS/TruLens/DeepEval/Promptfoo).",
+  "cards": [
+    {"type": "Recall", "front": "Who built Inspect, and where?", "back": "JJ Allaire, founder of RStudio/Posit, built it while working at the UK AI Security Institute — an organization that runs an unusually large volume of pre-deployment frontier-model evaluations."},
+    {"type": "Recall", "front": "Which organizations use Inspect internally?", "back": "Anthropic, DeepMind, and Grok, plus safety-focused orgs including Epoch, METR, and Apollo."},
+    {"type": "Why", "front": "Why is Inspect explicitly NOT positioned as a production monitoring tool?", "back": "Its actual users (frontier labs, AI safety institutes) only run evals, not production LLM pipelines — the framework deliberately doesn't build out production-serving features, even though its components could technically be repurposed that way.", "starred": true},
+    {"type": "Recall", "front": "What are Inspect's three core concepts?", "back": "Dataset (input plus grading guidance/ground truth), Solver (whatever elicits the model's final output — a prompt, chain-of-thought plus self-critique, an agent scaffold, or tool use), and Scorer (grades the solver's output — LLM-as-judge, JSON-schema match, or text comparison)."},
+    {"type": "Why", "front": "Why is the Solver described as \"the heart of the system\" in Inspect's architecture?", "back": "It's the flexible, composable layer that determines how the model is actually elicited to produce its answer — everything from a simple prompt template to a full agent scaffold with tool use lives here, which is what lets the same framework cover both trivial benchmarks and complex agentic evals.", "starred": true},
+    {"type": "Application", "front": "When would you reach for Inspect specifically over MLflow/LangSmith/Arize?", "back": "For rigorous, research-grade, or pre-deployment safety-style evaluation — not for production monitoring/observability, which is what MLflow/LangSmith/Arize are built for. Knowing this split is itself a signal of real fluency in an interview, not just naming tools.", "starred": true},
+    {"type": "Recall", "front": "What are Inspect's two modes of use?", "back": "\"Snap-together\" — compose pre-built dataset/solver/scorer pieces for standard benchmarks (roughly 70 ship with the framework). \"Facilities\" — use lower-level infrastructure (universal LLM provider interface, sandboxes, parallel execution, statistics) and write custom Python eval logic on top."},
+    {"type": "Why", "front": "Why does Inspect build in multi-epoch execution (running an eval multiple times and aggregating)?", "back": "A single run of an eval involving model sampling is noisy — multi-epoch execution and result aggregation is needed to get a statistically reliable score rather than trusting one run's outcome."},
+    {"type": "Recall", "front": "How does Inspect support agentic evals specifically?", "back": "Solvers can give the model real tool access (e.g. bash and Python) inside a sandboxed environment (e.g. Docker) — the cited example is a capture-the-flag security challenge, evaluated on whether the model actually completes it, not just produces a plausible-sounding answer."}
+  ]
+}
