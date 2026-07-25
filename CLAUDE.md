@@ -26,25 +26,35 @@ itself.
 
 ## Two Coexisting Content Systems
 
-**1. Broad topic decks** — one deck per Tier 1-3 skills-map topic (RAG Architecture,
-Agentic AI, MCP/Governance, LLM Evaluation, Prompt Engineering, Vector Databases, Fine-
-Tuning vs. RAG, Production Deployment, MLOps, LlamaIndex, Claude/OpenAI APIs, AI Roadmap &
-Strategy, etc. — see `learning/README.md` for the full current list and card counts).
-Survey-level breadth, sourced from official docs, papers, YouTube talks/lectures, and
-general knowledge. Lives as `learning/<topic>.json` (flashcard decks) plus companion
-`learning/notes-*.md` / `learning/lecture-notes-*.md` files for video-sourced material.
+Content is organized by **type first, domain second** — three top-level folders:
 
-**2. Deep-dive domain pipelines** — one folder per major technology domain, going deep
-through extended working sessions, personally anchored to Paul's real project background
-(IBM/RxSense healthcare RAG, Energy Transfer/FERC/PHMSA regulatory work, NFL data
-projects). `learning/rag-pipeline/` is the first and current example — five layers
-(ingestion/parsing, chunking/metadata, indexing, retrieval, generation+governance), each
-with tool surveys, benchmarks, and portfolio project plans. This is the primary mode of
-ongoing work going forward — RAG is done through Layer 5; agentic systems, evals-as-its-
-own-pipeline, and other domains get the same treatment over time as sessions happen.
+- **`learning/decks/`** — flashcard JSON. Broad topic decks live directly in this folder
+  (RAG Architecture, Agentic AI, MCP/Governance, LLM Evaluation, Prompt Engineering, Vector
+  Databases, Fine-Tuning vs. RAG, Production Deployment, MLOps, LlamaIndex, Claude/OpenAI
+  APIs, AI Roadmap & Strategy, etc. — see `learning/README.md` for the full current list
+  and card counts). Deep-dive domain decks live in a subfolder, e.g. `decks/rag-pipeline/`.
+- **`learning/notes/`** — long-form "read repeatedly until you can narrate it without
+  notes" reference docs. Same split: broad topic notes at top level (video-sourced
+  material, lecture notes), deep-dive domain notes in a subfolder, e.g.
+  `notes/rag-pipeline/01-ingestion-parsing/`, `notes/rag-pipeline/04-retrieval.md`.
+- **`learning/talk-tracks/`** — one file per domain (`rag-pipeline.md`, and future
+  `agentic-systems.md` etc.), short interview-ready talking points.
+
+**1. Broad topic decks** — one deck per Tier 1-3 skills-map topic, survey-level breadth,
+sourced from official docs, papers, YouTube talks/lectures, and general knowledge.
+
+**2. Deep-dive domain pipelines** — one subfolder (under each of `decks/`, `notes/`,
+`talk-tracks/`) per major technology domain, going deep through extended working sessions,
+personally anchored to Paul's real project background (IBM/RxSense healthcare RAG, Energy
+Transfer/FERC/PHMSA regulatory work, NFL data projects). `rag-pipeline` is the first and
+current example — five layers (ingestion/parsing, chunking/metadata, indexing, retrieval,
+generation+governance), each with tool surveys, benchmarks, and portfolio project plans.
+This is the primary mode of ongoing work going forward — RAG is done through Layer 5;
+agentic systems, evals-as-its-own-pipeline, and other domains get the same treatment over
+time as sessions happen.
 
 These coexist deliberately — broad decks for topics that don't need a multi-hour deep dive
-yet or that support the deep dives; deep-dive folders for the domains Paul is actively
+yet or that support the deep dives; deep-dive subfolders for the domains Paul is actively
 mastering for interviews and real project work.
 
 ---
@@ -54,9 +64,10 @@ mastering for interviews and real project work.
 This is the core of how this repo grows. A working session with Claude:
 
 1. **Use-case driven** — start from a real scenario (a client vertical, a project type),
-   not an abstract topic. `learning/rag-pipeline/portfolio-projects.md` and
-   `learning/talk-tracks.md`'s per-use-case sections show the pattern: healthcare/PHI RAG,
-   HR policy docs, oil & gas regulatory compliance, NFL stats, life sciences.
+   not an abstract topic. `learning/notes/rag-pipeline/portfolio-projects.md` and
+   `learning/talk-tracks/rag-pipeline.md`'s per-use-case sections show the pattern:
+   healthcare/PHI RAG, HR policy docs, oil & gas regulatory compliance, NFL stats, life
+   sciences.
 2. **Trade-off and technology comparison** — weigh real options against each other
    (frameworks, vector stores, chunking strategies), not just explain one path.
 3. **POC testing where relevant** — actually run the tools being compared, don't just
@@ -67,14 +78,16 @@ This is the core of how this repo grows. A working session with Claude:
 
 **Three deliverables at the end of every session:**
 
-1. **Talk tracks** — appended to that domain's `talk-tracks.md`, split into two explicit
-   registers per entry (format below). Polished, quotable, ready to say out loud in an
-   interview.
-2. **Flashcards** — same JSON schema already in use across `learning/*.json` (`type`:
-   Why/Recall/Application/Concept, `starred: true` for top-tier interview questions).
-3. **Comprehensive reference notes** — a "read repeatedly until you can narrate it without
-   notes" document, gym/commute-readable. Matches the tone of `learning/layer4-retrieval-
-   pipeline.md`: a full mental model of the domain, not just isolated facts.
+1. **Talk tracks** — appended to `learning/talk-tracks/<domain>.md`, split into two
+   explicit registers per entry (format below). Polished, quotable, ready to say out loud
+   in an interview.
+2. **Flashcards** — into `learning/decks/<domain>/`, same JSON schema already in use
+   (`type`: Why/Recall/Application/Concept, `starred: true` for top-tier interview
+   questions).
+3. **Comprehensive reference notes** — into `learning/notes/<domain>/`, a "read repeatedly
+   until you can narrate it without notes" document, gym/commute-readable. Matches the tone
+   of `learning/notes/rag-pipeline/04-retrieval.md`: a full mental model of the domain, not
+   just isolated facts.
 
 ### Talk-track format (going forward)
 
@@ -119,7 +132,7 @@ entries use the two-register split.
   questions — mostly Why/Application-type, not pure recall.
 - **Sources are always cited** per deck/notes file, with real URLs — never fabricate a
   source or a timestamp.
-- **Personal project anchors** (marked like `*[Personal: ...]*` in talk-tracks.md) tie a
+- **Personal project anchors** (marked like `*[Personal: ...]*` in talk-track files) tie a
   concept to Paul's actual work history — preserve and extend this pattern, it's what
   makes a talk track sound like real experience instead of a memorized definition.
 
