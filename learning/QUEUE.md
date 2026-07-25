@@ -16,6 +16,71 @@ go find these sources — separate task from the video queue below.
 
 ---
 
+## Queue C — Research Tasks (non-video, added 2026-07-22)
+
+These are structured research documents to build, not videos to process. Priority order listed.
+
+### C1: Document Ingestion & Parsing — Tools Survey
+**File to create:** `rag-pipeline/01-ingestion-parsing/tools-survey.md`
+**Scope:** Best-in-class vendor AND open-source tools for document parsing, across file types.
+Include: PyMuPDF, Docling, Unstructured.io, AWS Textract, Azure Document Intelligence,
+Mistral OCR, PaddleOCR/PPStructureV3, Camelot, pdfplumber, img2table, Table Transformer,
+Tesseract, RapidOCR, EasyOCR, LlamaParse (with Paul's real-world note: worse than Sonnet+Mistral).
+
+**Table dimensions to cover per tool:**
+- File types supported
+- Table/layout handling quality
+- Output format (markdown, JSON, raw text)
+- Open source vs managed
+- Cost model
+- Parallelizable? (batch processing)
+- Scale characteristics
+- Verdict / when to use
+
+**Note:** Paul tested LlamaParse — found it inferior to Sonnet + Mistral OCR, especially
+on complex clinical table structures. Note this as a real-world data point.
+
+### C2: Document Ingestion & Parsing — Benchmarks
+**File to create:** `rag-pipeline/01-ingestion-parsing/benchmarks.md`
+**Scope:** Collect or build benchmarks comparing parsing tools.
+- Find existing public benchmarks first (FUNSD, PubLayNet, DocVQA, clinical document benchmarks)
+- Paul's planned test: 10 PDFs of varying types (media guides + diverse PDF types)
+  → compare PyMuPDF heuristics vs Docling vs Mistral OCR on: text extraction accuracy,
+    table structure preservation, layout detection
+- AWS Textract vs Azure Document Intelligence: find existing comparison or build small test
+- Store: test PDFs, extracted output, markdown comparison in `benchmarks/` subfolder
+
+### C3: Cloud Account Setup + Billing Controls
+**File to create:** `rag-pipeline/01-ingestion-parsing/cloud-setup-notes.md`
+**Account:** PhoenixFoundry.ai
+**AWS:** Set up account, enable Textract, configure billing alert at $5/month hard stop.
+**Azure:** Set up account, enable Document Intelligence, configure cost alert at $5/month.
+**Research:** Is IaC approach viable for this? Terraform or AWS CDK. Document the approach.
+**CRITICAL:** Strict limits — if any service bills $5+ in a month, auto-alert + stop.
+
+### C4: Chunking & Metadata — Tools Survey  
+**File to create:** `rag-pipeline/02-chunking-metadata/tools-survey.md`
+**Scope:** Chunking libraries and metadata extraction approaches.
+- LangChain text splitters (recursive, semantic, markdown-aware, HTML)
+- LlamaIndex chunking strategies (SentenceSplitter, SemanticSplitter, HierarchicalNodeParser)
+- Chonkie (newer standalone chunking library)
+- Custom structural chunkers (heading-based)
+- Metadata extraction: LLM-based (custom prompt), Azure DI prebuilt, LlamaIndex MetadataExtractor
+
+### C5: Portfolio Projects — Regulatory Document Ingestion
+**File to create:** `rag-pipeline/portfolio-projects.md`
+**Scope:** Define 2-3 small projects using real regulatory document corpora Paul has worked with.
+Potential datasets:
+- **FERC filings** (Energy Transfer project background) — public at ferc.gov
+- **PHMSA (Pipeline & Hazardous Materials Safety Admin)** — public regulatory docs
+- **Texas RCC** — regional regulatory documents
+
+For each project, demonstrate: ingestion pipeline, chunking strategy, vector store choice,
+retrieval, and eval. Target frameworks to show per project: one with LangGraph, one with
+LlamaIndex, one raw (no framework). These become portfolio GitHub repos under PhoenixFoundry.ai.
+
+---
+
 ## Queue A — Not yet pulled (blocked by YouTube IP rate-limit)
 
 Retry these first thing next session; if still blocked, wait longer before retrying again
@@ -93,4 +158,4 @@ explicitly deprioritized, not cancelled.
 ---
 
 *Update this file as items move between queues or get completed — don't just re-derive
-it from conversation memory next time.*
+it from conversation history next time.*
