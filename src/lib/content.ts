@@ -37,7 +37,15 @@ export type NoteContent = {
   title: string;
   bodyMarkdown: string;
   topicSlug: string;
+  domain: string; // first folder under notes/ (e.g. "rag-pipeline"), or "general" for loose top-level notes
 };
+
+/** First path segment under notes/, or "general" if the note has no subfolder —
+ * used to group/filter the notes list by domain (e.g. clicking "rag-pipeline"). */
+function domainFromRelPath(relToNotes: string): string {
+  const parts = relToNotes.split(path.sep);
+  return parts.length > 1 ? parts[0] : "general";
+}
 
 export type TalkTrackSection = {
   key: string; // `${sourcePath}#${sectionIndex}`
@@ -178,6 +186,7 @@ export function getAllNotes(): NoteContent[] {
       title: extractTitle(body, path.basename(file, ".md")),
       bodyMarkdown: body,
       topicSlug: slugFromRelPath(relToNotes),
+      domain: domainFromRelPath(relToNotes),
     };
   });
 }
