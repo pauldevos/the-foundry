@@ -38,7 +38,19 @@ export type NoteContent = {
   bodyMarkdown: string;
   topicSlug: string;
   domain: string; // first folder under notes/ (e.g. "rag-pipeline"), or "general" for loose top-level notes
+  createdAt: string | null; // ISO date of the file's first commit, from generate-content-dates.mjs; null if not yet committed
 };
+
+// { "notes/foo.md": "2026-07-20T..." } — generated at build/dev time by
+// scripts/generate-content-dates.mjs (see predev/prebuild in package.json). Read once per
+// process, not per request — this file only changes when the process restarts anyway.
+let contentDatesCache: Record<string, string> | null = null;
+function getContentDates(): Record<string, string> {
+  if (contentDatesCache) return contentDatesCache;
+  const file = path.join(LEARNING_DIR, ".content-dates.json");
+  contentDatesCache = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf-8")) : {};
+  return contentDatesCache!;
+}
 
 /** First path segment under notes/, or "general" if the note has no subfolder —
  * used to group/filter the notes list by domain (e.g. clicking "rag-pipeline"). */
@@ -187,6 +199,7 @@ export function getAllNotes(): NoteContent[] {
       bodyMarkdown: body,
       topicSlug: slugFromRelPath(relToNotes),
       domain: domainFromRelPath(relToNotes),
+      createdAt: getContentDates()[relPath] ?? null,
     };
   });
 }

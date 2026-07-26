@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllNotes, encodeKey } from "@/lib/content";
 import { getNoteStateMap, resolveNoteState } from "@/lib/state";
+import HideNoteButton from "@/components/hide-note-button";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,14 @@ export default async function NotesListPage({
   const allNotes = getAllNotes()
     .map((n) => ({ n, state: resolveNoteState(n.key, stateMap) }))
     .filter(({ state }) => !state.is_deleted)
-    .sort((a, b) => a.n.sourcePath.localeCompare(b.n.sourcePath));
+    // Newest first. A note with no createdAt yet (just created, not committed when the
+    // date manifest was last generated) sorts as "now" — treated as the newest, not
+    // dropped to the bottom.
+    .sort((a, b) => {
+      const aTime = a.n.createdAt ? Date.parse(a.n.createdAt) : Infinity;
+      const bTime = b.n.createdAt ? Date.parse(b.n.createdAt) : Infinity;
+      return bTime - aTime;
+    });
 
   const domainCounts = new Map<string, number>();
   for (const { n } of allNotes) {
@@ -59,15 +67,25 @@ export default async function NotesListPage({
       <div className="space-y-2">
         {notes.map(({ n, state }) => {
           const title = state.local_override?.title ?? n.title;
+          const id = encodeKey(n.key);
           return (
-            <Link
+            <div
               key={n.key}
-              href={`/notes/${encodeKey(n.key)}`}
-              className="block rounded-lg border border-stone-800 bg-stone-900 p-4 hover:border-amber-700"
+              className="flex items-center gap-2 rounded-lg border border-stone-800 bg-stone-900 p-4 hover:border-amber-700"
             >
-              <p className="font-serif text-stone-100">{title}</p>
-              <p className="mt-1 font-mono text-xs text-stone-500">{n.topicSlug}</p>
-            </Link>
+              <Link href={`/notes/${id}`} className="min-w-0 flex-1">
+                <p className="truncate font-serif text-stone-100">{title}</p>
+                <p className="mt-1 font-mono text-xs text-stone-500">
+                  {n.topicSlug}
+                  {n.createdAt && (
+                    <span className="ml-2 text-stone-600">
+                      {new Date(n.createdAt).toLocaleDateString()}
+                    </span>
+                  )}
+                </p>
+              </Link>
+              <HideNoteButton id={id} />
+            </div>
           );
         })}
         {notes.length === 0 && <p className="text-stone-500">No notes in this category.</p>}
