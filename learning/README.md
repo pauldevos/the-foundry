@@ -41,6 +41,8 @@ See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md), [WATCH_GUIDE.md](WAT
 
 ## Notes
 
+- [notes/ai-engineering-decision-matrix.md](notes/ai-engineering-decision-matrix.md) — IF/THEN reference across the whole AI engineering stack: documents, chunking, vector DBs, deployment, tools (forward + reverse), domain reverse-lookup, compliance regimes, guardrails, retrieval, reranking, cross-cutting dimensions
+- [notes/databricks-ai-platform-2026-update.md](notes/databricks-ai-platform-2026-update.md) — interview cram sheet: what's new in Databricks' AI/ML platform mid-2025 to July 2026 (Agent Bricks, Unity AI Gateway, MLflow 3 GenAI, AI Search, Lakebase), each tied back to RAG/agentic alternatives Paul already knows
 - [notes/lecture-notes-cme295-l1.md](notes/lecture-notes-cme295-l1.md)
 - [notes/lecture-notes-cme295-l6.md](notes/lecture-notes-cme295-l6.md)
 - [notes/lecture-notes-cme295-l7.md](notes/lecture-notes-cme295-l7.md)
@@ -52,6 +54,10 @@ See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md), [WATCH_GUIDE.md](WAT
 - [notes/notes-llm-evals-common-mistakes.md](notes/notes-llm-evals-common-mistakes.md)
 - [notes/notes-ocr-text-vs-image-grounding.md](notes/notes-ocr-text-vs-image-grounding.md)
 - [notes/notes-rag-from-scratch-langchain.md](notes/notes-rag-from-scratch-langchain.md)
+- [notes/rag-pipeline/00-quick-reference.md](notes/rag-pipeline/00-quick-reference.md) — ranked cram sheet: what each RAG technique is, when to use it, when not to
+- [notes/rag-pipeline/00-decision-tree.md](notes/rag-pipeline/00-decision-tree.md) — flat IF/THEN reference mapping requirement signals (citation need, recall vs. precision, latency, compliance) to the right technique or RAG architecture
+- [notes/rag-pipeline/00b-build-process-playbook.md](notes/rag-pipeline/00b-build-process-playbook.md) — 6-step process for architecting a RAG chatbot cold, plus a tradeoffs table across every use case in the talk-tracks
+- [notes/rag-pipeline/00c-worked-code-example.md](notes/rag-pipeline/00c-worked-code-example.md) — one complete stage-by-stage code walkthrough (self-query schema, hybrid retrieval, prompt sections, guardrails) using the PBM formulary use case
 - [notes/rag-pipeline/01-ingestion-parsing/benchmarks.md](notes/rag-pipeline/01-ingestion-parsing/benchmarks.md)
 - [notes/rag-pipeline/01-ingestion-parsing/cloud-setup-notes.md](notes/rag-pipeline/01-ingestion-parsing/cloud-setup-notes.md)
 - [notes/rag-pipeline/01-ingestion-parsing/tools-survey.md](notes/rag-pipeline/01-ingestion-parsing/tools-survey.md)

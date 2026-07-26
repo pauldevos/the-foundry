@@ -20,7 +20,14 @@ go find these sources — separate task from the video queue below.
 
 These are structured research documents to build, not videos to process. Priority order listed.
 
-### C1: Document Ingestion & Parsing — Tools Survey
+### ~~C1: Document Ingestion & Parsing — Tools Survey~~ ✅ done 2026-07-26
+**File:** `rag-pipeline/01-ingestion-parsing/tools-survey.md` — filled in, organized by
+8 job-categories (classic OCR, cloud document-intelligence, modern VLM-based OCR,
+orchestration frameworks, table detectors, general VLMs, frontier OCR products, pure PDF
+libraries) rather than a flat A-Z list, each with the LlamaParse-vs-Sonnet+Mistral OCR
+real-world data point preserved.
+
+~~### C1 original scope~~ (superseded by above)
 **File to create:** `rag-pipeline/01-ingestion-parsing/tools-survey.md`
 **Scope:** Best-in-class vendor AND open-source tools for document parsing, across file types.
 Include: PyMuPDF, Docling, Unstructured.io, AWS Textract, Azure Document Intelligence,
