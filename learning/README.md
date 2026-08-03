@@ -11,7 +11,7 @@ Three content types, kept in separate folders:
 
 See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md), [WATCH_GUIDE.md](WATCH_GUIDE.md).
 
-**Totals: 283 cards (157 starred) across 23 decks. 18 notes files. 1 talk-track files.**
+**Totals: 283 cards (157 starred) across 23 decks. 19 notes files. 1 talk-track files.**
 
 ## Decks
 
@@ -58,6 +58,7 @@ See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md), [WATCH_GUIDE.md](WAT
 - [notes/rag-pipeline/00-decision-tree.md](notes/rag-pipeline/00-decision-tree.md) — flat IF/THEN reference mapping requirement signals (citation need, recall vs. precision, latency, compliance) to the right technique or RAG architecture
 - [notes/rag-pipeline/00b-build-process-playbook.md](notes/rag-pipeline/00b-build-process-playbook.md) — 6-step process for architecting a RAG chatbot cold, plus a tradeoffs table across every use case in the talk-tracks
 - [notes/rag-pipeline/00c-worked-code-example.md](notes/rag-pipeline/00c-worked-code-example.md) — one complete stage-by-stage code walkthrough (self-query schema, hybrid retrieval, prompt sections, guardrails) using the PBM formulary use case
+- [notes/rag-pipeline/00d-problem-taxonomy.md](notes/rag-pipeline/00d-problem-taxonomy.md) — 8 named problem classes (perception, structural parsing, precision/citation, recency/supersession, jurisdiction, cross-document, faithfulness/abstention, privacy/governance) that replace "agentic RAG" with falsifiable technical vocabulary, applied across 8 domains (clinical claims, drug labels, research papers, oil & gas, historical archives, banking, energy field records, family law)
 - [notes/rag-pipeline/01-ingestion-parsing/benchmarks.md](notes/rag-pipeline/01-ingestion-parsing/benchmarks.md)
 - [notes/rag-pipeline/01-ingestion-parsing/cloud-setup-notes.md](notes/rag-pipeline/01-ingestion-parsing/cloud-setup-notes.md)
 - [notes/rag-pipeline/01-ingestion-parsing/tools-survey.md](notes/rag-pipeline/01-ingestion-parsing/tools-survey.md)
