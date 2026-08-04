@@ -208,6 +208,69 @@ export function getNoteByKey(key: string): NoteContent | null {
   return getAllNotes().find((n) => n.key === key) ?? null;
 }
 
+// Fixed 8-slot dark-mode categorical palette (validated against this app's
+// bg-stone-950 surface via the dataviz skill's validate_palette.js - all 8
+// checks pass, adjacent-pair CVD ΔE 8.4+, normal-vision ΔE 19.3+, contrast
+// >=3:1). Order is the CVD-safety mechanism, not cosmetic - never reorder or
+// cycle past slot 8; a 9th category folds into a muted/outlined treatment
+// instead of a generated hue (see extendedAxes below).
+export const CATEGORICAL_PALETTE_DARK = [
+  "#3987e5", // 1 blue
+  "#d95926", // 2 orange
+  "#199e70", // 3 aqua
+  "#c98500", // 4 yellow
+  "#d55181", // 5 magenta
+  "#008300", // 6 green
+  "#9085e9", // 7 violet
+  "#e66767", // 8 red
+] as const;
+
+export type MatrixAxis = {
+  id: string;
+  number: number;
+  name: string;
+  definition: string;
+  colorSlot: number; // 1-8, indexes CATEGORICAL_PALETTE_DARK
+};
+export type MatrixExtendedAxis = { id: string; name: string; definition: string };
+export type MatrixDomainExample = { axisId: string; text: string };
+export type MatrixDomain = {
+  id: string;
+  name: string;
+  dominantAxisIds: string[];
+  why: string;
+  examples: MatrixDomainExample[];
+  personal?: string;
+};
+export type CrossCuttingLens = {
+  title: string;
+  intro: string;
+  precision: { label: string; definition: string };
+  recall: { label: string; definition: string };
+  whyItMatters: string;
+  onEvalsOwnership: { heading: string; text: string };
+};
+export type TaxonomyMatrixData = {
+  title: string;
+  intro: string;
+  axes: MatrixAxis[];
+  extendedAxes: MatrixExtendedAxis[];
+  crossCuttingLens?: CrossCuttingLens;
+  domains: MatrixDomain[];
+  closing: string;
+};
+
+/** A note can optionally have a sibling "<basename>.data.json" file next to its
+ * .md source - when present, the note detail page renders a bespoke component
+ * fed by this structured data instead of generic markdown. Convention, not a
+ * new top-level content type: the .md file stays canonical for search/list/
+ * dates/topicSlug, this is a purely presentational override for one page. */
+export function getNoteMatrixData(note: NoteContent): TaxonomyMatrixData | null {
+  const dataPath = path.join(LEARNING_DIR, note.sourcePath).replace(/\.md$/, ".data.json");
+  if (!fs.existsSync(dataPath)) return null;
+  return JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+}
+
 export function getAllTalkTrackSections(): TalkTrackSection[] {
   const dir = path.join(LEARNING_DIR, "talk-tracks");
   const files = walk(dir, (f) => f.endsWith(".md"));

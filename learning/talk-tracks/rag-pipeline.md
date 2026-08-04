@@ -189,6 +189,17 @@ Especially relevant for oil & gas (regulatory dependency graphs) and NFL stats (
 
 ---
 
+### On evals ownership and the production handoff point
+*(New convention — Director + Principal/Staff registers, per CLAUDE.md's session template.)*
+
+**Director framing:**
+> "In production, my ownership boundary was consistently build-to-SME-validation, not the long-run live metric. The domain team held the ground truth needed to grade real answers, so eval ownership transferred at handoff by design, not because of a gap in my process. You might think that means I can't speak to evals — it doesn't; what I own is making sure a system is measurably ready to hand off, and closing my own blind spots proactively rather than waiting for someone to assign that work. That's why I built a real recall@k/MRR and LLM-judge faithfulness harness in my own portfolio work, specifically to have first-hand fluency with the eval mechanics my day-to-day handoff model never required me to operate live."
+
+**Principal/Staff framing:**
+> "Precision and recall are the two failure modes underneath every retrieval decision — precision is 'of what I returned, how much was actually right,' recall is 'of everything relevant, how much did I find' — and which one you protect changes the architecture: reranking depth, confidence thresholds, and fallback triggers all trace back to that one choice. On RAGAS specifically, since it comes up directly: I evaluated it and passed, for two concrete reasons — it's OpenAI-coupled and needs a custom LLM wrapper to run against Claude, and it assumes ground-truth answers I didn't have for this corpus. So in rag-eval-harness I hand-rolled a two-layer harness instead: recall@k and MRR against a gold retrieval set for the retrieval side, and an LLM-as-judge scoring faithfulness, relevance, and citation accuracy for the generation side. That let me demonstrate I understand what the eval is actually measuring, not just that I can call a library."
+
+---
+
 ### On prompt injection defense
 > "Prompt injection is OWASP LLM Top 10 number one — and the more dangerous form in enterprise RAG isn't a user trying to override your system prompt. It's indirect injection: a document in your corpus that contains injection strings. When that document gets retrieved and injected into context, those strings run. A policy document that says 'Ignore previous instructions' in its text will pass right through retrieval and into your prompt assembly. You might think a strong system prompt telling the model to disregard any instructions found inside retrieved content is enough defense — it isn't reliable on its own, which is why sanitization strips known injection patterns from chunk text before it ever reaches the prompt, rather than trusting the model to resist them live. Defense in layers: structural separation first — never concatenate user input into the system prompt string; use separate API roles so the model treats them at different trust levels. Input validation classifier on user queries. Chunk sanitization on retrieved documents before context assembly. Scope enforcement — a fast topic classifier that checks whether a query is even within your domain before it reaches retrieval. And canary tokens in the system prompt: a hidden phrase that, if it appears in the model's output, tells you the system prompt was likely leaked."
 

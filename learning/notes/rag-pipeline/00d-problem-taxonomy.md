@@ -23,15 +23,25 @@ diagnose which ones dominate for a given domain, and you can speak to any use ca
 2. **Structural/layout parsing** — even with perfect OCR, do you preserve tables, forms,
    multi-column reading order, hierarchy? A different failure mode than #1 — the
    characters are right, the *shape* is destroyed (a 2D table flattened into row-soup).
-3. **Precision retrieval / exact-match & citation** — codes, section numbers, IDs, docket
-   numbers that embeddings are bad at and lexical search (BM25/SPLADE) is good at, plus a
-   hard requirement to cite the exact source, not a paraphrase.
-4. **Recency & supersession** — near-duplicate documents across time; only the current one
+3. **Exact-match retrieval & citation** — codes, section numbers, IDs, docket numbers that
+   embeddings are bad at and lexical search (BM25/SPLADE) is good at, plus a hard
+   requirement to cite the exact source, not a paraphrase. *(Not the same thing as the
+   precision/recall tradeoff below — this is a retrieval-technique choice, that's an
+   evaluation lens.)*
+4. **Recency & versioning** — near-duplicate documents across time; only the current one
    should surface. The dangerous failure mode is silent — a confident, fluent, *outdated*
-   answer, not an obvious error.
+   answer, not an obvious error. *(Sometimes called "supersession" in records-management
+   contexts — versioning/temporal is the more commonly understood term to lead with. Not
+   "primacy" — that names the opposite psychological effect, first-encountered information
+   dominating, not most-recent.)*
 5. **Jurisdiction / applicability scoping** — same topic, different rules depending on
-   who/where/what regime applies. Needs self-query filtering with hard boundaries, because
-   a wrong-jurisdiction answer is often worse than no answer.
+   who/where/what regime applies. Two distinct stages, not one: **metadata capture at
+   ingestion** (you already know a document's source, date, author, team, jurisdiction at
+   ingest time, even though that won't be found in the content itself — tag it then)
+   feeding **structured filtering at query time** ("self-query retrieval" is the correct,
+   narrower name for that second half only — an LLM parsing a question into a filter +
+   semantic string). A wrong-jurisdiction answer is often worse than no answer, so the
+   filter needs hard boundaries, not soft ranking.
 6. **Cross-document / multi-hop reasoning** — the answer isn't in one chunk; it requires
    resolving a citation, a reference, or synthesizing across documents that point at each
    other.
@@ -51,18 +61,50 @@ Two more worth having in your pocket — less universal, but decisive in specifi
 
 ---
 
+## Precision vs. recall — the cross-cutting lens
+
+Not a 9th item in the 8 above — the tuning question that sits *on top of* all of them. For
+any of the 8 axes, there's still a decision about which failure mode you're protecting
+against, and that decision is what actually shows up on job postings as "evals" experience.
+
+- **Precision** — of what the system returned, how much was actually correct. A false
+  positive (a confident wrong answer) is the expensive failure. Protect precision in family
+  law, clinical dosing, compliance citations: anywhere a confident wrong answer is worse
+  than no answer.
+- **Recall** — of everything actually relevant, how much did the system find. A false
+  negative (missing a relevant document) is the expensive failure. Protect recall in legal
+  discovery, research-literature review, incident investigation: anywhere missing something
+  is worse than including some noise.
+
+This is why it's on nearly every AI Engineer/FDE req and none of the domain-shaped axes
+above are: it's not a document problem, it's the design lever underneath all of them —
+reranking depth, confidence thresholds, fallback triggers, and chunk size all trace back to
+which failure mode a system is built to protect against.
+
+**A note on speaking to this honestly:** a common, legitimate shape of experience is owning
+build-to-production and handing off before owning the long-run live metric, because that
+required domain ground truth held by an SME team after handoff. That's not a gap to hide —
+naming the handoff boundary precisely ("my ownership ended at SME validation, not the live
+metric") reads stronger than a vague "good enough for production," and pointing at portfolio
+work that closes the gap on your own terms (a real recall@k/MRR + LLM-judge harness, a
+specific reason RAGAS was evaluated and passed over for a given corpus) demonstrates
+judgment, not just tool-calling. See `talk-tracks/rag-pipeline.md`'s "On evals ownership"
+entry for the full two-register version of this.
+
+---
+
 ## Applying it — which axes dominate where
 
 | Domain | Dominant axes | Why |
 |---|---|---|
-| Clinical claims | Jurisdiction/versioning, precision/citation, privacy, cross-document | Payer-specific policy, exact codes (CPT/ICD-10/NDC), PHI, claim→policy→medical-necessity-criteria chains |
-| Drug labels | Precision/citation, recency, structural/layout | Rigid FDA-mandated structure, dosing/contraindication must be exact, labels get amended |
+| Clinical claims | Jurisdiction/versioning, exact-match/citation, privacy, cross-document | Payer-specific policy, exact codes (CPT/ICD-10/NDC), PHI, claim→policy→medical-necessity-criteria chains |
+| Drug labels | Exact-match/citation, recency, structural/layout | Rigid FDA-mandated structure, dosing/contraindication must be exact, labels get amended |
 | Research papers | Cross-document (citation graph), numerical/tabular, recency-of-claims | Findings only mean something in context of what they cite/refute; results live in tables, not prose |
-| Oil & gas regs | Jurisdiction, recency, precision/citation, numerical/tabular | Federal/state split, amendment cycles, section citations, engineering threshold tables |
+| Oil & gas regs | Jurisdiction, recency, exact-match/citation, numerical/tabular | Federal/state split, amendment cycles, section citations, engineering threshold tables |
 | Historical/scanned archives | Perception, structural parsing | Scanned/handwritten/faded, hundreds of table formats across eras — low stakes, so precision matters less |
 | Banking (consumer + compliance) | Perception+structural (consumer docs), jurisdiction/versioning (compliance), faithfulness/abstention, privacy, scale | Two sub-problems in one industry — see below |
 | Energy field records | Perception, corpus heterogeneity | Decades-old field records, M&A-driven record-system diversity |
-| Family law | Jurisdiction/versioning, precision/citation (hard abstention), privacy, numerical | State/county-specific law, sanctionable hallucinated-citation risk, custody/support sensitivity, formula-driven support calculations |
+| Family law | Jurisdiction/versioning, exact-match/citation (hard abstention), privacy, numerical | State/county-specific law, sanctionable hallucinated-citation risk, custody/support sensitivity, formula-driven support calculations |
 
 *(Table cells stay terse on purpose — the study app's responsive-table renderer extracts
 plain text only from table cells, no nested lists or bold survive it. The worked example
@@ -72,7 +114,7 @@ correctly on both desktop and the mobile stacked-card view.)*
 ### Clinical claims
 - **Jurisdiction/versioning:** the same CPT code can require prior authorization under a
   PPO plan but not an HMO plan from the same insurer, and the rule set updates quarterly.
-- **Precision/citation:** claim adjudication hinges on an exact ICD-10 diagnosis code paired
+- **Exact-match/citation:** claim adjudication hinges on an exact ICD-10 diagnosis code paired
   with an exact CPT procedure code — "diabetes" isn't a queryable concept, E11.9 is.
 - **Privacy:** every retrieved chunk *and* every generated answer has to pass through PHI
   scrubbing (e.g. Presidio) before it's logged or displayed, not just the initial query.
@@ -84,7 +126,7 @@ correctly on both desktop and the mobile stacked-card view.)*
 extends.]*
 
 ### Drug labels
-- **Precision/citation:** dosing and contraindication text must be quoted exactly as
+- **Exact-match/citation:** dosing and contraindication text must be quoted exactly as
   FDA-approved label language — a paraphrase that drops a black-box warning is a
   patient-safety failure, not a style issue.
 - **Recency:** a label update (e.g. a new boxed warning) supersedes the prior version
@@ -121,7 +163,7 @@ academic-PDF structural parsing if this gets built.]*
 - **Recency:** the same CFR section (e.g. §192.607) recurs nearly unchanged across multiple
   annual editions with a small amendment buried in one clause — retrieval has to prefer the
   current edition even though a stale one sits right next to it in embedding space.
-- **Precision/citation:** a compliance answer has to cite the exact subsection
+- **Exact-match/citation:** a compliance answer has to cite the exact subsection
   (§192.607(a)), not "somewhere in Part 192" — that's the difference between an
   audit-defensible answer and a liability.
 - **Numerical/tabular:** in-line inspection intervals are defined in a cross-tabbed table
@@ -179,7 +221,7 @@ contrived one). PHMSA/Energy Transfer/FERC background.]*
 - **Jurisdiction/versioning:** custody and support law is set state-by-state and often
   further refined by county/circuit local rules — the same fact pattern can have a
   different correct answer one county over.
-- **Precision/citation, with hard abstention:** multiple real attorneys have been
+- **Exact-match/citation, with hard abstention:** multiple real attorneys have been
   sanctioned in court for filing AI-hallucinated case citations — this is the domain where
   "never state a citation you can't point to a retrieved source for" stops being a best
   practice and becomes the entire design constraint.
@@ -195,7 +237,9 @@ contrived one). PHMSA/Energy Transfer/FERC background.]*
 ## Why this works rhetorically
 
 "Agentic RAG" describes an architecture pattern with zero information about what problem it
-solves. Each of the 8 terms above implies a falsifiable technical decision: perception → OCR/
-VLM choice; jurisdiction → self-query filter design with hard boundaries; precision/citation →
-BM25/SPLADE + constrained citation generation; faithfulness → an explicit escalation policy,
-not a metric bolted on after. Naming the axis *is* naming the architecture.
+solves. Each of the terms above implies a falsifiable technical decision: perception → OCR/VLM
+choice; jurisdiction → metadata captured at ingestion, consumed by structured filtering at
+query time; exact-match/citation → BM25/SPLADE + constrained citation generation; faithfulness
+→ an explicit escalation policy, not a metric bolted on after; precision vs. recall → which
+failure mode the whole system is tuned to protect against. Naming the axis *is* naming the
+architecture.

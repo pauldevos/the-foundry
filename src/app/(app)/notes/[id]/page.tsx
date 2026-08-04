@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { decodeKey, encodeKey, getNoteByKey } from "@/lib/content";
+import { decodeKey, encodeKey, getNoteByKey, getNoteMatrixData } from "@/lib/content";
 import { getOneNoteState } from "@/lib/state";
 import { relatedContent } from "@/lib/related-content";
 import MarkdownContent from "@/components/markdown-content";
+import TaxonomyMatrix from "@/components/taxonomy-matrix";
 import NoteActions from "@/components/note-actions";
 
 export const dynamic = "force-dynamic";
@@ -23,11 +24,16 @@ export default async function NoteDetailPage({
   const body = state.local_override?.body_markdown ?? note.bodyMarkdown;
 
   const related = await relatedContent(note.topicSlug, note.key);
+  const matrixData = getNoteMatrixData(note);
 
   return (
     <article>
       <NoteActions id={encodeKey(note.key)} title={title} bodyMarkdown={body} />
-      <MarkdownContent>{body}</MarkdownContent>
+      {matrixData ? (
+        <TaxonomyMatrix data={matrixData} />
+      ) : (
+        <MarkdownContent>{body}</MarkdownContent>
+      )}
 
       {(related.decks.length > 0 || related.talkTracks.length > 0) && (
         <aside className="mt-8 rounded-lg border border-stone-800 bg-stone-900 p-4">
