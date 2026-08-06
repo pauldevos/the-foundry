@@ -2,11 +2,12 @@
 
 First-pass glossary, terms drawn from the decks and lecture notes already built (not
 generic definitions pasted in) — grows as more decks and lectures get added.
-Alphabetical. **100 terms** (85 in the first pass + 12 added 2026-07-25 to close gaps a
+Alphabetical. **104 terms** (85 in the first pass + 12 added 2026-07-25 to close gaps a
 "stump the chump" interview round would hit: BAA, Context Engineering, Data Residency,
 Eval Harness, Golden Dataset, Grounding, Guardrails, MCP, PII/PHI, RBAC, Red-Teaming, ZDR;
 + 3 more added the same day covering the wider RAG-architecture taxonomy: Adaptive RAG,
-Modular RAG, Self-RAG), target 300+.
+Modular RAG, Self-RAG; + 4 more added 2026-08-06 — the OCR detector/recognizer vocabulary
+underlying the ingestion tools survey: CRNN, CTC, DB, SVTR), target 300+.
 
 ---
 
@@ -56,11 +57,17 @@ Modular RAG, Self-RAG), target 300+.
 
 **Cosine Similarity** — Standard measure of vector relatedness — the angle between two vectors, normalized to ignore magnitude.
 
+**CRNN (Convolutional Recurrent Neural Network)** — Classic text-recognition architecture: a CNN extracts visual features from a cropped text-line image, then an RNN (usually LSTM) reads across the sequence to output characters, typically decoded via CTC. Predates and is generally less accurate than transformer-based recognizers like SVTR.
+
 **Cross-Attention** — In a decoder, an attention layer where Queries come from the decoder but Keys/Values come from the encoder — pulls information from the source input into generation.
 
 **Cross-Encoder** — Feeds query and document together into one model for a joint relevance score — slower but more accurate than a bi-encoder; used for reranking.
 
+**CTC (Connectionist Temporal Classification)** — A loss/decoding method for sequence models (e.g. CRNN) that lets the model output a label sequence — like the characters in a line of text — without knowing in advance which timestep or pixel-slice of the input aligns to which output. Handles variable spacing and unsegmented input automatically. Standard pairing with CRNN; SVTR-style transformer recognizers typically use attention decoding instead.
+
 **Data Residency** — The requirement that data physically stay within a specific geography or infrastructure boundary (e.g. never leave a customer's VPC, never cross a national border). In regulated AI work this is often the constraint that picks the embedding model/vector store *before* quality benchmarks are even considered.
+
+**DB (Differentiable Binarization)** — A text-detection algorithm (Liao et al., AAAI 2020) that finds *where* text sits on a page — tight boxes/outlines around each line — without reading what it says. Learns to threshold its own segmentation output in a way that's differentiable, so the whole detector trains end-to-end via gradient descent instead of needing a separate hand-tuned post-processing step. Used as the detection stage in PaddleOCR and DocTR, among others.
 
 **DeepEval** — Python/pytest-native LLM eval framework; evals run as unit tests and fail CI on a metric threshold breach. 50+ built-in metrics including G-Eval.
 
@@ -185,6 +192,8 @@ Modular RAG, Self-RAG), target 300+.
 **Subword Tokenization** — Splitting text on word roots (bear/bears share a root) — the industry-standard tokenization approach, balancing OOV risk against sequence length.
 
 **Supervisor Pattern** — Multi-agent orchestration where one central coordinator delegates tasks to specialist sub-agents and synthesizes their outputs.
+
+**SVTR (Single Visual model for Scene Text Recognition)** — Transformer-based text-recognition architecture (Baidu/Du et al., IJCAI 2022) that reads characters directly from an image patch sequence, dropping the separate CNN-then-RNN split CRNN needs. The name's point is architectural, not incidental — one visual model does the whole job, no separate sequence model bolted on. Generally more accurate than CRNN, especially on curved/irregular text; used as an alternative recognition stage in PaddleOCR.
 
 **Tainting (agent sandboxing)** — If an agent reads sensitive data, it's flagged and prevented from writing to non-sensitive downstream locations.
 
