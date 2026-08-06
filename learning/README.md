@@ -11,7 +11,7 @@ Three content types, kept in separate folders:
 
 See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md), [WATCH_GUIDE.md](WATCH_GUIDE.md).
 
-**Totals: 283 cards (157 starred) across 23 decks. 20 notes files. 1 talk-track files.**
+**Totals: 283 cards (157 starred) across 23 decks. 21 notes files. 1 talk-track files.**
 
 ## Decks
 
@@ -63,6 +63,7 @@ See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md), [WATCH_GUIDE.md](WAT
 - [notes/rag-pipeline/01-ingestion-parsing/benchmarks.md](notes/rag-pipeline/01-ingestion-parsing/benchmarks.md)
 - [notes/rag-pipeline/01-ingestion-parsing/cloud-setup-notes.md](notes/rag-pipeline/01-ingestion-parsing/cloud-setup-notes.md)
 - [notes/rag-pipeline/01-ingestion-parsing/tools-survey.md](notes/rag-pipeline/01-ingestion-parsing/tools-survey.md)
+- [notes/rag-pipeline/01-ingestion-parsing/ocr-tool-deep-dive.md](notes/rag-pipeline/01-ingestion-parsing/ocr-tool-deep-dive.md) — ~28 OCR/Document-AI tools re-sliced into 3 tables (architecture class & training data, deployment/install/license, fine-tuning feasibility), the verified olmOCR→RolmOCR fine-tune lineage as a reusable domain-adaptation template, and a sourced fact-check of a pasted r/LocalLLaMA PaddleOCR-VL/Marker/PP-StructureV3 benchmark
 - [notes/rag-pipeline/02-chunking-metadata/tools-survey.md](notes/rag-pipeline/02-chunking-metadata/tools-survey.md)
 - [notes/rag-pipeline/04-retrieval.md](notes/rag-pipeline/04-retrieval.md)
 - [notes/rag-pipeline/05-governance.md](notes/rag-pipeline/05-governance.md)
