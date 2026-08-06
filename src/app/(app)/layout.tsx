@@ -11,6 +11,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <Link href="/" className="whitespace-nowrap text-stone-400 hover:text-amber-500">
             Review
           </Link>
+          <Link href="/decks" className="whitespace-nowrap text-stone-400 hover:text-amber-500">
+            Decks
+          </Link>
           <Link href="/notes" className="whitespace-nowrap text-stone-400 hover:text-amber-500">
             Notes
           </Link>

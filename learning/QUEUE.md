@@ -132,12 +132,17 @@ Just need the same treatment CME295 L7/L8 got: read transcript → write study n
 | ~~`LwLxlEwrtRA`~~ | ✅ done — The Evals That Made GitHub Copilot |
 | `7kXY-2fYdHI` | Graph Databases: When to Use Them (And When to Run Away) |
 | `DgPr3HVp0eg` | SolveIt: The Thinking Developer's Environment w/ Jeremy Howard & Johno Whitaker |
-| `aqKUwPKBkB0` | Build Your Own Eval Tools With Notebooks! |
+| ~~`aqKUwPKBkB0`~~ | ✅ done — folded into notes-llm-evals-video-topic-map.md |
 | ~~`_UY49Q_qFhs`~~ | ✅ done — Inspect eval framework (JJ Allaire) |
-| ~~`GL0XhAj5LPE`~~ | ✅ done — notes+clips only (Hamel Husain interview, narrative format) |
-| `SnbGD677_u0` | Instrumenting & Evaluating LLMs |
-| `0pnEUAwoDP0` | How to Build, Evaluate, and Iterate on LLM Agents |
+| ~~`GL0XhAj5LPE`~~ | ✅ done — notes+clips (Hamel Husain interview) + folded into notes-llm-evals-video-topic-map.md |
+| `SnbGD677_u0` | Instrumenting & Evaluating LLMs — 2.5hr, multi-speaker, not yet processed |
+| `0pnEUAwoDP0` | How to Build, Evaluate, and Iterate on LLM Agents — **note: this is Andrew Ng / DeepLearning.AI, not Husain/Shankar**, corrected 2026-08-05; still unprocessed |
 | ~~`Xfl50508LZM`~~ | ✅ done — Ship Real Agents: Hands-On Evals — Laurie Voss, Arize |
+
+**Also processed 2026-08-05, outside this queue** (pasted directly by Paul, not originally
+tracked here) — folded into `notes-llm-evals-video-topic-map.md`: `ubk57rW_KUo`,
+`BsWxPI9UM4c`, `mF4CaijvJos`, `N-qAOv_PNPc`, `tqUDjc1HzO4`, `uiza7wp1KrE`, `3z2uT5aDx_Y`,
+`y0vm_fjkejo`, `97iykOemOn4`, `AsDjsLvtkbQ`, `wcYnzHJlUR0`.
 
 **RAG:**
 | Video ID | Title |

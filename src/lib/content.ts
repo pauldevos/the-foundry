@@ -13,8 +13,12 @@ export type DeckContent = {
   topic: string;
   tier: string | null;
   topicSlug: string;
+  domain: string; // first folder under decks/ (e.g. "rag-pipeline"), or "general" for loose top-level decks
   note: string | null;
   sources: Array<{ name: string; url: string }>;
+  cardCount: number;
+  starredCount: number;
+  createdAt: string | null; // ISO date of the file's first commit, from generate-content-dates.mjs; null if not yet committed
 };
 
 export type CardContent = {
@@ -52,10 +56,10 @@ function getContentDates(): Record<string, string> {
   return contentDatesCache!;
 }
 
-/** First path segment under notes/, or "general" if the note has no subfolder —
- * used to group/filter the notes list by domain (e.g. clicking "rag-pipeline"). */
-function domainFromRelPath(relToNotes: string): string {
-  const parts = relToNotes.split(path.sep);
+/** First path segment under a content type's root (notes/, decks/), or "general" if the
+ * file has no subfolder — used to group/filter list pages by domain (e.g. "rag-pipeline"). */
+function domainFromRelPath(relToRoot: string): string {
+  const parts = relToRoot.split(path.sep);
   return parts.length > 1 ? parts[0] : "general";
 }
 
@@ -68,6 +72,7 @@ export type TalkTrackSection = {
   staff: string | null;
   unified: string | null;
   topicSlug: string;
+  createdAt: string | null; // ISO date of the source file's first commit; shared by every section in that file
 };
 
 /** Opaque, URL-safe encoding for a content key so it can live in a single
@@ -143,13 +148,18 @@ export function getAllDecks(): DeckContent[] {
     const relPath = path.relative(LEARNING_DIR, file);
     const relToDecks = path.relative(decksRoot, file);
     const parsed = JSON.parse(fs.readFileSync(file, "utf-8"));
+    const cards: Array<Record<string, unknown>> = parsed.cards ?? [];
     return {
       sourcePath: relPath,
       topic: parsed.topic,
       tier: parsed.tier ?? null,
       topicSlug: slugFromRelPath(relToDecks),
+      domain: domainFromRelPath(relToDecks),
       note: parsed.note ?? null,
       sources: parsed.sources ?? [],
+      cardCount: cards.length,
+      starredCount: cards.filter((c) => Boolean(c.starred)).length,
+      createdAt: getContentDates()[relPath] ?? null,
     };
   });
 }
@@ -281,6 +291,7 @@ export function getAllTalkTrackSections(): TalkTrackSection[] {
     const relToDir = path.relative(dir, file);
     const domainSlug = slugFromRelPath(relToDir);
     const markdown = fs.readFileSync(file, "utf-8");
+    const createdAt = getContentDates()[relPath] ?? null;
 
     parseTalkTrackSections(markdown).forEach((s, i) => {
       sections.push({
@@ -292,6 +303,7 @@ export function getAllTalkTrackSections(): TalkTrackSection[] {
         staff: s.staff,
         unified: s.unified,
         topicSlug: domainSlug,
+        createdAt,
       });
     });
   }

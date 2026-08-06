@@ -10,23 +10,40 @@ export default async function TalkTracksListPage() {
     (s) => !resolveTalkTrackState(s.key, stateMap).is_deleted
   );
 
-  const bySlug = new Map<string, number>();
+  const bySlug = new Map<string, { count: number; createdAt: string | null }>();
   for (const s of sections) {
-    bySlug.set(s.topicSlug, (bySlug.get(s.topicSlug) ?? 0) + 1);
+    const existing = bySlug.get(s.topicSlug);
+    bySlug.set(s.topicSlug, {
+      count: (existing?.count ?? 0) + 1,
+      createdAt: existing?.createdAt ?? s.createdAt,
+    });
   }
+  // Newest first, same "no date yet = newest" rule as Notes/Decks.
+  const entries = [...bySlug.entries()].sort((a, b) => {
+    const aTime = a[1].createdAt ? Date.parse(a[1].createdAt) : Infinity;
+    const bTime = b[1].createdAt ? Date.parse(b[1].createdAt) : Infinity;
+    return bTime - aTime;
+  });
 
   return (
     <div>
       <h1 className="mb-4 font-serif text-2xl text-stone-100">Talk Tracks</h1>
       <div className="space-y-2">
-        {[...bySlug.entries()].map(([slug, count]) => (
+        {entries.map(([slug, { count, createdAt }]) => (
           <Link
             key={slug}
             href={`/talk-tracks/${slug}`}
             className="block rounded-lg border border-stone-800 bg-stone-900 p-4 hover:border-amber-700"
           >
             <p className="font-serif text-stone-100">{slug}</p>
-            <p className="mt-1 text-xs text-stone-500">{count} talking points</p>
+            <p className="mt-1 font-mono text-xs text-stone-500">
+              {count} talking points
+              {createdAt && (
+                <span className="ml-2 text-stone-600">
+                  {new Date(createdAt).toLocaleDateString()}
+                </span>
+              )}
+            </p>
           </Link>
         ))}
         {bySlug.size === 0 && <p className="text-stone-500">No talk tracks yet.</p>}

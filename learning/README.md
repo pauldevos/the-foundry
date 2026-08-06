@@ -11,7 +11,7 @@ Three content types, kept in separate folders:
 
 See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md), [WATCH_GUIDE.md](WATCH_GUIDE.md).
 
-**Totals: 283 cards (157 starred) across 23 decks. 19 notes files. 1 talk-track files.**
+**Totals: 283 cards (157 starred) across 23 decks. 20 notes files. 1 talk-track files.**
 
 ## Decks
 
@@ -52,6 +52,7 @@ See also: [glossary.md](glossary.md), [QUEUE.md](QUEUE.md), [WATCH_GUIDE.md](WAT
 - [notes/notes-inspect-eval-framework.md](notes/notes-inspect-eval-framework.md)
 - [notes/notes-jerry-liu-rag.md](notes/notes-jerry-liu-rag.md)
 - [notes/notes-llm-evals-common-mistakes.md](notes/notes-llm-evals-common-mistakes.md)
+- [notes/notes-llm-evals-video-topic-map.md](notes/notes-llm-evals-video-topic-map.md) — deduplicated topic index across 13 eval videos (methodology, judge validation, synthetic data, agent-assisted evals, annotation tooling, LangSmith/Braintrust/Phoenix comparison), each point cross-linked to every video/timestamp where it's covered
 - [notes/notes-ocr-text-vs-image-grounding.md](notes/notes-ocr-text-vs-image-grounding.md)
 - [notes/notes-rag-from-scratch-langchain.md](notes/notes-rag-from-scratch-langchain.md)
 - [notes/rag-pipeline/00-quick-reference.md](notes/rag-pipeline/00-quick-reference.md) — ranked cram sheet: what each RAG technique is, when to use it, when not to
