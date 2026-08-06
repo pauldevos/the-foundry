@@ -184,7 +184,26 @@ contrived one). PHMSA/Energy Transfer/FERC background.]*
   decades of gamebooks — there's no single schema to parse toward, so extraction has to be
   era-aware, not template-based.
 
-*[Personal: mediaguide-langgraph + gamebook-langgraph projects in the portfolio.]*
+*[Personal: mediaguide-langgraph + gamebook-langgraph — earlier portfolio projects.
+`media_guide_parser` (`~/github/football/media_guide_parser`) is a separate, later project,
+same problem domain (NFL media guides, 1950s-2000s scans) — worth naming both distinctly
+rather than treating one as a rename of the other.]*
+
+**A sharper version of "OCR model choice" (axis 1's stated fix, above): sometimes the fix
+isn't picking a better OCR model, it's removing the OCR-to-text step entirely.**
+`media_guide_parser` ran the full conventional stack for a while — deskew → layout
+detection → cheap OCR screening → a local VLM-based OCR model (RolmOCR, a Qwen2.5-VL-7B
+fine-tune) or Mistral's OCR API for the real read → table parsing. On real hardware (an M1
+32GB), the local VLM cost 200-400s/page and lost on quality too, so Mistral's API OCR
+(6-16s/page) won that comparison directly. But the more interesting move came later: a
+rewrite cut the OCR-to-text step for extraction altogether and sent the rendered page image
+straight to a vision-capable LLM (Claude, via tool-use) for structured extraction. Classic
+OCR (cheap Tesseract) still does real work, but only for *locating* which pages are worth
+extracting — not for reading them. That's a genuinely falsifiable technical decision in the
+same spirit as this taxonomy's whole thesis: "perception problem" doesn't automatically
+mean "OCR model selection problem" — it can mean "give the extraction model eyes and skip
+the intermediate representation entirely." Full tool comparison and the real
+speed/accuracy numbers: `01-ingestion-parsing/tools-survey.md`.
 
 ### Banking — two distinct sub-problems in one industry
 - **Perception + structural (consumer document intake):** a loan applicant's

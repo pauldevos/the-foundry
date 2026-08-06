@@ -9,6 +9,30 @@ same categorization.*
 
 ---
 
+## 0. Preprocessing — before OCR ever runs
+*Not an OCR technique itself — the image-cleanup pass that determines how well any of the
+techniques below actually perform. Skewed/rotated scans, wrong pixel dimensions for a
+model's input limits, and color mode (grayscale vs. RGB) are a bigger accuracy lever than
+people expect, because every technique below assumes roughly upright, correctly-scaled
+input.*
+
+| Step | What it does | Why it matters |
+|---|---|---|
+| **Deskew (Hough transform)** | Detects the dominant line angle in a scanned page and rotates it back to upright before OCR runs | A crooked phone-photographed or badly-fed scan degrades every downstream technique equally — classic OCR, VLM, and layout detectors all assume roughly upright input |
+| **Sharpen + letterbox to a fixed target size** | Normalizes every page to one consistent resolution (e.g. 1400×1600) regardless of source scan quality | Keeps OCR/layout models operating in the resolution range they were actually benchmarked at, instead of silently degrading on oddly-sized inputs |
+| **Resize for a model's max input size** | Downscales the longest edge to a specific pixel cap (e.g. 1040px) before sending to a VLM | Cloud OCR APIs and local VLMs both have hard input-size limits — an unresized image either gets silently downscaled by the API in a way you don't control, or blows past a local model's practical memory/speed budget |
+| **Grayscale vs. color** | Whether to strip color before OCR | Cheap accuracy lever for plain text pages; a real cost on documents where color itself is meaningful (highlighted fields, color-coded table rows) |
+
+*[Personal: this is real production code from `media_guide_parser`
+(`~/github/football/media_guide_parser`, notebooks/00_preprocess_pages.ipynb) — deskew via
+Hough transform, sharpen, letterbox to 1400×1600, all before any OCR engine sees the page.
+Separately, `notebooks/model_eval/` caps images at `max_side_px=1040` before RolmOCR and
+benchmarks a `resize(w//2, h//2)` "~100 DPI equivalent" step — i.e. actively trading
+resolution against model speed/memory limits, not just fixing skew. Notable: this whole
+preprocessing stage got *cut* in a later architecture rewrite once extraction moved to a
+vision-LLM reading the raw rendered page directly instead of an OCR-to-text pipeline — see
+the closing note at the bottom of this file.]*
+
 ## 1. Classic / rule-based OCR engines
 *Pure character recognition from pixels — template-matching against printed glyphs, no
 language understanding. Fails on handwriting and tally marks — no consistent template.*
@@ -18,6 +42,7 @@ language understanding. Fails on handwriting and tally marks — no consistent t
 | **Tesseract** | Free, open-source, the longest-established OCR engine | Local | Fine for high-volume simple typed text; mangles tables and non-standard layouts |
 | **PaddleOCR** (or its faster wrapper **RapidOCR**) | Open-source OCR with an optional layout/table module (PPStructureV3) | Local | Better all-around free option than Tesseract once layout complexity exists |
 | **EasyOCR** | Open-source OCR, broad language support out of the box | Local | Good default when multilingual coverage matters more than table handling |
+| **DocTR** (Mindee) | Two-stage text detection + transformer-based recognition, full-page OCR | Local | *Paul benchmarked directly against PaddleOCR/RapidOCR on real media-guide scans — same general job as PaddleOCR, different architecture; see `media_guide_parser` note in category 3 below.* |
 
 ## 2. Cloud managed document-intelligence services
 *OCR plus structure — tables, form fields, key-value pairs, bounding boxes.*
@@ -36,7 +61,7 @@ on messy/complex layouts, while still narrowly OCR-focused.*
 |---|---|---|---|
 | **GOT-OCR2.0** | Generates text directly from visual features; also handles sheet music and formulas | Local | Strong general-purpose modern open OCR, not tied to academic content |
 | **Nougat** | Purpose-built for academic papers (LaTeX/math-heavy content) | Local | Right choice specifically for scientific/technical papers with heavy notation |
-| **RolmOCR** | Reducto AI's fine-tune of Qwen2.5-VL-7B on Allen AI's olmOCR dataset; ~92% accuracy on mixed-script docs vs. Tesseract's ~78% | Local | Strong on tables/multi-column, practical for GPU-constrained or local deployment |
+| **RolmOCR** | Reducto AI's fine-tune of Qwen2.5-VL-7B on Allen AI's olmOCR dataset; ~92% accuracy on mixed-script docs vs. Tesseract's ~78% | Local | Strong on tables/multi-column, practical for GPU-constrained or local deployment. *Paul tested directly on `media_guide_parser` — 200–400s/page on an M1 32GB via transformers/MPS. Lost to Mistral OCR (below) on both speed and quality on that hardware; see `notebooks/model_eval/MODEL_RESEARCH.md`.* |
 
 ## 4. Document-parsing orchestration frameworks
 *Not a raw OCR model — wraps OCR/layout-detection/table-extraction into one pipeline
@@ -75,7 +100,7 @@ marks well for exactly that reason.*
 
 | Tool | What it does | Cloud / Local | Verdict |
 |---|---|---|---|
-| **Mistral OCR** | Dedicated OCR product, ~90% accuracy on clean printed docs per current benchmarks | Cloud (API) | Strong on clean printed text; weaker on multilingual/tables/low-quality scans — pair with a table tool or a general VLM for anything more complex |
+| **Mistral OCR** | Dedicated OCR product, ~90% accuracy on clean printed docs per current benchmarks | Cloud (API) | Strong on clean printed text; weaker on multilingual/tables/low-quality scans — pair with a table tool or a general VLM for anything more complex. *Paul tested directly on `media_guide_parser`, scanned NFL media guides 1950s–2000s — 6–16s/page at ~94.89% accuracy, chosen over local RolmOCR specifically because RolmOCR's 200–400s/page on an M1 32GB was both far slower and lower quality on real scans. The hardware constraint, not a general OCR-quality ranking, is what decided it.* |
 
 ## 8. Pure digital-PDF libraries (no OCR involved at all)
 *Only works when the source already has a real embedded text layer — see the "skip OCR
@@ -117,3 +142,25 @@ answer (a diagram in a recorded lecture, a play-by-play in game footage).*
 
 *[Personal: this is directly relevant to the mediaguide-langgraph/gamebook-langgraph
 portfolio projects — game footage and broadcast audio are exactly this ingestion problem.]*
+
+---
+
+## When the whole OCR-tool-selection problem dissolves
+
+Everything above assumes the shape of the problem is "pick the right OCR/layout tool for
+this document type." Worth naming explicitly: that assumption can just be wrong.
+`media_guide_parser` (`~/github/football/media_guide_parser`) went through exactly this —
+a real, working pipeline running the full stack above (deskew → layout detection →
+Tesseract screening → RolmOCR/Mistral full extraction → table parsing) was later *cut*, not
+improved, in a July 2026 rewrite. The replacement: render the page as an image and send it
+directly to a vision-capable LLM (Claude, via tool-use) for structured extraction — no
+OCR-to-text step at all for the actual read. Classic OCR (Tesseract PSM 6, cheap and fast)
+still earns its keep, but only for locating *which* pages are worth extracting, not for
+reading them.
+
+The lesson isn't "VLMs beat OCR" as a general claim — it's narrower and more useful than
+that: once the *extraction* step reads a rendered image directly, most of the categories
+above (2 through 8) stop being a tool-selection problem for extraction and become a
+tool-selection problem for cheap upstream screening only. That's a real architectural
+option to name in an interview, not just a tools comparison — "we don't need to solve OCR
+table-structure parsing if the model reading the page can just look at the table."
