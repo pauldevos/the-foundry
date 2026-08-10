@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agentic AI — Study Reference</title>
+<style>
+:root{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--accent:#FF4D1C;--blue:#4D9EFF;--green:#3DBA6F;--amber:#F0A030;--code:#0D1621;}
+@media(prefers-color-scheme:light){:root{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}}
+:root[data-theme=light]{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}
+:root[data-theme=dark]{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--code:#0D1621;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:1rem;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.logo span{color:var(--t2);font-weight:400}
+.title{font-size:.8rem;color:var(--t2)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+.badge{font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(61,186,111,.15);color:var(--green);border:1px solid rgba(61,186,111,.3)}
+.tbtn{background:var(--s2);border:1px solid var(--border);color:var(--t2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem}
+.tbtn:hover{color:var(--t1)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1rem .75rem;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:52px;max-height:calc(100vh - 52px);overflow-y:auto}
+.sg{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);font-weight:700;padding:.75rem .5rem .2rem}
+.sb{display:flex;flex-direction:column;width:100%;text-align:left;background:none;border:none;border-radius:6px;padding:.4rem .6rem;cursor:pointer;color:var(--t2);font-size:.8rem;line-height:1.3;transition:background .12s,color .12s}
+.sb:hover{background:var(--s2);color:var(--t1)}
+.sb.active{background:rgba(255,77,28,.12);color:var(--accent);font-weight:600}
+.sb small{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.sb.active small{color:rgba(255,77,28,.6)}
+.main{flex:1;padding:1.5rem 2rem;min-width:0}
+.svc{display:none}.svc.active{display:block}
+.sh{margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sh-top{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.4rem}
+.sn{font-size:1.4rem;font-weight:700;color:var(--t1)}
+.sp{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.sd{font-size:.88rem;color:var(--t2);max-width:72ch}
+.dtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto}
+.dt{padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;background:none;border:none;color:var(--t2);border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.dt:hover{color:var(--t1)}.dt.active{color:var(--accent);border-bottom-color:var(--accent)}
+.dp{display:none}.dp.active{display:block}
+.ps{margin-bottom:1.5rem}
+.pt{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--t3);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.pt::after{content:'';flex:1;height:1px;background:var(--border)}
+pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;font-size:.76rem;line-height:1.6;margin-bottom:.75rem;color:#A8C7FA;font-family:'Courier New',monospace}
+.cl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700;margin-bottom:.25rem;font-family:monospace}
+.k{color:#FF7B72}.s{color:#A5D6FF}.c{color:#5A6A80;font-style:italic}.fn{color:#79C0FF}.n{color:#FFA657}
+ul.bl{list-style:none;padding:0;margin-bottom:1rem}
+ul.bl li{font-size:.84rem;color:var(--t2);padding:.2rem 0 .2rem 1.1rem;position:relative;line-height:1.5}
+ul.bl li::before{content:'▸';position:absolute;left:0;color:var(--t3)}
+ul.bl li strong{color:var(--t1)}
+table.ft{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.75rem}
+table.ft th{text-align:left;padding:.4rem .75rem;background:var(--s2);color:var(--t2);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--border)}
+table.ft td{padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t1);vertical-align:top}
+table.ft tr:last-child td{border-bottom:none}
+table.ft td:first-child{color:var(--blue);font-family:monospace;font-size:.75rem;white-space:nowrap}
+table.ft tr:hover td{background:var(--s2)}
+.ca{border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.83rem;line-height:1.55;border-left:3px solid}
+.ca strong{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.ca-b{background:rgba(77,158,255,.07);border-color:var(--blue)}.ca-b strong{color:var(--blue)}
+.ca-a{background:rgba(240,160,48,.08);border-color:var(--amber)}.ca-a strong{color:var(--amber)}
+.ca-g{background:rgba(61,186,111,.07);border-color:var(--green)}.ca-g strong{color:var(--green)}
+.ca-r{background:rgba(255,77,28,.07);border-color:var(--accent)}.ca-r strong{color:var(--accent)}
+.mono{font-family:'Courier New',monospace;font-size:.85em;color:var(--blue);background:rgba(77,158,255,.08);padding:1px 4px;border-radius:3px}
+.qa{list-style:none;padding:0}
+.qi{border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;overflow:hidden}
+.qq{padding:.6rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:flex-start;gap:.6rem;background:var(--s2);color:var(--t1)}
+.qq::before{content:'Q';flex-shrink:0;font-size:.62rem;font-weight:800;padding:1px 5px;border-radius:3px;background:rgba(77,158,255,.2);color:var(--blue);margin-top:.05rem}
+.qa-a{padding:.6rem .9rem;font-size:.8rem;color:var(--t2);line-height:1.55;border-top:1px solid var(--border);display:none}
+.qi.open .qa-a{display:block}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%;max-height:none;position:static;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--border)}.sg{display:none}.main{padding:1rem}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">Agentic AI <span>Study Reference</span></div>
+  <div class="title">Patterns · Multi-Agent · Memory · Reliability · Aug 2026</div>
+  <div class="tr">
+    <span class="badge">Director Level</span>
+    <button class="tbtn" onclick="toggleTheme()">Toggle Theme</button>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="sg">Foundations</div>
+  <button class="sb active" data-svc="patterns" onclick="show('patterns')">Agent Patterns<small>ReAct · Plan-Execute · Supervisor</small></button>
+  <button class="sb" data-svc="tools" onclick="show('tools')">Tool Use &amp; Function Calling<small>@tool · Parallel · Error handling</small></button>
+  <div class="sg">Architecture</div>
+  <button class="sb" data-svc="multiagent" onclick="show('multiagent')">Multi-Agent Systems<small>Supervisor/Worker · FFF OS&amp;D</small></button>
+  <button class="sb" data-svc="memory" onclick="show('memory')">Memory Systems<small>In-context · External · Episodic</small></button>
+  <div class="sg">Control</div>
+  <button class="sb" data-svc="hitl" onclick="show('hitl')">Human-in-the-Loop<small>interrupt() · approve/reject</small></button>
+  <button class="sb" data-svc="reliability" onclick="show('reliability')">Reliability &amp; Failures<small>Loops · Confidence gates · Guardrails</small></button>
+</nav>
+
+<main class="main">
+
+<!-- ═══ AGENT PATTERNS ═══ -->
+<div class="svc active" id="svc-patterns">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Agent Patterns</span><span class="sp">ReAct · Plan-Execute · Supervisor/Worker</span></div>
+    <div class="sd">An agent is an LLM that decides what action to take next, executes it, observes the result, and repeats. The pattern determines how much the agent plans upfront vs. reasons step-by-step.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('patterns',0)">Concept &amp; When to Use</button>
+    <button class="dt" onclick="dim('patterns',1)">Code</button>
+    <button class="dt" onclick="dim('patterns',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <div class="ps"><div class="pt">Three Core Patterns</div>
+    <table class="ft"><tr><th>Pattern</th><th>How it works</th><th>Best for</th></tr>
+      <tr><td>ReAct</td><td>Reason → Act → Observe → repeat in a loop. LLM decides each tool call based on prior observations.</td><td>Open-ended tasks where the path is unknown upfront. Customer support, research, debugging.</td></tr>
+      <tr><td>Plan-and-Execute</td><td>LLM generates a full plan first, then a separate executor runs each step. Replanning if a step fails.</td><td>Long-horizon tasks with predictable steps. Report generation, data pipelines.</td></tr>
+      <tr><td>Supervisor/Worker</td><td>Supervisor LLM routes tasks to specialized sub-agents. Each worker has its own tools and state.</td><td>Multi-domain tasks. FFF's OS&amp;D: supervisor routes to SAP, Warehouse, FedEx, Video agents.</td></tr>
+    </table></div>
+    <div class="ca ca-b"><strong>Director Answer — "What agent pattern do you use and why?"</strong>
+    Start with the problem: single-domain or multi-domain? Known steps or dynamic? Then map to pattern. For FFF's claims: multi-domain (SAP, Warehouse, FedEx, Video) + parallel sub-tasks → Supervisor/Worker. For open research tasks: ReAct. For structured pipelines with audit requirements: Plan-and-Execute (the plan is the audit trail).</div>
+    <ul class="bl">
+      <li><strong>ReAct</strong> — most flexible, highest token cost, can loop indefinitely without guardrails</li>
+      <li><strong>Plan-Execute</strong> — more predictable, cheaper per run, but rigid; bad at handling unexpected results mid-plan</li>
+      <li><strong>Supervisor/Worker</strong> — scales to complex domains; sub-agents can run in parallel; each worker is independently testable</li>
+      <li><strong>When to mix</strong> — supervisor can use ReAct to route, while individual workers use Plan-Execute internally</li>
+    </ul>
+  </div>
+
+  <div class="dp">
+    <div class="ps"><div class="pt">ReAct Agent with LangGraph</div>
+    <div class="cl">Python · create_react_agent — simplest path to a working agent</div>
+<pre><span class="k">from</span> langchain_anthropic <span class="k">import</span> ChatAnthropic
+<span class="k">from</span> langchain_core.tools <span class="k">import</span> tool
+<span class="k">from</span> langgraph.prebuilt <span class="k">import</span> create_react_agent
+
+<span class="k">@</span>tool
+<span class="fn">def</span> <span class="fn">lookup_claim</span>(claim_id: str) -> dict:
+    <span class="s">"""Look up OS&D claim details from SAP."""</span>
+    <span class="c"># In production: call SAP API</span>
+    <span class="k">return</span> {<span class="s">"claim_id"</span>: claim_id, <span class="s">"status"</span>: <span class="s">"open"</span>, <span class="s">"amount"</span>: <span class="n">1250.00</span>}
+
+<span class="k">@</span>tool
+<span class="fn">def</span> <span class="fn">check_warehouse</span>(order_id: str) -> dict:
+    <span class="s">"""Check warehouse scan records for an order."""</span>
+    <span class="k">return</span> {<span class="s">"scanned"</span>: <span class="k">True</span>, <span class="s">"location"</span>: <span class="s">"Bay 12"</span>, <span class="s">"timestamp"</span>: <span class="s">"2026-08-09T14:32"</span>}
+
+llm = ChatAnthropic(model=<span class="s">"claude-sonnet-4-5"</span>)
+agent = create_react_agent(llm, tools=[lookup_claim, check_warehouse])
+
+result = agent.invoke({
+    <span class="s">"messages"</span>: [{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Investigate claim OS-2026-881"</span>}]
+})
+<span class="c"># Agent reasons: "I should look up the claim first"</span>
+<span class="c"># → calls lookup_claim("OS-2026-881")</span>
+<span class="c"># → observes result → calls check_warehouse("ORD-4491")</span>
+<span class="c"># → synthesizes final answer</span></pre></div>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's the difference between a chain and an agent?</div><div class="qa-a">A chain has a fixed sequence of steps determined at design time — you know exactly what runs and in what order. An agent is dynamic: the LLM decides at each step what tool to call next based on what it observed. Chains are predictable and cheap; agents are flexible but can loop, hallucinate tool calls, or take unexpected paths. In practice, use chains for well-defined workflows and agents when the path depends on external data you can't predict.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When would you NOT use an agent?</div><div class="qa-a">When the task has a known, fixed sequence of steps — use a chain or pipeline instead. Agents add latency (multiple LLM calls), cost (tokens per reasoning step), and unpredictability. For example, a structured ETL job that always runs ingest → transform → load → notify has no need for dynamic routing. Agents shine when the path genuinely depends on what the system discovers during execution.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How does FFF's AgentBricks use the Supervisor/Worker pattern?</div><div class="qa-a">FFF's Supervisor Agent receives a claim from the BioSupply portal via Salesforce. It routes to 5 specialized sub-agents in parallel — SAP (order status), Warehouse (scan records), Salesforce (CRM history), FedEx (carrier tracking), and Video (packing station footage). Each sub-agent runs independently and returns a structured result. The Supervisor then scores confidence across all results; if confidence is below threshold, it escalates to a human. If high confidence, the Summary Agent writes the resolution back to Salesforce. This cut resolution time from 10+ days to 1-3 minutes.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ TOOL USE ═══ -->
+<div class="svc" id="svc-tools">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Tool Use &amp; Function Calling</span><span class="sp">@tool · Parallel · Schema Design</span></div>
+    <div class="sd">Tools are the bridge between LLMs and the real world. The LLM generates a structured tool call (JSON); your code executes it and returns the result. Schema design is critical — a poorly described tool leads to wrong or missed calls.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('tools',0)">Concept &amp; When to Use</button>
+    <button class="dt" onclick="dim('tools',1)">Code</button>
+    <button class="dt" onclick="dim('tools',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>Tool = function + schema</strong> — the schema (JSON Schema) is what the LLM sees; the function is what your code runs. Write schemas for the model, not for the implementation.</li>
+      <li><strong>Description is the prompt</strong> — the tool's docstring IS the instruction to the model. Be explicit: "Call this when the user asks about shipment status. Do not call for billing questions."</li>
+      <li><strong>Parallel tool calls</strong> — modern models (GPT-4o, Claude Sonnet) can call multiple tools simultaneously. LangGraph's ToolNode handles parallel calls automatically.</li>
+      <li><strong>Tool errors</strong> — if a tool raises an exception, the agent receives the error message as an observation and can retry or route differently. Don't let errors crash silently.</li>
+      <li><strong>Force tool use</strong> — set <span class="mono">tool_choice="any"</span> or <span class="mono">tool_choice={"type":"tool","name":"X"}</span> to guarantee the model calls a tool (useful for structured extraction).</li>
+    </ul>
+    <div class="ca ca-a"><strong>Common Mistake</strong>
+    Vague tool descriptions. "Gets order info" → model doesn't know when to call it. Better: "Retrieves SAP order status, line items, and ship date for a given order_id. Call this first when investigating any OS&amp;D claim."</div>
+  </div>
+
+  <div class="dp">
+    <div class="ps"><div class="pt">Tool Definition + Parallel Execution</div>
+    <div class="cl">Python · @tool decorator with type hints as schema</div>
+<pre><span class="k">from</span> langchain_core.tools <span class="k">import</span> tool
+<span class="k">from</span> pydantic <span class="k">import</span> BaseModel, Field
+
+<span class="c"># Structured input schema — more reliable than free-text args</span>
+<span class="k">class</span> <span class="fn">ClaimInput</span>(BaseModel):
+    claim_id: str = Field(description=<span class="s">"OS&D claim ID, format OS-YYYY-NNN"</span>)
+    include_history: bool = Field(default=<span class="k">False</span>, description=<span class="s">"Include 90-day claim history"</span>)
+
+<span class="k">@</span>tool(<span class="s">"lookup_osd_claim"</span>, args_schema=ClaimInput)
+<span class="fn">def</span> <span class="fn">lookup_osd_claim</span>(claim_id: str, include_history: bool = <span class="k">False</span>) -> dict:
+    <span class="s">"""Retrieve OS&D claim details from SAP.
+    Call this first when investigating any damage or shortage claim.
+    Do NOT call for billing disputes or returns — use lookup_billing instead."""</span>
+    <span class="k">return</span> sap_client.get_claim(claim_id, include_history=include_history)
+
+<span class="c"># Parallel tool calls — LangGraph ToolNode handles automatically</span>
+<span class="k">from</span> langgraph.prebuilt <span class="k">import</span> ToolNode
+tool_node = ToolNode([lookup_osd_claim, check_warehouse, track_shipment])
+<span class="c"># When model returns multiple tool_calls in one message,</span>
+<span class="c"># ToolNode executes them concurrently and returns all results</span></pre></div>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you handle tool failures in production agents?</div><div class="qa-a">Three layers: (1) At the tool level — catch exceptions, return a structured error dict like <span class="mono">{"error": "SAP unavailable", "retry": true}</span> rather than raising. The LLM receives this as an observation and can decide to retry or route differently. (2) At the graph level — add a max_retries counter in state and a conditional edge that routes to a fallback node after N failures. (3) At the system level — circuit breakers around external APIs so a flaky SAP connection doesn't cascade into agent loops.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's the difference between tool_choice="auto" and "required"?</div><div class="qa-a"><span class="mono">auto</span>: the model decides whether to call a tool or respond in plain text — use this for conversational agents where not every turn needs a tool. <span class="mono">required</span>: the model MUST call at least one tool — use this for structured extraction pipelines where you need a guaranteed tool call (e.g., a routing step that must classify the request). <span class="mono">{"type":"tool","name":"X"}</span>: forces a specific tool — use for the first step of a known workflow.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ MULTI-AGENT ═══ -->
+<div class="svc" id="svc-multiagent">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Multi-Agent Systems</span><span class="sp">Supervisor · Worker · Handoffs · FFF Architecture</span></div>
+    <div class="sd">Multiple specialized agents coordinated by an orchestrator. Each agent owns a domain, has its own tools, and can run independently. The orchestrator decides routing, aggregation, and escalation.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('multiagent',0)">Concept &amp; When to Use</button>
+    <button class="dt" onclick="dim('multiagent',1)">Code</button>
+    <button class="dt" onclick="dim('multiagent',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <div class="ps"><div class="pt">FFF Enterprises AgentBricks Architecture</div>
+    <table class="ft"><tr><th>Layer</th><th>Component</th><th>Responsibility</th></tr>
+      <tr><td>Entry</td><td>BioSupply Portal → Salesforce</td><td>Claim intake, initial routing trigger</td></tr>
+      <tr><td>Orchestration</td><td>Supervisor Agent</td><td>Routes to sub-agents, tracks state, evaluates confidence</td></tr>
+      <tr><td>Workers (parallel)</td><td>SAP Agent</td><td>Order status, line items, invoice data</td></tr>
+      <tr><td></td><td>Warehouse Agent</td><td>Scan records, packing station video</td></tr>
+      <tr><td></td><td>Salesforce Agent</td><td>CRM history, prior claims, account context</td></tr>
+      <tr><td></td><td>FedEx Agent</td><td>Carrier tracking, proof of delivery</td></tr>
+      <tr><td></td><td>Video Agent</td><td>Real-time CV on packing footage</td></tr>
+      <tr><td>Gate</td><td>Confidence Gate</td><td>Blocks Summary Agent if confidence &lt; threshold → human escalation</td></tr>
+      <tr><td>Output</td><td>Summary Agent → Salesforce</td><td>Writes resolution, closes claim</td></tr>
+    </table></div>
+    <ul class="bl">
+      <li><strong>Why parallel sub-agents?</strong> SAP, FedEx, and Warehouse lookups are independent — running sequentially adds 3-5s per call; parallel collapses to the slowest single call (~1-2s)</li>
+      <li><strong>Handoff vs shared state</strong> — in LangGraph, sub-agents can share a parent state schema or use bridge functions to translate between schemas</li>
+      <li><strong>Confidence gate pattern</strong> — supervisor scores each sub-agent result (did it return data? is it consistent with others?); low confidence → interrupt() for human review</li>
+      <li><strong>Individual reusability</strong> — FFF's sub-agents are also callable directly from Microsoft Teams, not just through the Supervisor</li>
+    </ul>
+  </div>
+
+  <div class="dp">
+    <div class="ps"><div class="pt">Supervisor Agent with Parallel Sub-Agents</div>
+    <div class="cl">Python · LangGraph supervisor routing to parallel workers</div>
+<pre><span class="k">from</span> typing <span class="k">import</span> TypedDict, Annotated
+<span class="k">import</span> operator
+<span class="k">from</span> langgraph.graph <span class="k">import</span> StateGraph, END, START
+<span class="k">from</span> langgraph.types <span class="k">import</span> Send
+
+<span class="k">class</span> <span class="fn">ClaimState</span>(TypedDict):
+    claim_id:   str
+    sub_results: Annotated[list, operator.add]  <span class="c"># workers append to this</span>
+    confidence: float
+    approved:   bool
+
+<span class="fn">def</span> <span class="fn">supervisor</span>(state: ClaimState) -> list[Send]:
+    <span class="c"># Fan out to all workers simultaneously</span>
+    <span class="k">return</span> [
+        Send(<span class="s">"sap_agent"</span>,       {<span class="s">"claim_id"</span>: state[<span class="s">"claim_id"</span>]}),
+        Send(<span class="s">"warehouse_agent"</span>, {<span class="s">"claim_id"</span>: state[<span class="s">"claim_id"</span>]}),
+        Send(<span class="s">"fedex_agent"</span>,     {<span class="s">"claim_id"</span>: state[<span class="s">"claim_id"</span>]}),
+    ]
+
+<span class="fn">def</span> <span class="fn">confidence_gate</span>(state: ClaimState) -> str:
+    results = state[<span class="s">"sub_results"</span>]
+    scored = sum(<span class="n">1</span> <span class="k">for</span> r <span class="k">in</span> results <span class="k">if</span> r.get(<span class="s">"confidence"</span>, <span class="n">0</span>) > <span class="n">0.8</span>)
+    <span class="k">if</span> scored / len(results) >= <span class="n">0.75</span>:
+        <span class="k">return</span> <span class="s">"summary_agent"</span>   <span class="c"># high confidence → auto-resolve</span>
+    <span class="k">return</span> <span class="s">"human_review"</span>      <span class="c"># low confidence → escalate</span>
+
+builder = StateGraph(ClaimState)
+builder.add_node(<span class="s">"supervisor"</span>, supervisor)
+builder.add_node(<span class="s">"confidence_gate"</span>, confidence_gate)
+builder.add_conditional_edges(<span class="s">"confidence_gate"</span>, confidence_gate,
+    {<span class="s">"summary_agent"</span>: <span class="s">"summary_agent"</span>, <span class="s">"human_review"</span>: END})</pre></div>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you coordinate agents that have different state schemas?</div><div class="qa-a">Use bridge functions — a wrapper node that translates between parent and child state schemas before invoking the sub-agent. In LangGraph, you compile the sub-agent graph separately, then call <span class="mono">sub_graph.invoke({translated_state})</span> inside a parent node. The parent node is responsible for mapping outputs back. If schemas overlap (share some keys), you can pass shared state directly by giving both graphs the same TypedDict for those fields.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's the tradeoff between a single large agent vs. multiple specialized agents?</div><div class="qa-a">Single large agent: simpler to build and debug, fewer moving parts, but the context window fills up quickly with tool results, and one bad tool call can derail the whole task. Multi-agent: each worker has a focused context (only relevant tools/state), can run in parallel (faster), and failures are isolated. The cost is orchestration complexity — you need a supervisor, state merging, and inter-agent communication patterns. For FFF's use case (5 independent data sources), multi-agent was clearly right. For a simple customer support bot, a single agent is probably enough.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ MEMORY ═══ -->
+<div class="svc" id="svc-memory">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Memory Systems</span><span class="sp">In-Context · External · Episodic · Semantic</span></div>
+    <div class="sd">Agents are stateless by default — memory is what gives them continuity. Four types serve different purposes, and the right choice depends on what needs to persist and for how long.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('memory',0)">Concept &amp; When to Use</button>
+    <button class="dt" onclick="dim('memory',1)">Code</button>
+    <button class="dt" onclick="dim('memory',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <table class="ft"><tr><th>Type</th><th>What it stores</th><th>Lifespan</th><th>LangGraph implementation</th></tr>
+      <tr><td>In-context</td><td>Current conversation messages, tool results</td><td>Single session</td><td>The <span class="mono">messages</span> list in State — automatic</td></tr>
+      <tr><td>Checkpointed</td><td>Full graph state at each step</td><td>Resumable across sessions</td><td><span class="mono">MemorySaver</span> (in-memory) or <span class="mono">PostgresSaver</span> (persistent)</td></tr>
+      <tr><td>External / Episodic</td><td>Past conversation summaries, user preferences</td><td>Permanent</td><td>Store to DB; retrieve via tool or graph entry node</td></tr>
+      <tr><td>Semantic</td><td>Facts, domain knowledge, embeddings</td><td>Permanent</td><td>Vector store (AI Search, Qdrant); retrieve via RAG</td></tr>
+    </table>
+    <ul class="bl">
+      <li><strong>Context window limit</strong> — in-context memory grows with each turn; for long agents, summarize or trim periodically (<span class="mono">trim_messages</span>)</li>
+      <li><strong>Checkpointing = reproducibility</strong> — <span class="mono">thread_id</span> in config identifies a conversation; graph can resume exactly from any checkpoint</li>
+      <li><strong>Cross-session memory</strong> — retrieve past interactions at the START of a new session via a "load_memory" node before the main agent node</li>
+      <li><strong>FFF use case</strong> — the claim investigation state is checkpointed per <span class="mono">claim_id</span>; if a human reviewer pauses to gather more info, the agent resumes exactly where it left off</li>
+    </ul>
+  </div>
+
+  <div class="dp">
+    <div class="ps"><div class="pt">Checkpointing + Cross-Session Memory</div>
+    <div class="cl">Python · PostgresSaver for persistent state across sessions</div>
+<pre><span class="k">from</span> langgraph.checkpoint.postgres <span class="k">import</span> PostgresSaver
+<span class="k">from</span> langgraph.graph <span class="k">import</span> StateGraph
+
+<span class="c"># Production checkpointer — survives restarts</span>
+checkpointer = PostgresSaver.from_conn_string(
+    <span class="s">"postgresql://user:pass@host/db"</span>
+)
+
+graph = builder.compile(checkpointer=checkpointer)
+
+<span class="c"># Thread ID ties all turns of one claim together</span>
+config = {<span class="s">"configurable"</span>: {<span class="s">"thread_id"</span>: <span class="s">"claim-OS-2026-881"</span>}}
+
+<span class="c"># First invocation — starts fresh</span>
+result = graph.invoke({<span class="s">"claim_id"</span>: <span class="s">"OS-2026-881"</span>}, config)
+
+<span class="c"># Later invocation — resumes from checkpoint</span>
+<span class="c"># (e.g. after human reviewer adds notes)</span>
+result = graph.invoke(
+    {<span class="s">"messages"</span>: [{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="s">"Reviewer confirmed shortage"</span>}]},
+    config
+)
+
+<span class="c"># Load external memory at session start</span>
+<span class="fn">def</span> <span class="fn">load_account_history</span>(state):
+    history = memory_store.get(state[<span class="s">"customer_id"</span>], limit=<span class="n">5</span>)
+    <span class="k">return</span> {<span class="s">"messages"</span>: [summarize(history)] + state[<span class="s">"messages"</span>]}</pre></div>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's the difference between MemorySaver and PostgresSaver?</div><div class="qa-a"><span class="mono">MemorySaver</span> stores checkpoints in RAM — fast, zero config, but lost on process restart. Use it for development and testing. <span class="mono">PostgresSaver</span> (or <span class="mono">AsyncPostgresSaver</span>) persists state to a database, surviving restarts and supporting multiple workers. In production, always use a persistent checkpointer. On Databricks, you'd use a Delta table-backed checkpointer or the managed LangGraph Platform.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you prevent context window overflow in long-running agents?</div><div class="qa-a">Two strategies: (1) <span class="mono">trim_messages(messages, max_tokens=4000)</span> — drops oldest messages first, keeping the conversation tail. (2) Summarization node — a periodic node that compresses the message list into a short summary, replacing the raw history. LangGraph makes this clean: add a conditional edge that routes to a "summarize" node whenever <span class="mono">len(messages) &gt; N</span>, then continues to the main agent node with the compressed context.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ HITL ═══ -->
+<div class="svc" id="svc-hitl">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Human-in-the-Loop</span><span class="sp">interrupt() · Command(resume=) · Escalation</span></div>
+    <div class="sd">Production agents must be able to pause, surface a decision to a human, and resume with their input. LangGraph's interrupt() and Command(resume=) make this a first-class pattern, not a workaround.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('hitl',0)">Concept &amp; When to Use</button>
+    <button class="dt" onclick="dim('hitl',1)">Code</button>
+    <button class="dt" onclick="dim('hitl',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>When to interrupt</strong> — low confidence, irreversible actions (send email, write to DB, charge customer), regulatory requirements, or when the agent detects ambiguity it can't resolve alone</li>
+      <li><strong>interrupt() pauses the graph</strong> — state is checkpointed; the agent is suspended; a payload is surfaced to the UI for human review</li>
+      <li><strong>Command(resume=decision)</strong> — human's decision is sent back; graph resumes from the exact checkpoint with the human's input in state</li>
+      <li><strong>Approve/reject/edit pattern</strong> — the interrupt payload contains the agent's proposed action; human can approve (proceed), reject (abort), or edit (modify the action before proceeding)</li>
+      <li><strong>FFF use case</strong> — confidence gate fires interrupt() when sub-agent results are inconsistent; claims reviewer sees all evidence and either approves the AI resolution or overrides it</li>
+    </ul>
+    <div class="ca ca-g"><strong>Regulatory Note</strong>
+    In pharma distribution (FFF) and healthcare (Optum), some decisions legally require a human in the loop — not just for quality, but for compliance. Design interrupt points as explicit architectural components, not afterthoughts. Document them in your system design as "human decision gates."</div>
+  </div>
+
+  <div class="dp">
+    <div class="ps"><div class="pt">interrupt() + Command(resume=)</div>
+    <div class="cl">Python · LangGraph HITL — pause, surface, resume</div>
+<pre><span class="k">from</span> langgraph.types <span class="k">import</span> interrupt, Command
+
+<span class="fn">def</span> <span class="fn">confidence_gate_node</span>(state: ClaimState):
+    results = state[<span class="s">"sub_results"</span>]
+    confidence = compute_confidence(results)
+
+    <span class="k">if</span> confidence < <span class="n">0.75</span>:
+        <span class="c"># Pause graph — surfaces payload to UI</span>
+        decision = interrupt({
+            <span class="s">"claim_id"</span>:  state[<span class="s">"claim_id"</span>],
+            <span class="s">"confidence"</span>: confidence,
+            <span class="s">"evidence"</span>:  results,
+            <span class="s">"question"</span>:  <span class="s">"Insufficient confidence. Approve resolution or escalate?"</span>,
+        })
+        <span class="c"># Execution pauses HERE — resumes when human responds</span>
+        <span class="k">return</span> {<span class="s">"approved"</span>: decision[<span class="s">"approved"</span>]}
+
+    <span class="k">return</span> {<span class="s">"approved"</span>: <span class="k">True</span>}
+
+<span class="c"># After human reviews in the UI:</span>
+graph.invoke(
+    Command(resume={<span class="s">"approved"</span>: <span class="k">True</span>, <span class="s">"reviewer"</span>: <span class="s">"jsmith"</span>}),
+    config={<span class="s">"configurable"</span>: {<span class="s">"thread_id"</span>: <span class="s">"claim-OS-2026-881"</span>}}
+)
+<span class="c"># Graph resumes from checkpoint — decision is now in state</span></pre></div>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How is interrupt() different from just returning early from a node?</div><div class="qa-a"><span class="mono">interrupt()</span> is a first-class LangGraph mechanism that checkpoints the full graph state and surfaces a payload to the calling code. The graph is genuinely suspended — not running, not polling. When <span class="mono">Command(resume=)</span> arrives with the human's decision, LangGraph replays from the checkpoint, injecting the decision into state. Returning early from a node doesn't preserve state or enable resumption — you'd lose all prior sub-agent results. <span class="mono">interrupt()</span> is the correct tool for any decision that needs to wait for external input.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you build the UI for a human-in-the-loop workflow?</div><div class="qa-a">The backend streams events via <span class="mono">astream_events()</span>; when the stream yields an event where <span class="mono">event["event"] == "on_chain_end"</span> and the payload contains an interrupt, the frontend detects this sentinel and renders the approval UI (showing the evidence, proposed action, and approve/reject buttons). When the reviewer clicks approve, the frontend POSTs to an API endpoint that calls <span class="mono">graph.invoke(Command(resume={...}), config)</span>. The backend then continues streaming the remainder of the graph execution. The thread_id ties the session together across the pause.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ RELIABILITY ═══ -->
+<div class="svc" id="svc-reliability">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Reliability &amp; Failures</span><span class="sp">Loops · Confidence Gates · Guardrails · Observability</span></div>
+    <div class="sd">Agents fail in ways deterministic code doesn't — infinite loops, hallucinated tool calls, inconsistent reasoning. Production reliability requires explicit guardrails, not just hope.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('reliability',0)">Concept &amp; When to Use</button>
+    <button class="dt" onclick="dim('reliability',1)">Code</button>
+    <button class="dt" onclick="dim('reliability',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <table class="ft"><tr><th>Failure Mode</th><th>Cause</th><th>Fix</th></tr>
+      <tr><td>Infinite loop</td><td>Agent keeps calling the same tool with no progress</td><td>Add <span class="mono">step_count</span> to state; conditional edge to END after N steps</td></tr>
+      <tr><td>Hallucinated tool call</td><td>Model invents tool arguments or calls non-existent tools</td><td>Strict tool schemas with enum constraints; validate inputs before execution</td></tr>
+      <tr><td>Low confidence resolution</td><td>Sub-agents return conflicting or incomplete data</td><td>Confidence gate → interrupt() for human review</td></tr>
+      <tr><td>Tool cascade failure</td><td>One flaky API causes the whole agent to stall</td><td>Timeouts + fallback return values; circuit breaker pattern per tool</td></tr>
+      <tr><td>Context blowup</td><td>Long agent runs fill context window</td><td><span class="mono">trim_messages</span> or summarization node</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>The Director Answer on Reliability</strong>
+    "We treat agents like distributed systems — every external call can fail, loops must be bounded, and human escalation is a first-class design pattern, not an edge case. We trace every run with MLflow/LangSmith, alert on error rate and loop count, and review all human escalations weekly to improve confidence thresholds."</div>
+  </div>
+
+  <div class="dp">
+    <div class="ps"><div class="pt">Loop Guard + Fallback Pattern</div>
+    <div class="cl">Python · State-based loop counter + max step enforcement</div>
+<pre><span class="k">class</span> <span class="fn">AgentState</span>(TypedDict):
+    messages:   list
+    step_count: int          <span class="c"># incremented by every node</span>
+    error_log:  list
+
+<span class="fn">def</span> <span class="fn">agent_node</span>(state: AgentState):
+    <span class="k">if</span> state[<span class="s">"step_count"</span>] >= <span class="n">15</span>:
+        <span class="c"># Hard stop — prevents runaway costs</span>
+        <span class="k">return</span> {
+            <span class="s">"messages"</span>: [{<span class="s">"role"</span>: <span class="s">"assistant"</span>,
+                          <span class="s">"content"</span>: <span class="s">"Max steps reached. Escalating to human."</span>}],
+            <span class="s">"step_count"</span>: state[<span class="s">"step_count"</span>] + <span class="n">1</span>,
+        }
+    response = llm_with_tools.invoke(state[<span class="s">"messages"</span>])
+    <span class="k">return</span> {<span class="s">"messages"</span>: [response], <span class="s">"step_count"</span>: state[<span class="s">"step_count"</span>] + <span class="n">1</span>}
+
+<span class="fn">def</span> <span class="fn">should_continue</span>(state: AgentState) -> str:
+    last = state[<span class="s">"messages"</span>][-<span class="n">1</span>]
+    <span class="k">if</span> state[<span class="s">"step_count"</span>] >= <span class="n">15</span>: <span class="k">return</span> <span class="s">"escalate"</span>
+    <span class="k">if</span> <span class="fn">hasattr</span>(last, <span class="s">"tool_calls"</span>) <span class="k">and</span> last.tool_calls: <span class="k">return</span> <span class="s">"tools"</span>
+    <span class="k">return</span> <span class="s">"end"</span></pre></div>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you test agents before deploying to production?</div><div class="qa-a">Three layers: (1) Unit test individual nodes and tools with mocked LLM responses — fast, deterministic, catches logic bugs. (2) Integration test the full graph with a real (or stubbed) LLM using golden test cases — "for claim OS-2026-881, the agent should call SAP then Warehouse, then return confidence &gt; 0.9." Track these in LangSmith eval datasets. (3) Shadow mode — run the agent in parallel with the current manual process, compare outputs without affecting production. Promote when accuracy ≥ threshold for 2 weeks.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">A Director asks: "How do we know the agent isn't making things up?" What do you say?</div><div class="qa-a">Three-part answer: (1) Tracing — every agent run is traced end-to-end (LangSmith or MLflow), so we can audit exactly what tool call returned what data and how the model used it. (2) Confidence gates — the agent scores its own certainty and escalates to a human when below threshold; we can tune this threshold by reviewing escalation cases. (3) Eval loop — we run RAGAS faithfulness scores on a sample of production traces weekly; if faithfulness drops below 0.85, we get an alert before users notice. This gives us observability, human oversight, and automated quality gates — three independent layers of assurance.</div></li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.svc').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.sb').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('svc-'+id).classList.add('active');
+  document.querySelector('[data-svc="'+id+'"]').classList.add('active');
+  window.scrollTo(0,0);
+}
+function dim(svcId, idx) {
+  var svc = document.getElementById('svc-'+svcId);
+  var panels = svc.querySelectorAll('.dp');
+  var tabs = svc.querySelectorAll('.dt');
+  panels.forEach(function(el){el.classList.remove('active');});
+  tabs.forEach(function(el){el.classList.remove('active');});
+  panels[idx].classList.add('active');
+  tabs[idx].classList.add('active');
+}
+function toggleTheme() {
+  var root = document.documentElement;
+  root.setAttribute('data-theme', root.getAttribute('data-theme')==='light'?'dark':'light');
+}
+</script>
+</body>
+</html>
