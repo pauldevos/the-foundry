@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LLM Core — Study Reference</title>
+<style>
+:root{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--accent:#FF4D1C;--blue:#4D9EFF;--green:#3DBA6F;--amber:#F0A030;--code:#0D1621;}
+@media(prefers-color-scheme:light){:root{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}}
+:root[data-theme=light]{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}
+:root[data-theme=dark]{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--code:#0D1621;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:1rem;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.logo span{color:var(--t2);font-weight:400}
+.title{font-size:.8rem;color:var(--t2)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+.badge{font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(61,186,111,.15);color:var(--green);border:1px solid rgba(61,186,111,.3)}
+.tbtn{background:var(--s2);border:1px solid var(--border);color:var(--t2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem}
+.tbtn:hover{color:var(--t1)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1rem .75rem;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:52px;max-height:calc(100vh - 52px);overflow-y:auto}
+.sg{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);font-weight:700;padding:.75rem .5rem .2rem}
+.sb{display:flex;flex-direction:column;width:100%;text-align:left;background:none;border:none;border-radius:6px;padding:.4rem .6rem;cursor:pointer;color:var(--t2);font-size:.8rem;line-height:1.3;transition:background .12s,color .12s}
+.sb:hover{background:var(--s2);color:var(--t1)}
+.sb.active{background:rgba(255,77,28,.12);color:var(--accent);font-weight:600}
+.sb small{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.sb.active small{color:rgba(255,77,28,.6)}
+.main{flex:1;padding:1.5rem 2rem;min-width:0}
+.svc{display:none}.svc.active{display:block}
+.sh{margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sh-top{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.4rem}
+.sn{font-size:1.4rem;font-weight:700;color:var(--t1)}
+.sp{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.sd{font-size:.88rem;color:var(--t2);max-width:72ch}
+.dtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto}
+.dt{padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;background:none;border:none;color:var(--t2);border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.dt:hover{color:var(--t1)}.dt.active{color:var(--accent);border-bottom-color:var(--accent)}
+.dp{display:none}.dp.active{display:block}
+.ps{margin-bottom:1.5rem}
+.pt{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--t3);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.pt::after{content:'';flex:1;height:1px;background:var(--border)}
+pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;font-size:.76rem;line-height:1.6;margin-bottom:.75rem;color:#A8C7FA;font-family:'Courier New',monospace}
+.cl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700;margin-bottom:.25rem;font-family:monospace}
+.k{color:#FF7B72}.s{color:#A5D6FF}.c{color:#5A6A80;font-style:italic}.fn{color:#79C0FF}.n{color:#FFA657}
+ul.bl{list-style:none;padding:0;margin-bottom:1rem}
+ul.bl li{font-size:.84rem;color:var(--t2);padding:.2rem 0 .2rem 1.1rem;position:relative;line-height:1.5}
+ul.bl li::before{content:'▸';position:absolute;left:0;color:var(--t3)}
+ul.bl li strong{color:var(--t1)}
+table.ft{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.75rem}
+table.ft th{text-align:left;padding:.4rem .75rem;background:var(--s2);color:var(--t2);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--border)}
+table.ft td{padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t1);vertical-align:top}
+table.ft tr:last-child td{border-bottom:none}
+table.ft td:first-child{color:var(--blue);font-family:monospace;font-size:.75rem;white-space:nowrap}
+table.ft tr:hover td{background:var(--s2)}
+.ca{border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.83rem;line-height:1.55;border-left:3px solid}
+.ca strong{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.ca-b{background:rgba(77,158,255,.07);border-color:var(--blue)}.ca-b strong{color:var(--blue)}
+.ca-a{background:rgba(240,160,48,.08);border-color:var(--amber)}.ca-a strong{color:var(--amber)}
+.ca-g{background:rgba(61,186,111,.07);border-color:var(--green)}.ca-g strong{color:var(--green)}
+.ca-r{background:rgba(255,77,28,.07);border-color:var(--accent)}.ca-r strong{color:var(--accent)}
+.mono{font-family:'Courier New',monospace;font-size:.85em;color:var(--blue);background:rgba(77,158,255,.08);padding:1px 4px;border-radius:3px}
+.qa{list-style:none;padding:0}
+.qi{border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;overflow:hidden}
+.qq{padding:.6rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:flex-start;gap:.6rem;background:var(--s2);color:var(--t1)}
+.qq::before{content:'Q';flex-shrink:0;font-size:.62rem;font-weight:800;padding:1px 5px;border-radius:3px;background:rgba(77,158,255,.2);color:var(--blue);margin-top:.05rem}
+.qa-a{padding:.6rem .9rem;font-size:.8rem;color:var(--t2);line-height:1.55;border-top:1px solid var(--border);display:none}
+.qi.open .qa-a{display:block}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%;max-height:none;position:static;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--border)}.sg{display:none}.main{padding:1rem}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">LLM Core <span>Study Reference</span></div>
+  <div class="title">Context Windows · Prompting · Structured Output · Sampling · Fine-tuning · Hallucination · Aug 2026</div>
+  <div class="tr"><span class="badge">Director Level</span><button class="tbtn" onclick="toggleTheme()">Toggle Theme</button></div>
+</div>
+<div class="layout">
+<nav class="sidebar">
+  <div class="sg">Input</div>
+  <button class="sb active" data-svc="context" onclick="show('context')">Context Windows<small>Limits · Truncation · Long context</small></button>
+  <button class="sb" data-svc="prompting" onclick="show('prompting')">Prompt Engineering<small>Few-shot · CoT · System prompts</small></button>
+  <div class="sg">Output</div>
+  <button class="sb" data-svc="structured" onclick="show('structured')">Structured Output<small>Pydantic · JSON mode · Failures</small></button>
+  <button class="sb" data-svc="sampling" onclick="show('sampling')">Sampling &amp; Temperature<small>Temperature · top-p · Determinism</small></button>
+  <div class="sg">Adaptation</div>
+  <button class="sb" data-svc="finetuning" onclick="show('finetuning')">Fine-tuning vs Prompting<small>When to fine-tune · LoRA · Cost</small></button>
+  <button class="sb" data-svc="hallucination" onclick="show('hallucination')">Hallucination<small>Why it happens · Detection · Mitigation</small></button>
+</nav>
+<main class="main">
+
+<!-- CONTEXT WINDOWS -->
+<div class="svc active" id="svc-context">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Context Windows</span><span class="sp">Token limits · Truncation · Long context models</span></div>
+    <div class="sd">The context window is the LLM's working memory — it sees nothing outside it. Every design decision in RAG, agents, and multi-turn conversations is constrained by context window limits and the "lost in the middle" effect.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('context',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('context',1)">Code</button>
+    <button class="dt" onclick="dim('context',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Model</th><th>Context window</th><th>Practical limit</th><th>Note</th></tr>
+      <tr><td>claude-sonnet-4-5</td><td>200K tokens</td><td>~150K usable</td><td>Strong long-context performance; 8K max output</td></tr>
+      <tr><td>gpt-4o</td><td>128K tokens</td><td>~100K usable</td><td>Performance degrades noticeably past 64K</td></tr>
+      <tr><td>Llama-3.1-70B</td><td>128K tokens</td><td>~64K usable</td><td>Open weights; self-hosted; quality drops at long context</td></tr>
+      <tr><td>DBRX</td><td>32K tokens</td><td>~24K usable</td><td>Databricks-native; efficient for structured tasks</td></tr>
+      <tr><td>gemini-1.5-pro</td><td>1M tokens</td><td>~500K usable</td><td>Largest available; cost and latency significant at long context</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>War Story — Silent Truncation</strong>
+    Loaded an entire oil and gas pipeline safety specification (340 pages, ~180K tokens) into a 128K context model. No error — the API accepted the request and returned a confident answer. The answer was wrong. The model had silently truncated the input; the critical safety clause was in the truncated section. The model hallucinated a plausible-sounding regulation from parametric memory. Added a token count check before every API call: if input_tokens &gt; 0.85 × context_limit, route to chunked RAG instead of full-document context.</div>
+    <ul class="bl">
+      <li><strong>Count tokens explicitly</strong> — use <span class="mono">tiktoken</span> (OpenAI) or the Anthropic token counting API before sending; don't trust that the API will error on overflow</li>
+      <li><strong>Lost in the middle</strong> — models attend most strongly to the beginning and end of long contexts; content in the middle gets less weight; put the most critical context first</li>
+      <li><strong>Long context ≠ long memory</strong> — larger windows allow more input but don't improve reasoning over that input proportionally; RAG is still better for selective retrieval over large corpora</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Token counting + truncation guard before API call</div>
+<pre><span class="k">import</span> anthropic
+<span class="k">from</span> anthropic <span class="k">import</span> Anthropic
+
+client = Anthropic()
+MODEL = <span class="s">"claude-sonnet-4-5"</span>
+CONTEXT_LIMIT = <span class="n">200_000</span>
+SAFETY_MARGIN = <span class="n">0.85</span>  <span class="c"># use at most 85% of context</span>
+
+<span class="fn">def</span> <span class="fn">count_tokens</span>(messages: list[dict], system: str = <span class="s">""</span>) -> int:
+    response = client.messages.count_tokens(
+        model=MODEL,
+        system=system,
+        messages=messages,
+    )
+    <span class="k">return</span> response.input_tokens
+
+<span class="fn">def</span> <span class="fn">safe_invoke</span>(messages, system=<span class="s">""</span>, fallback_fn=None):
+    token_count = count_tokens(messages, system)
+    max_allowed = int(CONTEXT_LIMIT * SAFETY_MARGIN)
+
+    <span class="k">if</span> token_count > max_allowed:
+        print(<span class="s">f"Context too large: {token_count} tokens. Routing to RAG fallback."</span>)
+        <span class="k">if</span> fallback_fn:
+            <span class="k">return</span> fallback_fn(messages)
+        <span class="k">raise</span> ValueError(<span class="s">f"Input exceeds safe context limit: {token_count}/{max_allowed}"</span>)
+
+    <span class="k">return</span> client.messages.create(
+        model=MODEL, system=system, messages=messages, max_tokens=<span class="n">2048</span>
+    )</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When would you use a long-context model instead of RAG?</div><div class="qa-a">Long-context shines for tasks where the model needs to reason across the FULL document simultaneously — not just retrieve a relevant section. For example: contract review where a clause on page 5 modifies definitions on page 2 and exceptions on page 40; legal analysis where cross-references matter; code review of a full codebase where understanding one function requires knowing another. RAG retrieves relevant fragments but loses the global structure. Long-context preserves it. The trade-offs: cost (200K tokens per query vs. 5K tokens in RAG), latency (proportional to context length), and the lost-in-the-middle problem. For selective lookup — "what does this policy say about X?" — RAG is better. For holistic reasoning — "are there any contradictions in this contract?" — long context wins.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- PROMPTING -->
+<div class="svc" id="svc-prompting">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Prompt Engineering</span><span class="sp">Few-shot · Chain-of-thought · System prompts · Sensitivity</span></div>
+    <div class="sd">Prompt engineering is not a soft skill — it's the primary interface to model behavior. Small wording changes cause large behavior changes. The goal is prompts that are explicit, testable, and version-controlled.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('prompting',0)">Concept &amp; Techniques</button>
+    <button class="dt" onclick="dim('prompting',1)">Code</button>
+    <button class="dt" onclick="dim('prompting',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Technique</th><th>When to use</th><th>Pitfall</th></tr>
+      <tr><td>Zero-shot</td><td>Simple, well-defined tasks the model handles without examples</td><td>Underspecified — model interprets ambiguity however it wants</td></tr>
+      <tr><td>Few-shot</td><td>Format consistency; domain-specific tone; edge cases you want handled a certain way</td><td>Model pattern-matches too hard on examples; misses out-of-distribution inputs</td></tr>
+      <tr><td>Chain-of-thought (CoT)</td><td>"Let's think step by step" or explicit reasoning steps for math, logic, multi-step</td><td>Adds tokens; model can reason correctly but still give wrong final answer</td></tr>
+      <tr><td>System prompt</td><td>Persistent behavior rules: role, output format, refusal behavior, citation requirements</td><td>Model doesn't always follow — instructions are probabilistic, not hard constraints</td></tr>
+      <tr><td>XML structure</td><td>Separating context/instructions/query clearly for Claude; prevents bleed between sections</td><td>Other models may not respond as well to XML framing</td></tr>
+    </table>
+    <div class="ca ca-a"><strong>Prompt Sensitivity War Story</strong>
+    Changed "Answer the question" to "Answer the question concisely" in a production system prompt. Faithfulness on the eval set dropped from 0.83 to 0.71. The model was abbreviating answers by omitting supporting details — technically more concise, but less faithful. One word change, 12-point regression. Now every system prompt change runs through the full eval suite before shipping.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Versioned system prompt with few-shot examples + CoT</div>
+<pre>SYSTEM_V3 = <span class="s">"""You are an HR benefits assistant for a mid-size company.
+
+RULES:
+- Answer only from the provided benefit documents
+- Cite your source: [Doc: {filename}, Section: {section}]
+- If you cannot find the answer, say exactly: "I don't have that information."
+- Think through eligibility questions step by step before giving the final answer
+
+EXAMPLES:
+User: Can I use FSA for sunscreen?
+Answer: Let me check... The FSA eligible expenses document lists sunscreen with SPF 15+
+as eligible for OTC purchase without a prescription since 2020. [Doc: fsa-eligible-2026.pdf,
+Section: OTC Medications] Yes, sunscreen SPF 15+ is FSA-eligible.
+
+User: What's the COBRA deadline?
+Answer: [Doc: cobra-notice-2026.pdf, Section: Election Period] You have 60 days from
+the date of the COBRA notice (or loss of coverage, whichever is later) to elect coverage."""</span>
+
+<span class="c"># Version-control your prompts — treat like code</span>
+PROMPT_VERSION = <span class="s">"hr-assistant-v3"</span>
+<span class="c"># Log prompt version with every MLflow run for reproducibility</span></pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you handle prompt sensitivity in production?</div><div class="qa-a">Three practices. First, version control: every system prompt lives in a config file with a version string, checked into git. No ad-hoc prompt edits in production. Second, eval gate: any prompt change runs the full RAGAS eval suite before merging — I've seen a one-word change cause a 12-point regression. Third, A/B testing for significant changes: route 10% of traffic to the new prompt for 48 hours, compare online faithfulness and user satisfaction scores, then promote or revert. The key insight is that prompts are code: they have bugs, they need tests, and they need deployment discipline.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When do few-shot examples hurt more than they help?</div><div class="qa-a">When the examples are too narrow and the model pattern-matches on format rather than reasoning. I saw this with a drug interaction checker — few-shot examples all had confident "yes/no" answers, so the model started giving confident answers to genuinely ambiguous interactions instead of flagging uncertainty. The examples were teaching the wrong behavior. Fix: add examples that demonstrate the uncertainty case ("This interaction has limited clinical data — consult a pharmacist"). Also: when input distribution shifts and examples no longer represent real queries. Review your few-shot examples quarterly, not just at launch.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- STRUCTURED OUTPUT -->
+<div class="svc" id="svc-structured">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Structured Output</span><span class="sp">Pydantic · JSON mode · Tool use · Parser failures</span></div>
+    <div class="sd">Getting consistent structured output from LLMs — JSON, typed objects, validated schemas — is harder than it looks. The model is a text generator; structure is imposed on top. Every approach has failure modes.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('structured',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('structured',1)">Code</button>
+    <button class="dt" onclick="dim('structured',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Method</th><th>Reliability</th><th>Failure mode</th><th>When to use</th></tr>
+      <tr><td>Prompt + parse JSON</td><td>Low</td><td>Model adds markdown, commentary, trailing comma, wrong types</td><td>Never in production</td></tr>
+      <tr><td>JSON mode</td><td>Medium</td><td>Valid JSON but wrong schema; missing required fields; wrong enum values</td><td>Prototyping; simple schemas</td></tr>
+      <tr><td>Tool/function calling</td><td>High</td><td>Model calls wrong tool; skips required args; argument type mismatch</td><td>Production; structured extraction</td></tr>
+      <tr><td>with_structured_output (Pydantic)</td><td>High</td><td>Validation errors on complex nested schemas; enum fields with many options</td><td>Production; typed Python objects</td></tr>
+      <tr><td>Instructor library</td><td>Very High</td><td>Adds retry overhead; slower on retries</td><td>Complex schemas needing auto-retry on validation failure</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>War Story — JSON Mode Silent Failure</strong>
+    Used JSON mode to extract drug interaction severity (enum: "low", "medium", "high", "contraindicated"). Model returned valid JSON with <span class="mono">"severity": "High"</span> — capital H, not in the enum. The downstream parser did a case-sensitive match and silently classified "High" as unknown, defaulting to "low" severity. A contraindicated interaction was displayed as low severity. Switched to <span class="mono">with_structured_output(Pydantic)</span> with a <span class="mono">Literal["low","medium","high","contraindicated"]</span> field — Pydantic validates and rejects invalid values at parse time.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Pydantic structured output with validation and retry</div>
+<pre><span class="k">from</span> pydantic <span class="k">import</span> BaseModel, Field, field_validator
+<span class="k">from</span> typing <span class="k">import</span> Literal
+<span class="k">from</span> langchain_anthropic <span class="k">import</span> ChatAnthropic
+
+<span class="k">class</span> <span class="fn">ClaimResolution</span>(BaseModel):
+    claim_id:   str
+    status:     Literal[<span class="s">"approved"</span>, <span class="s">"denied"</span>, <span class="s">"escalated"</span>, <span class="s">"pending_info"</span>]
+    confidence: float = Field(ge=<span class="n">0.0</span>, le=<span class="n">1.0</span>)
+    reasoning:  str   = Field(min_length=<span class="n">20</span>)
+    amount_usd: float = Field(ge=<span class="n">0</span>)
+
+    <span class="k">@</span>field_validator(<span class="s">"reasoning"</span>)
+    <span class="k">def</span> <span class="fn">reasoning_must_cite_evidence</span>(cls, v):
+        <span class="k">if</span> <span class="s">"[Doc:"</span> <span class="k">not</span> <span class="k">in</span> v <span class="k">and</span> <span class="s">"[Source:"</span> <span class="k">not</span> <span class="k">in</span> v:
+            <span class="k">raise</span> ValueError(<span class="s">"Reasoning must cite a source document"</span>)
+        <span class="k">return</span> v
+
+llm = ChatAnthropic(model=<span class="s">"claude-sonnet-4-5"</span>)
+<span class="c"># with_structured_output: model uses tool_use internally;</span>
+<span class="c"># Pydantic validates; raises ValidationError on schema mismatch</span>
+structured_llm = llm.with_structured_output(ClaimResolution, include_raw=<span class="k">False</span>)
+
+resolution: ClaimResolution = structured_llm.invoke(prompt)</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">JSON mode returned valid JSON but the schema was wrong. How do you prevent that?</div><div class="qa-a">JSON mode only guarantees syntactically valid JSON — it doesn't validate against your schema. Three defenses: (1) Use <span class="mono">with_structured_output(Pydantic)</span> instead — it sends the schema to the model via function calling, which is schema-aware, not just syntax-aware. Pydantic then validates the parsed result. (2) If you must use JSON mode, add explicit schema description in the system prompt AND validate the output with a Pydantic model — catch the mismatch programmatically rather than silently passing wrong data downstream. (3) Use the Instructor library, which wraps any LLM with automatic retry on Pydantic ValidationError — it re-prompts the model with the validation error message and tries again up to N times.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- SAMPLING -->
+<div class="svc" id="svc-sampling">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Sampling &amp; Temperature</span><span class="sp">Temperature · top-p · top-k · Determinism</span></div>
+    <div class="sd">Temperature controls randomness. But "set it to 0 for accuracy" is an oversimplification — temperature interacts with the task, the model, and what "correct" means. Understanding sampling matters for debugging non-deterministic failures.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('sampling',0)">Concept &amp; Tuning</button>
+    <button class="dt" onclick="dim('sampling',1)">Code</button>
+    <button class="dt" onclick="dim('sampling',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Parameter</th><th>Effect</th><th>Typical range</th><th>When to tune</th></tr>
+      <tr><td>temperature</td><td>Scales logit distribution; 0 = deterministic (greedy); 1 = default; &gt;1 = more random</td><td>0–1</td><td>0 for structured extraction/code; 0.3–0.7 for Q&amp;A; 0.7–1 for creative</td></tr>
+      <tr><td>top_p (nucleus)</td><td>Sample from the smallest set of tokens whose cumulative probability ≥ p</td><td>0.9–1.0</td><td>Lower (0.7–0.9) to reduce rare token selection; rarely tuned</td></tr>
+      <tr><td>top_k</td><td>Restrict sampling to the K most probable tokens</td><td>50–100</td><td>Rarely needed if temperature is set; Anthropic doesn't expose top_k</td></tr>
+      <tr><td>max_tokens</td><td>Hard cap on output length; model stops even mid-sentence</td><td>Task-dependent</td><td>Set explicitly; never rely on default; too-low truncates answers</td></tr>
+    </table>
+    <ul class="bl">
+      <li><strong>Temperature 0 is not truly deterministic</strong> — floating-point arithmetic on parallel GPUs introduces non-determinism even at temp=0; use seeds where available for reproducibility</li>
+      <li><strong>High temperature + structured output = more failures</strong> — at temperature 0.8, the model is more likely to generate slightly wrong field names or out-of-enum values; use 0–0.3 for structured extraction</li>
+      <li><strong>Debugging non-determinism</strong> — if a prompt works 90% of the time but fails 10%, temperature is often the culprit; lower it or add more explicit format instructions</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Temperature by task type + seed for reproducibility</div>
+<pre><span class="k">from</span> anthropic <span class="k">import</span> Anthropic
+client = Anthropic()
+
+<span class="fn">def</span> <span class="fn">call_model</span>(messages, task_type: str, **kwargs):
+    temp_map = {
+        <span class="s">"extraction"</span>:  <span class="n">0.0</span>,   <span class="c"># structured data extraction → deterministic</span>
+        <span class="s">"qa"</span>:          <span class="n">0.3</span>,   <span class="c"># factual Q&amp;A → low variation</span>
+        <span class="s">"summarize"</span>:   <span class="n">0.5</span>,   <span class="c"># summarization → some flexibility</span>
+        <span class="s">"creative"</span>:    <span class="n">0.8</span>,   <span class="c"># generation → more variety</span>
+    }
+    temperature = temp_map.get(task_type, <span class="n">0.3</span>)
+
+    <span class="k">return</span> client.messages.create(
+        model=<span class="s">"claude-sonnet-4-5"</span>,
+        messages=messages,
+        temperature=temperature,
+        max_tokens=kwargs.get(<span class="s">"max_tokens"</span>, <span class="n">1024</span>),
+    )
+
+<span class="c"># For eval reproducibility — same seed on every eval run</span>
+<span class="c"># Note: Claude uses top_k internally; seed available via system prompt pinning</span>
+<span class="c"># OpenAI: pass seed=42 to messages.create for deterministic output</span></pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Why would you use temperature > 0 for a factual Q&A system?</div><div class="qa-a">Two reasons. First: temperature 0 (greedy decoding) can get stuck in repetitive loops on some models — it always picks the single highest-probability token, which can create degenerate outputs on ambiguous prompts. A small temperature (0.1–0.3) introduces just enough variation to break loops while keeping output stable. Second: for Q&A where there are multiple valid correct phrasings, a tiny amount of temperature produces more natural, varied responses — users notice when every answer sounds like it came from the same template. In practice, for a benefits chatbot I'd use 0.2–0.3: low enough to be consistent and accurate, high enough to sound human and avoid loops.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- FINE-TUNING -->
+<div class="svc" id="svc-finetuning">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Fine-tuning vs Prompting</span><span class="sp">When to fine-tune · LoRA · Instruction tuning · Cost</span></div>
+    <div class="sd">Fine-tuning is often reached for too early. Prompting + RAG solves 80% of problems at 10% of the cost and time. Fine-tuning is warranted for specific, well-defined failure modes that prompting cannot fix.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('finetuning',0)">Decision Framework</button>
+    <button class="dt" onclick="dim('finetuning',1)">Code</button>
+    <button class="dt" onclick="dim('finetuning',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Use fine-tuning when</th><th>Use prompting/RAG when</th></tr>
+      <tr><td>You have 1,000+ high-quality labeled examples of the exact behavior you want</td><td>You don't have training data or it would take weeks to create</td></tr>
+      <tr><td>Prompting has hit a ceiling — you've tried CoT, few-shot, and the behavior still isn't reliable</td><td>You haven't tried few-shot, CoT, or structured output yet</td></tr>
+      <tr><td>Latency matters and you need a smaller model to match a larger model's quality on a narrow task</td><td>The task is broad and generalization matters</td></tr>
+      <tr><td>Domain vocabulary or format is so specific it's hard to convey in a prompt (code style, medical terminology)</td><td>The behavior can be demonstrated in 3-5 examples</td></tr>
+      <tr><td>You need to reduce hallucination on a very narrow, well-defined task with known correct answers</td><td>Knowledge changes frequently — fine-tuning bakes in a snapshot</td></tr>
+    </table>
+    <div class="ca ca-b"><strong>LoRA on Databricks</strong>
+    Databricks Model Serving supports fine-tuning open-weight models (Llama, Mistral) with LoRA (Low-Rank Adaptation) via the Fine-Tuning API. LoRA fine-tunes a small number of adapter weights rather than the full model — 10-100× cheaper than full fine-tuning, comparable quality for most tasks. Output: a Delta-registered model artifact deployable to Model Serving.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Databricks Fine-Tuning API with LoRA (Llama-3-8B)</div>
+<pre><span class="k">from</span> databricks.sdk <span class="k">import</span> WorkspaceClient
+<span class="k">from</span> databricks.sdk.service.finetuning <span class="k">import</span> FineTuneRequest, DataConfig
+
+w = WorkspaceClient()
+
+<span class="c"># Training data: JSONL with {"prompt": "...", "response": "..."} pairs</span>
+<span class="c"># Stored in a Unity Catalog Volume</span>
+run = w.fine_tuning.runs.create(
+    FineTuneRequest(
+        model=<span class="s">"meta-llama/Meta-Llama-3-8B-Instruct"</span>,
+        train_data_path=<span class="s">"dbfs:/Volumes/main/hr/training/benefit_qa_train.jsonl"</span>,
+        eval_data_path=<span class="s">"dbfs:/Volumes/main/hr/training/benefit_qa_eval.jsonl"</span>,
+        training_config={
+            <span class="s">"num_train_epochs"</span>: <span class="n">3</span>,
+            <span class="s">"learning_rate"</span>: <span class="n">2e-4</span>,
+            <span class="s">"lora_r"</span>: <span class="n">16</span>,         <span class="c"># LoRA rank — higher = more capacity, more params</span>
+            <span class="s">"lora_alpha"</span>: <span class="n">32</span>,
+            <span class="s">"lora_dropout"</span>: <span class="n">0.1</span>,
+        },
+        registered_model_name=<span class="s">"main.hr.llama3-benefit-advisor"</span>,
+    )
+)
+print(<span class="s">f"Fine-tuning run: {run.run_id}"</span>)
+<span class="c"># After completion: deploy to Model Serving endpoint</span></pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you decide whether to fine-tune or improve the prompt?</div><div class="qa-a">Run the experiment in that order — prompt first, fine-tune only if prompted. Concrete decision gate: if I have a specific, measurable failure (e.g., the model consistently formats drug dosages wrong, or uses lay terms instead of clinical terminology), I first try a few-shot example of the correct behavior. If 5 examples don't fix it, I try 20. If 20 examples in the prompt don't reliably fix it, I have evidence that the behavior requires parametric knowledge, not just in-context demonstration — and now I have my training data already (those 20 examples become the seed for a fine-tuning dataset). Fine-tuning also makes sense when the prompt is getting unwieldy — if you're spending 2K tokens on examples and instructions, a fine-tuned model can collapse that to a 200-token system prompt.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- HALLUCINATION -->
+<div class="svc" id="svc-hallucination">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Hallucination</span><span class="sp">Why it happens · Detection · Mitigation · Grounding</span></div>
+    <div class="sd">Hallucination is not a bug — it's a feature of how language models work. They generate the most probable next token, not the most accurate one. Mitigation requires architecture decisions, not just prompting.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('hallucination',0)">Concept &amp; Types</button>
+    <button class="dt" onclick="dim('hallucination',1)">Detection &amp; Mitigation</button>
+    <button class="dt" onclick="dim('hallucination',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Hallucination type</th><strong></strong><th>Example</th><th>Primary mitigation</th></tr>
+      <tr><td>Intrinsic</td><td>Answer contradicts the provided context directly</td><td>Faithfulness eval + citation requirement</td></tr>
+      <tr><td>Extrinsic</td><td>Answer cannot be verified or contradicted by context — model adds new "facts"</td><td>RAG grounding; close-book prompting</td></tr>
+      <tr><td>Parametric</td><td>Model answers from training data instead of provided context (stale facts)</td><td>"Answer only from the documents" + evidence requirement</td></tr>
+      <tr><td>Confident uncertainty</td><td>Model gives a definite answer to an unanswerable question</td><td>Explicit escape hatch in prompt; "I don't know" examples</td></tr>
+    </table>
+    <ul class="bl">
+      <li><strong>Why it happens</strong> — LLMs are trained to predict the next token, not to flag uncertainty; the most fluent, confident-sounding token sequence is often reinforced during RLHF</li>
+      <li><strong>Bigger models hallucinate differently</strong> — they hallucinate less on factual recall but more confidently when they do; smaller models hallucinate more but sometimes hedge ("I'm not sure")</li>
+      <li><strong>Citations as grounding</strong> — requiring a citation for every claim forces the model to verify against context before generating; it can't cite what isn't there</li>
+      <li><strong>Consistency checking</strong> — generate 3 answers at slightly different temperatures; if they disagree significantly, the model is uncertain; flag for human review</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Self-consistency check for high-stakes answers</div>
+<pre><span class="k">import</span> re
+<span class="k">from</span> langchain_anthropic <span class="k">import</span> ChatAnthropic
+
+llm = ChatAnthropic(model=<span class="s">"claude-sonnet-4-5"</span>)
+
+<span class="fn">def</span> <span class="fn">consistent_answer</span>(prompt: str, n: int = <span class="n">3</span>, agreement_threshold: float = <span class="n">0.67</span>) -> dict:
+    <span class="s">"""Generate N answers; return answer only if majority agree."""</span>
+    answers = []
+    <span class="k">for</span> temp <span class="k">in</span> [<span class="n">0.0</span>, <span class="n">0.3</span>, <span class="n">0.5</span>]:
+        response = llm.invoke(prompt, config={<span class="s">"temperature"</span>: temp})
+        answers.append(response.content.strip())
+
+    <span class="c"># Simple agreement: check if dominant answer appears in majority</span>
+    <span class="k">from</span> collections <span class="k">import</span> Counter
+    <span class="c"># Normalize: extract key facts (e.g., dollar amounts, yes/no)</span>
+    normalized = [extract_key_claim(a) <span class="k">for</span> a <span class="k">in</span> answers]
+    most_common, count = Counter(normalized).most_common(<span class="n">1</span>)[<span class="n">0</span>]
+
+    agreement = count / n
+    <span class="k">if</span> agreement >= agreement_threshold:
+        <span class="k">return</span> {<span class="s">"answer"</span>: answers[<span class="n">0</span>], <span class="s">"confidence"</span>: agreement, <span class="s">"escalate"</span>: <span class="k">False</span>}
+    <span class="k">return</span>  {<span class="s">"answer"</span>: <span class="k">None</span>, <span class="s">"confidence"</span>: agreement, <span class="s">"escalate"</span>: <span class="k">True</span>}</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">The model was confidently wrong on a drug interaction question. What did you do?</div><div class="qa-a">Three things in response. Immediate: added that specific interaction to the eval set as a hard failure case. Added a rule to the system prompt: "For any drug interaction question, you MUST state the source document and section. If you cannot find the interaction in the provided formulary documents, say 'This interaction is not documented in our current formulary. Consult the prescribing pharmacist.' Never infer or extrapolate drug interactions." Medium-term: added a self-consistency check for drug interaction queries specifically — generate the answer at three temperatures, only auto-respond if 2 of 3 agree on the key claim (safe/unsafe/unknown). Any disagreement routes to human pharmacist review. The confidence was the dangerous part — the model had learned from RLHF to sound authoritative. The escape hatch instruction was necessary to override that.</div></li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</div>
+<script>
+function show(id){document.querySelectorAll('.svc').forEach(function(el){el.classList.remove('active');});document.querySelectorAll('.sb').forEach(function(el){el.classList.remove('active');});document.getElementById('svc-'+id).classList.add('active');document.querySelector('[data-svc="'+id+'"]').classList.add('active');window.scrollTo(0,0);}
+function dim(svcId,idx){var svc=document.getElementById('svc-'+svcId);var panels=svc.querySelectorAll('.dp');var tabs=svc.querySelectorAll('.dt');panels.forEach(function(el){el.classList.remove('active');});tabs.forEach(function(el){el.classList.remove('active');});panels[idx].classList.add('active');tabs[idx].classList.add('active');}
+function toggleTheme(){var root=document.documentElement;root.setAttribute('data-theme',root.getAttribute('data-theme')==='light'?'dark':'light');}
+</script>
+</body>
+</html>

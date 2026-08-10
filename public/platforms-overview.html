@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Platforms — Study Reference</title>
+<style>
+:root{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--accent:#FF4D1C;--blue:#4D9EFF;--green:#3DBA6F;--amber:#F0A030;--code:#0D1621;}
+@media(prefers-color-scheme:light){:root{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}}
+:root[data-theme=light]{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}
+:root[data-theme=dark]{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--code:#0D1621;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:1rem;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.logo span{color:var(--t2);font-weight:400}
+.title{font-size:.8rem;color:var(--t2)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+.badge{font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(61,186,111,.15);color:var(--green);border:1px solid rgba(61,186,111,.3)}
+.tbtn{background:var(--s2);border:1px solid var(--border);color:var(--t2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem}
+.tbtn:hover{color:var(--t1)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1rem .75rem;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:52px;max-height:calc(100vh - 52px);overflow-y:auto}
+.sg{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);font-weight:700;padding:.75rem .5rem .2rem}
+.sb{display:flex;flex-direction:column;width:100%;text-align:left;background:none;border:none;border-radius:6px;padding:.4rem .6rem;cursor:pointer;color:var(--t2);font-size:.8rem;line-height:1.3;transition:background .12s,color .12s}
+.sb:hover{background:var(--s2);color:var(--t1)}
+.sb.active{background:rgba(255,77,28,.12);color:var(--accent);font-weight:600}
+.sb small{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.sb.active small{color:rgba(255,77,28,.6)}
+.main{flex:1;padding:1.5rem 2rem;min-width:0}
+.svc{display:none}.svc.active{display:block}
+.sh{margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sh-top{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.4rem}
+.sn{font-size:1.4rem;font-weight:700;color:var(--t1)}
+.sp{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.sd{font-size:.88rem;color:var(--t2);max-width:72ch}
+.dtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto}
+.dt{padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;background:none;border:none;color:var(--t2);border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.dt:hover{color:var(--t1)}.dt.active{color:var(--accent);border-bottom-color:var(--accent)}
+.dp{display:none}.dp.active{display:block}
+.ps{margin-bottom:1.5rem}
+.pt{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--t3);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.pt::after{content:'';flex:1;height:1px;background:var(--border)}
+pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;font-size:.76rem;line-height:1.6;margin-bottom:.75rem;color:#A8C7FA;font-family:'Courier New',monospace}
+.cl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700;margin-bottom:.25rem;font-family:monospace}
+.k{color:#FF7B72}.s{color:#A5D6FF}.c{color:#5A6A80;font-style:italic}.fn{color:#79C0FF}.n{color:#FFA657}
+ul.bl{list-style:none;padding:0;margin-bottom:1rem}
+ul.bl li{font-size:.84rem;color:var(--t2);padding:.2rem 0 .2rem 1.1rem;position:relative;line-height:1.5}
+ul.bl li::before{content:'▸';position:absolute;left:0;color:var(--t3)}
+ul.bl li strong{color:var(--t1)}
+table.ft{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.75rem}
+table.ft th{text-align:left;padding:.4rem .75rem;background:var(--s2);color:var(--t2);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--border)}
+table.ft td{padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t1);vertical-align:top}
+table.ft tr:last-child td{border-bottom:none}
+table.ft td:first-child{color:var(--blue);font-family:monospace;font-size:.75rem;white-space:nowrap}
+table.ft tr:hover td{background:var(--s2)}
+.ca{border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.83rem;line-height:1.55;border-left:3px solid}
+.ca strong{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.ca-b{background:rgba(77,158,255,.07);border-color:var(--blue)}.ca-b strong{color:var(--blue)}
+.ca-a{background:rgba(240,160,48,.08);border-color:var(--amber)}.ca-a strong{color:var(--amber)}
+.ca-g{background:rgba(61,186,111,.07);border-color:var(--green)}.ca-g strong{color:var(--green)}
+.ca-r{background:rgba(255,77,28,.07);border-color:var(--accent)}.ca-r strong{color:var(--accent)}
+.mono{font-family:'Courier New',monospace;font-size:.85em;color:var(--blue);background:rgba(77,158,255,.08);padding:1px 4px;border-radius:3px}
+.qa{list-style:none;padding:0}
+.qi{border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;overflow:hidden}
+.qq{padding:.6rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:flex-start;gap:.6rem;background:var(--s2);color:var(--t1)}
+.qq::before{content:'Q';flex-shrink:0;font-size:.62rem;font-weight:800;padding:1px 5px;border-radius:3px;background:rgba(77,158,255,.2);color:var(--blue);margin-top:.05rem}
+.qa-a{padding:.6rem .9rem;font-size:.8rem;color:var(--t2);line-height:1.55;border-top:1px solid var(--border);display:none}
+.qi.open .qa-a{display:block}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%;max-height:none;position:static;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--border)}.sg{display:none}.main{padding:1rem}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">Platforms <span>Study Reference</span></div>
+  <div class="title">Databricks · Orchestration · Vector DBs · Observability · Framework Trade-offs · Aug 2026</div>
+  <div class="tr"><span class="badge">Director Level</span><button class="tbtn" onclick="toggleTheme()">Toggle Theme</button></div>
+</div>
+<div class="layout">
+<nav class="sidebar">
+  <div class="sg">Databricks</div>
+  <button class="sb active" data-svc="databricks" onclick="show('databricks')">Databricks AI Platform<small>Model Serving · AI Search · Genie</small></button>
+  <div class="sg">Orchestration</div>
+  <button class="sb" data-svc="frameworks" onclick="show('frameworks')">Framework Comparison<small>LangGraph · LlamaIndex · CrewAI</small></button>
+  <div class="sg">Storage</div>
+  <button class="sb" data-svc="vectordb" onclick="show('vectordb')">Vector Databases<small>pgvector · Qdrant · Pinecone · AI Search</small></button>
+  <div class="sg">Observability</div>
+  <button class="sb" data-svc="observability" onclick="show('observability')">Observability Stack<small>MLflow · LangSmith · Arize Phoenix</small></button>
+  <div class="sg">Decisions</div>
+  <button class="sb" data-svc="lockin" onclick="show('lockin')">Framework Lock-in<small>Migration pain · When to switch</small></button>
+  <button class="sb" data-svc="hosting" onclick="show('hosting')">Model Hosting Trade-offs<small>API vs self-host · Cost · Latency</small></button>
+</nav>
+<main class="main">
+
+<!-- DATABRICKS -->
+<div class="svc active" id="svc-databricks">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Databricks AI Platform</span><span class="sp">Model Serving · AI Search · Genie Agents · Unity Catalog</span></div>
+    <div class="sd">Databricks is a full-stack AI platform built on open standards (Delta Lake, MLflow, Unity Catalog). In 2025-2026 it shifted from analytics-first to AI-first: Model Serving, AI Search, and Genie Agents are the three pillars for production AI.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('databricks',0)">Services &amp; Current Names</button>
+    <button class="dt" onclick="dim('databricks',1)">Code</button>
+    <button class="dt" onclick="dim('databricks',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <div class="ps"><div class="pt">Current Service Names (2026) — These Changed</div>
+    <table class="ft"><tr><th>Current Name</th><th>Old Name</th><th>What it does</th></tr>
+      <tr><td>Databricks AI Search</td><td>Vector Search</td><td>Managed vector index in Unity Catalog; Delta Sync keeps it current as source tables update</td></tr>
+      <tr><td>Genie Agents</td><td>Genie Spaces</td><td>NL-to-SQL agent for business users; queries registered Delta tables; no SQL required</td></tr>
+      <tr><td>Declarative Automation</td><td>Asset Bundles / DABs</td><td>YAML-based CI/CD for Databricks jobs, pipelines, and apps; version-controlled infra</td></tr>
+      <tr><td>Model Serving</td><td>Model Serving (unchanged)</td><td>REST endpoint for MLflow models, Foundation Model API, and external models</td></tr>
+      <tr><td>AI Playground</td><td>Playground (unchanged)</td><td>Chat UI for comparing foundation models; prompt engineering workspace</td></tr>
+    </table></div>
+    <ul class="bl">
+      <li><strong>Foundation Model API</strong> — pay-per-token access to DBRX, Llama, Mistral, and others hosted by Databricks; no GPU provisioning needed; governed by Unity Catalog</li>
+      <li><strong>External Models</strong> — proxy OpenAI/Anthropic/Azure through Databricks Model Serving; adds UC governance, audit logging, and rate limiting to external APIs</li>
+      <li><strong>Unity Catalog for AI</strong> — register models, volumes (files), vector indexes, and function tools all in UC; single governance layer across data and AI assets</li>
+      <li><strong>AI Search Delta Sync</strong> — index auto-updates when source Delta table changes; critical for production RAG where documents are added/updated regularly</li>
+      <li><strong>MLflow 2.15+</strong> — native agent tracing; traces land in <span class="mono">system.agent_traces</span> Delta table; queryable with SQL in Databricks notebooks</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Databricks Model Serving endpoint + AI Search in a RAG chain</div>
+<pre><span class="k">from</span> databricks_langchain <span class="k">import</span> ChatDatabricks, DatabricksVectorSearch
+<span class="k">from</span> langchain_core.runnables <span class="k">import</span> RunnablePassthrough
+<span class="k">from</span> langchain_core.output_parsers <span class="k">import</span> StrOutputParser
+<span class="k">import</span> mlflow
+
+mlflow.langchain.autolog()  <span class="c"># traces every chain call → system.agent_traces</span>
+
+<span class="c"># Model Serving endpoint (Foundation Model API or custom)</span>
+llm = ChatDatabricks(
+    endpoint=<span class="s">"databricks-claude-sonnet-4-5"</span>,  <span class="c"># or your custom endpoint</span>
+    max_tokens=<span class="n">512</span>,
+)
+
+<span class="c"># AI Search (Unity Catalog vector index)</span>
+vectorstore = DatabricksVectorSearch(
+    endpoint=<span class="s">"hr-rag-endpoint"</span>,
+    index_name=<span class="s">"main.hr.benefit_docs_index"</span>,
+    text_column=<span class="s">"chunk_text"</span>,
+    columns=[<span class="s">"chunk_text"</span>, <span class="s">"source_doc"</span>, <span class="s">"doc_year"</span>],
+)
+retriever = vectorstore.as_retriever(
+    search_kwargs={<span class="s">"k"</span>: <span class="n">5</span>, <span class="s">"filters"</span>: {<span class="s">"doc_year"</span>: {<span class="s">"$gte"</span>: <span class="n">2025</span>}}}
+)
+
+rag_chain = (
+    {<span class="s">"context"</span>: retriever, <span class="s">"question"</span>: RunnablePassthrough()}
+    | prompt_template
+    | llm
+    | StrOutputParser()
+)
+answer = rag_chain.invoke(<span class="s">"What is the 2026 PPO deductible?"</span>)</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Why would you use Databricks AI Search over Pinecone or Qdrant?</div><div class="qa-a">Three reasons that matter in enterprise. First, governance: AI Search indexes live in Unity Catalog alongside your Delta tables — the same access controls, lineage, and audit logging apply to both. No separate credentials, no shadow data. Second, Delta Sync: when your source documents table is updated (new drug labels ingested, benefits documents refreshed), the vector index syncs automatically — no separate ingestion job to maintain. Third, if you're already on Databricks for the rest of the stack (jobs, MLflow, Model Serving), staying within the platform reduces operational surface area and egress costs. The trade-off: less flexibility than a dedicated vector DB for advanced indexing strategies, and you're locked into the Databricks pricing model.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's the difference between Foundation Model API and external models in Databricks?</div><div class="qa-a">Foundation Model API hosts models on Databricks' own infrastructure — DBRX, Llama, Mixtral. Your data stays within the Databricks environment; never leaves for OpenAI servers. It's governed by Unity Catalog. External Models proxy calls to third-party providers (OpenAI, Anthropic, Azure OpenAI) but route them through Databricks Model Serving, which adds UC-level audit logging, rate limiting, and a single credential store. The data still goes to the external provider — but you have governance on top. For regulated industries (pharma, healthcare), knowing that PII isn't accidentally sent to OpenAI requires either Foundation Models or a very clear data classification policy with External Models.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- FRAMEWORKS -->
+<div class="svc" id="svc-frameworks">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Framework Comparison</span><span class="sp">LangGraph · LlamaIndex · CrewAI · AutoGen</span></div>
+    <div class="sd">No framework does everything well. The right choice depends on whether your problem is primarily about retrieval, agent state, multi-agent coordination, or all three. Picking the wrong one creates migration pain later.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('frameworks',0)">Comparison</button>
+    <button class="dt" onclick="dim('frameworks',1)">When to Combine</button>
+    <button class="dt" onclick="dim('frameworks',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Framework</th><th>Strengths</th><th>Weaknesses</th><th>Best for</th></tr>
+      <tr><td>LangGraph</td><td>Stateful agents, HITL interrupt/resume, checkpointing, conditional routing, streaming</td><td>Retrieval abstractions are awkward; steeper learning curve; no built-in indexing</td><td>Complex agentic workflows, supervisor/worker patterns, any HITL requirement</td></tr>
+      <tr><td>LlamaIndex</td><td>Best-in-class retrieval (query routing, hybrid search, index management, sub-question decomposition)</td><td>Agent orchestration is limited; no native HITL or checkpointing</td><td>RAG-heavy systems; document Q&amp;A; complex retrieval pipelines</td></tr>
+      <tr><td>CrewAI</td><td>Declarative multi-agent setup; role-based agents; easy to prototype</td><td>Less control over state; limited streaming; less production-hardened</td><td>Rapid prototyping of multi-agent systems; non-technical team demos</td></tr>
+      <tr><td>AutoGen / MAF</td><td>Conversational multi-agent; Microsoft ecosystem integration; code execution sandbox</td><td>Complex to debug; conversation-based rather than graph-based; less Databricks integration</td><td>Code generation agents; research automation; Microsoft Azure stacks</td></tr>
+    </table>
+    <div class="ca ca-g"><strong>The winning combination in 2026</strong>
+    LlamaIndex for ingestion and retrieval (index management, hybrid search, reranking) + LangGraph for agent orchestration and state (supervisor routing, HITL, checkpointing). LlamaIndex's retriever becomes a tool inside a LangGraph node. You get best-in-class at both layers.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · LlamaIndex retriever as a tool inside a LangGraph agent node</div>
+<pre><span class="k">from</span> llama_index.core <span class="k">import</span> VectorStoreIndex, StorageContext
+<span class="k">from</span> llama_index.core.tools <span class="k">import</span> QueryEngineTool
+<span class="k">from</span> langchain_core.tools <span class="k">import</span> tool
+<span class="k">from</span> langgraph.prebuilt <span class="k">import</span> create_react_agent
+
+<span class="c"># LlamaIndex handles the retrieval complexity</span>
+query_engine = VectorStoreIndex.from_documents(docs).as_query_engine(
+    similarity_top_k=<span class="n">5</span>,
+    response_mode=<span class="s">"compact"</span>,
+)
+
+<span class="c"># Wrap as a LangChain tool so LangGraph can call it</span>
+<span class="k">@</span>tool
+<span class="fn">def</span> <span class="fn">search_hr_docs</span>(query: str) -> str:
+    <span class="s">"""Search HR benefit documents for policy, coverage, and plan information.
+    Use for questions about health plans, 401k, PTO, FMLA, and benefits."""</span>
+    response = query_engine.query(query)
+    <span class="k">return</span> str(response)
+
+<span class="c"># LangGraph handles agent orchestration, state, HITL</span>
+<span class="k">from</span> langchain_anthropic <span class="k">import</span> ChatAnthropic
+agent = create_react_agent(
+    ChatAnthropic(model=<span class="s">"claude-sonnet-4-5"</span>),
+    tools=[search_hr_docs],  <span class="c"># LlamaIndex retriever as a tool</span>
+)</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">We started with LangChain but hit a ceiling. When did you switch to LangGraph?</div><div class="qa-a">The ceiling hit us when we needed two things LangChain chains can't do cleanly: branching based on runtime state (if confidence is low, route to human review; otherwise auto-resolve) and resuming after a human pause. LangChain's sequential chain gave us no way to inspect intermediate state and branch on it. We were hacking around it with nested chains and callback hacks. The switch to LangGraph was the right move — state is explicit in a TypedDict, every node reads and writes it, and conditional edges are first-class. The migration took about 2 weeks because we rewrote the orchestration layer, but the retrieval layer (tools, embeddings, vector store) stayed identical — we just wrapped each retrieval step as a node.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Would you choose LlamaIndex or LangGraph for a new RAG project?</div><div class="qa-a">It depends on whether the system is retrieval-first or agent-first. Pure document Q&amp;A with sophisticated retrieval (multi-index, sub-question decomposition, hybrid search across 10+ document types) — LlamaIndex. It has more retrieval abstractions out of the box. If the retrieval is straightforward but I need agent behavior (dynamic routing, multi-step reasoning, HITL, checkpointed state) — LangGraph with a simple retriever. For anything non-trivial in production I'd use both: LlamaIndex's query engine as a tool inside a LangGraph node. That's the composition pattern that avoids the ceiling on either side.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- VECTOR DB -->
+<div class="svc" id="svc-vectordb">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Vector Databases</span><span class="sp">pgvector · Qdrant · Pinecone · Databricks AI Search · Weaviate</span></div>
+    <div class="sd">Vector DB selection is an architectural decision with long-term consequences — migrating means re-embedding every chunk. The right choice depends on data volume, existing infrastructure, and governance requirements.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('vectordb',0)">Comparison</button>
+    <button class="dt" onclick="dim('vectordb',1)">Migration Pain</button>
+    <button class="dt" onclick="dim('vectordb',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Option</th><th>When to use</th><th>Watch out for</th></tr>
+      <tr><td>pgvector</td><td>Already on PostgreSQL; &lt;10M vectors; simple metadata filtering; low ops overhead</td><td>Performance degrades above ~1M vectors without careful HNSW tuning; no built-in hybrid BM25</td></tr>
+      <tr><td>Qdrant</td><td>Open-source, self-hosted or cloud; built-in payload filtering; sparse+dense hybrid native</td><td>Smaller ecosystem than Pinecone; requires ops to self-host at scale</td></tr>
+      <tr><td>Pinecone</td><td>Managed, serverless, no ops; fast startup; strong ecosystem integrations</td><td>Expensive at scale; data leaves your VPC; limited metadata filtering logic</td></tr>
+      <tr><td>Databricks AI Search</td><td>Already on Databricks; Delta Sync; UC governance required; no data egress</td><td>Less indexing flexibility than dedicated DBs; tied to Databricks pricing</td></tr>
+      <tr><td>Weaviate</td><td>Built-in BM25+vector hybrid; multi-modal (text + image); module ecosystem</td><td>More complex to configure than Qdrant; resource-heavy self-hosted</td></tr>
+    </table>
+    <div class="ca ca-a"><strong>Decision heuristic</strong>
+    Already on Databricks → AI Search. Already on PostgreSQL, small scale → pgvector. Need open-source, self-hosted, with hybrid search → Qdrant. Need managed, fast time-to-value, not on Databricks → Pinecone. Need multi-modal or very rich filtering → Weaviate.</div>
+  </div>
+  <div class="dp">
+    <ul class="bl">
+      <li><strong>Re-embedding cost</strong> — changing vector DB means re-embedding every chunk; at 1M chunks × $0.00002/1K tokens = ~$20, but at 100M chunks it's $2,000+ and days of compute</li>
+      <li><strong>Embedding model is coupled to the index</strong> — you cannot mix embedding models in the same index; a model upgrade requires a full re-index</li>
+      <li><strong>Metadata schema changes</strong> — adding a new filter field (e.g., <span class="mono">doc_year</span>) after initial indexing requires re-ingesting all documents to backfill the field</li>
+      <li><strong>The migration we ran</strong> — moved from pgvector to Databricks AI Search when the project moved onto the Databricks stack; had to: (1) export all chunks with metadata, (2) re-embed using Databricks embedding endpoint, (3) bulk-load into AI Search, (4) validate retrieval quality on eval set before switching traffic. Total time: 3 days including validation.</li>
+    </ul>
+    <div class="ca ca-r"><strong>War Story — pgvector HNSW tuning</strong>
+    Hit 5M vectors on pgvector. P50 query latency was 80ms — acceptable. P99 was 2,400ms — not. Root cause: default HNSW parameters (<span class="mono">m=16, ef_construction=64</span>) were too conservative for the index size. Tuned to <span class="mono">m=32, ef_construction=128</span>, rebuilt the index. P99 dropped to 340ms. Lesson: pgvector is great, but you must tune HNSW explicitly — it doesn't auto-tune, and the defaults are built for small indexes.</div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you choose between a dedicated vector DB and pgvector?</div><div class="qa-a">Volume and ops burden are the two axes. Below 5M vectors with an existing PostgreSQL footprint: pgvector is the right default — no new infrastructure, ACID transactions, full SQL for metadata filtering. Above 10M vectors or if query P99 starts creeping up: a dedicated vector DB is worth the ops overhead. The hidden cost of pgvector at scale is that full-table HNSW index rebuilds take the table offline; dedicated vector DBs handle this incrementally. The other factor: if you need sparse+dense hybrid natively, Qdrant or Weaviate have it built in; pgvector requires a separate BM25 search to merge manually.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- OBSERVABILITY -->
+<div class="svc" id="svc-observability">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Observability Stack</span><span class="sp">MLflow · LangSmith · Arize Phoenix · OpenTelemetry</span></div>
+    <div class="sd">You cannot debug a production AI system from logs alone. Tracing captures the full chain: query → retrieval → prompt → generation → output, with latency and cost at each step. Without it, you're guessing.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('observability',0)">Comparison</button>
+    <button class="dt" onclick="dim('observability',1)">Code</button>
+    <button class="dt" onclick="dim('observability',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Tool</th><th>Best for</th><th>Cost</th><th>Data residency</th></tr>
+      <tr><td>MLflow Traces</td><td>Databricks-native; SQL-queryable in system.agent_traces; integrates with experiment tracking</td><td>Included in Databricks</td><td>Stays in your Databricks workspace</td></tr>
+      <tr><td>LangSmith</td><td>LangGraph-native; best UX for tracing LangChain/LangGraph; dataset management for evals</td><td>Paid (usage-based); free tier limited</td><td>LangChain cloud; EU option available</td></tr>
+      <tr><td>Arize Phoenix</td><td>Open-source; local or self-hosted; strong eval integration; no data egress</td><td>Free (open-source); Arize cloud paid</td><td>Self-hosted = your infra</td></tr>
+      <tr><td>OpenTelemetry</td><td>Vendor-neutral; route traces to any backend; standard for enterprise observability</td><td>Free (protocol)</td><td>Depends on backend</td></tr>
+    </table>
+    <div class="ca ca-b"><strong>Decision by constraint</strong>
+    On Databricks → MLflow Traces (zero config with autolog, SQL access). LangGraph + needs eval dataset management → LangSmith. Data cannot leave org network → Arize Phoenix self-hosted. Already have enterprise OTel infrastructure → instrument with OpenTelemetry, route to your existing backend (Datadog, Honeycomb, Jaeger).</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · MLflow autolog vs manual span for custom steps</div>
+<pre><span class="k">import</span> mlflow
+
+<span class="c"># Autolog — covers LangChain/LangGraph automatically</span>
+mlflow.langchain.autolog(log_inputs_outputs=<span class="k">True</span>)
+
+<span class="c"># Manual span — for custom steps not covered by autolog</span>
+<span class="k">with</span> mlflow.start_run():
+    <span class="k">with</span> mlflow.start_span(<span class="s">"retrieval"</span>, span_type=<span class="s">"RETRIEVAL"</span>) <span class="k">as</span> span:
+        span.set_inputs({<span class="s">"query"</span>: query})
+        chunks = retriever.invoke(query)
+        span.set_outputs({<span class="s">"num_chunks"</span>: len(chunks), <span class="s">"top_score"</span>: chunks[<span class="n">0</span>].score})
+
+    <span class="k">with</span> mlflow.start_span(<span class="s">"generation"</span>, span_type=<span class="s">"LLM"</span>) <span class="k">as</span> span:
+        span.set_inputs({<span class="s">"num_context_chunks"</span>: len(chunks)})
+        answer = llm.invoke(build_prompt(query, chunks))
+        span.set_outputs({<span class="s">"answer_length"</span>: len(answer.content)})
+
+<span class="c"># Query traces in Databricks SQL</span>
+<span class="c"># SELECT * FROM system.agent_traces</span>
+<span class="c"># WHERE status = 'ERROR' OR execution_time_ms > 5000</span>
+<span class="c"># ORDER BY timestamp DESC LIMIT 100</span></pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Why would you use Arize Phoenix instead of LangSmith?</div><div class="qa-a">Two situations. First: data cannot leave the organization — clinical data, PII, proprietary formulations. LangSmith sends trace data to LangChain's cloud. Arize Phoenix runs fully self-hosted inside your network; traces never leave. Second: cost. LangSmith is usage-based and gets expensive at high trace volume; Phoenix is open-source with no per-trace cost. The trade-off: LangSmith has better UX for LangGraph traces, tighter integration with LangChain's eval dataset management, and a more polished annotation workflow. For regulated industries or cost-sensitive production workloads, Phoenix is often the right call. For development and experimentation where the data isn't sensitive, LangSmith's UX advantage is worth the cost.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- LOCK-IN -->
+<div class="svc" id="svc-lockin">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Framework Lock-in &amp; Migration</span><span class="sp">When to switch · Migration cost · Abstraction layers</span></div>
+    <div class="sd">Framework lock-in in AI systems is real — but the risk is often overstated. The expensive part isn't the framework; it's the prompts, eval sets, and ingestion pipelines. Know what's coupled before you decide to switch.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('lockin',0)">Concept &amp; Signals</button>
+    <button class="dt" onclick="dim('lockin',1)">Migration Pattern</button>
+    <button class="dt" onclick="dim('lockin',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>What's actually coupled</strong> — prompts (portable), eval sets (portable), embedding model + index (re-index required), framework-specific abstractions (rewrite required), operational runbooks (rewrite required)</li>
+      <li><strong>Signal 1: abstraction ceiling</strong> — you're hacking around the framework to do something it wasn't designed for (e.g., LangChain for stateful HITL). Time to switch the agent layer.</li>
+      <li><strong>Signal 2: debugging opacity</strong> — you can't see what the framework is doing internally; bugs are hard to reproduce. Time to drop down to the primitive layer.</li>
+      <li><strong>Signal 3: performance ceiling</strong> — framework overhead is measurable in latency and cost. Drop the abstraction, call the API directly.</li>
+      <li><strong>Migration principle</strong> — never migrate everything at once. Extract the retrieval layer first (it's the most testable), validate against your eval set, then migrate the orchestration layer. Strangle the old framework over 2-4 weeks.</li>
+    </ul>
+    <div class="ca ca-g"><strong>The strangler fig pattern for framework migration</strong>
+    Keep the old framework running in production. Route new features through the new framework. Validate new-framework output against eval set. When new framework matches or exceeds quality, shift traffic progressively (10% → 25% → 50% → 100%). Never do a big-bang cutover on a production AI system.</div>
+  </div>
+  <div class="dp">
+    <ul class="bl">
+      <li><strong>Step 1</strong> — identify what's truly framework-coupled (usually: retriever wrappers, output parsers, chain composition) vs. framework-agnostic (prompts, tools, eval sets)</li>
+      <li><strong>Step 2</strong> — rewrite the retrieval layer first; validate against RAGAS eval set before touching orchestration</li>
+      <li><strong>Step 3</strong> — rewrite the orchestration layer; use feature flag to route % of traffic to new implementation</li>
+      <li><strong>Step 4</strong> — run A/B for 1 week on live traffic; compare online faithfulness scores, latency P99, escalation rate</li>
+      <li><strong>Step 5</strong> — cutover; keep old code on a branch for 2 weeks as rollback</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What would make you switch from LangGraph to something else?</div><div class="qa-a">LangGraph is well-suited for complex stateful workflows, but I'd consider switching in three scenarios. First: the team is primarily non-Python (e.g., Java/Go shop) and the Python overhead outweighs the benefits — there are thinner agent frameworks in other languages. Second: we're building something simple enough that LangGraph's graph abstraction is overhead — for a single-agent ReAct loop with 3 tools, calling the API directly is less cognitive load. Third: the Databricks stack evolves to offer a native agent orchestration layer that integrates more tightly with Unity Catalog governance and MLflow tracing — at that point the switching cost vs. integration benefit might favor moving. But for now, LangGraph + MLflow on Databricks is the combination I'd reach for first.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- HOSTING -->
+<div class="svc" id="svc-hosting">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Model Hosting Trade-offs</span><span class="sp">API vs self-host · Cost breakeven · Latency · Compliance</span></div>
+    <div class="sd">API-first is almost always the right starting point. Self-hosting pays off only at scale, under specific latency requirements, or when data residency rules out cloud APIs entirely.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('hosting',0)">Decision Framework</button>
+    <button class="dt" onclick="dim('hosting',1)">Cost Breakeven</button>
+    <button class="dt" onclick="dim('hosting',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Factor</th><th>API (Anthropic/OpenAI/Databricks)</th><th>Self-hosted (vLLM, Ollama, Databricks Model Serving)</th></tr>
+      <tr><td>Time to first token</td><td>Hours (get API key, call API)</td><td>Days–weeks (provision GPU, serve model, load test)</td></tr>
+      <tr><td>Data residency</td><td>Data leaves your network</td><td>Data stays in your infrastructure</td></tr>
+      <tr><td>Cost at low volume</td><td>Low (pay per token)</td><td>High (GPU always running even when idle)</td></tr>
+      <tr><td>Cost at high volume</td><td>High (linear with tokens)</td><td>Lower (amortize fixed GPU cost over many requests)</td></tr>
+      <tr><td>Latency P99</td><td>Variable (shared infrastructure)</td><td>Predictable (dedicated GPU)</td></tr>
+      <tr><td>Model choice</td><td>Best frontier models</td><td>Open weights only (Llama, Mistral, DBRX)</td></tr>
+    </table>
+    <div class="ca ca-a"><strong>Breakeven rule of thumb</strong>
+    A single A100 GPU (~$3/hr managed, ~$1.50/hr spot) can serve Llama-3-70B at ~30 tokens/sec. At that rate, 24/7 operation costs ~$1,100/month. If your API spend exceeds that, self-hosting breaks even on compute. But add ops cost (on-call, upgrades, monitoring) and the real breakeven is typically 2-3× the compute cost, so ~$3,000-$4,000/month in API spend.</div>
+  </div>
+  <div class="dp">
+    <ul class="bl">
+      <li><strong>Start with API</strong> — ship faster, iterate faster, let the model provider handle reliability; switch to self-host when the math works</li>
+      <li><strong>Databricks Model Serving as middle ground</strong> — self-host open weights models on Databricks-managed GPU; you control the model, Databricks handles infra scaling; data stays in your workspace</li>
+      <li><strong>vLLM for high-throughput self-hosting</strong> — PagedAttention gives 2-4× throughput vs naive serving; continuous batching handles variable request rates; good for batch inference</li>
+      <li><strong>Embedding models break even early</strong> — embedding APIs cost $0.00002/1K tokens; at 10M queries/day that's $200/day. A single GPU running nomic-embed handles this for $50/day. Embedding is often the first workload to self-host.</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When would you recommend self-hosting a model in a regulated industry?</div><div class="qa-a">Two triggers that override the cost math. First, data classification: if the queries contain PHI (protected health information), PII, or CJIS-controlled data, most cloud API providers' data processing agreements don't satisfy HIPAA BAA or equivalent requirements — self-hosting inside your compliant infrastructure is required regardless of cost. Second, air-gapped environments: some defense and government workloads can't make outbound API calls at all. In those cases, Databricks Model Serving on-premises or vLLM in a private cluster is the only path. Outside those constraints, I'd always start with the API and build the case for self-hosting from real usage data rather than projections.</div></li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</div>
+<script>
+function show(id){document.querySelectorAll('.svc').forEach(function(el){el.classList.remove('active');});document.querySelectorAll('.sb').forEach(function(el){el.classList.remove('active');});document.getElementById('svc-'+id).classList.add('active');document.querySelector('[data-svc="'+id+'"]').classList.add('active');window.scrollTo(0,0);}
+function dim(svcId,idx){var svc=document.getElementById('svc-'+svcId);var panels=svc.querySelectorAll('.dp');var tabs=svc.querySelectorAll('.dt');panels.forEach(function(el){el.classList.remove('active');});tabs.forEach(function(el){el.classList.remove('active');});panels[idx].classList.add('active');tabs[idx].classList.add('active');}
+function toggleTheme(){var root=document.documentElement;root.setAttribute('data-theme',root.getAttribute('data-theme')==='light'?'dark':'light');}
+</script>
+</body>
+</html>

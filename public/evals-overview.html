@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evals — Study Reference</title>
+<style>
+:root{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--accent:#FF4D1C;--blue:#4D9EFF;--green:#3DBA6F;--amber:#F0A030;--code:#0D1621;}
+@media(prefers-color-scheme:light){:root{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}}
+:root[data-theme=light]{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}
+:root[data-theme=dark]{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--code:#0D1621;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:1rem;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.logo span{color:var(--t2);font-weight:400}
+.title{font-size:.8rem;color:var(--t2)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+.badge{font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(61,186,111,.15);color:var(--green);border:1px solid rgba(61,186,111,.3)}
+.tbtn{background:var(--s2);border:1px solid var(--border);color:var(--t2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem}
+.tbtn:hover{color:var(--t1)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1rem .75rem;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:52px;max-height:calc(100vh - 52px);overflow-y:auto}
+.sg{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);font-weight:700;padding:.75rem .5rem .2rem}
+.sb{display:flex;flex-direction:column;width:100%;text-align:left;background:none;border:none;border-radius:6px;padding:.4rem .6rem;cursor:pointer;color:var(--t2);font-size:.8rem;line-height:1.3;transition:background .12s,color .12s}
+.sb:hover{background:var(--s2);color:var(--t1)}
+.sb.active{background:rgba(255,77,28,.12);color:var(--accent);font-weight:600}
+.sb small{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.sb.active small{color:rgba(255,77,28,.6)}
+.main{flex:1;padding:1.5rem 2rem;min-width:0}
+.svc{display:none}.svc.active{display:block}
+.sh{margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sh-top{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.4rem}
+.sn{font-size:1.4rem;font-weight:700;color:var(--t1)}
+.sp{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.sd{font-size:.88rem;color:var(--t2);max-width:72ch}
+.dtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto}
+.dt{padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;background:none;border:none;color:var(--t2);border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.dt:hover{color:var(--t1)}.dt.active{color:var(--accent);border-bottom-color:var(--accent)}
+.dp{display:none}.dp.active{display:block}
+.ps{margin-bottom:1.5rem}
+.pt{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--t3);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.pt::after{content:'';flex:1;height:1px;background:var(--border)}
+pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;font-size:.76rem;line-height:1.6;margin-bottom:.75rem;color:#A8C7FA;font-family:'Courier New',monospace}
+.cl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700;margin-bottom:.25rem;font-family:monospace}
+.k{color:#FF7B72}.s{color:#A5D6FF}.c{color:#5A6A80;font-style:italic}.fn{color:#79C0FF}.n{color:#FFA657}
+ul.bl{list-style:none;padding:0;margin-bottom:1rem}
+ul.bl li{font-size:.84rem;color:var(--t2);padding:.2rem 0 .2rem 1.1rem;position:relative;line-height:1.5}
+ul.bl li::before{content:'▸';position:absolute;left:0;color:var(--t3)}
+ul.bl li strong{color:var(--t1)}
+table.ft{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.75rem}
+table.ft th{text-align:left;padding:.4rem .75rem;background:var(--s2);color:var(--t2);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--border)}
+table.ft td{padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t1);vertical-align:top}
+table.ft tr:last-child td{border-bottom:none}
+table.ft td:first-child{color:var(--blue);font-family:monospace;font-size:.75rem;white-space:nowrap}
+table.ft tr:hover td{background:var(--s2)}
+.ca{border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.83rem;line-height:1.55;border-left:3px solid}
+.ca strong{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.ca-b{background:rgba(77,158,255,.07);border-color:var(--blue)}.ca-b strong{color:var(--blue)}
+.ca-a{background:rgba(240,160,48,.08);border-color:var(--amber)}.ca-a strong{color:var(--amber)}
+.ca-g{background:rgba(61,186,111,.07);border-color:var(--green)}.ca-g strong{color:var(--green)}
+.ca-r{background:rgba(255,77,28,.07);border-color:var(--accent)}.ca-r strong{color:var(--accent)}
+.mono{font-family:'Courier New',monospace;font-size:.85em;color:var(--blue);background:rgba(77,158,255,.08);padding:1px 4px;border-radius:3px}
+.qa{list-style:none;padding:0}
+.qi{border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;overflow:hidden}
+.qq{padding:.6rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:flex-start;gap:.6rem;background:var(--s2);color:var(--t1)}
+.qq::before{content:'Q';flex-shrink:0;font-size:.62rem;font-weight:800;padding:1px 5px;border-radius:3px;background:rgba(77,158,255,.2);color:var(--blue);margin-top:.05rem}
+.qa-a{padding:.6rem .9rem;font-size:.8rem;color:var(--t2);line-height:1.55;border-top:1px solid var(--border);display:none}
+.qi.open .qa-a{display:block}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%;max-height:none;position:static;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--border)}.sg{display:none}.main{padding:1rem}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">Evals <span>Study Reference</span></div>
+  <div class="title">LLM-as-Judge · RAGAS · Ground Truth · Regression · Production · Aug 2026</div>
+  <div class="tr"><span class="badge">Director Level</span><button class="tbtn" onclick="toggleTheme()">Toggle Theme</button></div>
+</div>
+<div class="layout">
+<nav class="sidebar">
+  <div class="sg">Foundations</div>
+  <button class="sb active" data-svc="why" onclick="show('why')">Why Evals Are Hard<small>LLM outputs · No ground truth · Cost</small></button>
+  <button class="sb" data-svc="judge" onclick="show('judge')">LLM-as-Judge<small>Bias · Multi-model · Scoring rubrics</small></button>
+  <div class="sg">Metrics</div>
+  <button class="sb" data-svc="ragas" onclick="show('ragas')">RAGAS Deep Dive<small>Faithfulness · Recall · Precision</small></button>
+  <button class="sb" data-svc="ground" onclick="show('ground')">Ground Truth Creation<small>Golden sets · Synthetic · Human labels</small></button>
+  <div class="sg">Operations</div>
+  <button class="sb" data-svc="regression" onclick="show('regression')">Regression &amp; CI<small>Eval-first dev · Change detection</small></button>
+  <button class="sb" data-svc="prod" onclick="show('prod')">Production Monitoring<small>Online evals · Drift · Feedback loops</small></button>
+</nav>
+<main class="main">
+
+<!-- WHY HARD -->
+<div class="svc active" id="svc-why">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Why Evals Are Hard</span><span class="sp">No single right answer · Cost · Speed</span></div>
+    <div class="sd">Traditional software has a pass/fail test. LLM outputs have a distribution of acceptable answers. "Correct" is often context-dependent, subjective, or requires domain expertise to verify. This is the core challenge evals must solve.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('why',0)">Concept</button>
+    <button class="dt" onclick="dim('why',1)">Eval Taxonomy</button>
+    <button class="dt" onclick="dim('why',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>Many valid outputs</strong> — "Summarize this policy in 2 sentences" has thousands of correct answers. You can't assert equality like a unit test.</li>
+      <li><strong>Correctness requires domain knowledge</strong> — is the drug interaction answer clinically accurate? You need a pharmacist, not a string match.</li>
+      <li><strong>Human eval doesn't scale</strong> — hiring annotators for every prompt change is expensive and slow. Human eval is ground truth but can only be sampled.</li>
+      <li><strong>Metric-task mismatch</strong> — BLEU/ROUGE were designed for translation. They correlate poorly with human judgment on open-ended generation tasks.</li>
+      <li><strong>The eval trilemma</strong> — you can have two of: fast, cheap, accurate. Human eval = accurate + cheap but slow. LLM-as-judge = fast + cheap but biased. Model-based metrics (RAGAS) = fast + accurate but costs per eval call.</li>
+    </ul>
+    <div class="ca ca-b"><strong>The Right Mental Model</strong>
+    Think of evals as a test pyramid: a large base of cheap automated metrics (RAGAS, string match, regex), a middle layer of LLM-as-judge on sampled outputs, and a small top of periodic human review on edge cases. Each layer catches different failure modes. None alone is sufficient.</div>
+  </div>
+  <div class="dp">
+    <table class="ft"><tr><th>Eval Type</th><th>Speed</th><th>Cost</th><th>Accuracy</th><th>Best for</th></tr>
+      <tr><td>Exact/regex match</td><td>Instant</td><td>Free</td><td>High (narrow)</td><td>Structured output, classifications, IDs</td></tr>
+      <tr><td>RAGAS metrics</td><td>Seconds</td><td>Low (LLM calls)</td><td>Good on RAG tasks</td><td>RAG pipelines: faithfulness, recall, precision</td></tr>
+      <tr><td>LLM-as-judge</td><td>Seconds</td><td>Medium</td><td>Good if designed well</td><td>Open-ended quality, tone, helpfulness</td></tr>
+      <tr><td>Human annotation</td><td>Hours–days</td><td>High</td><td>Ground truth</td><td>Calibrating LLM judges, edge cases, launch gates</td></tr>
+      <tr><td>A/B (user behavior)</td><td>Days–weeks</td><td>Low</td><td>Business-valid</td><td>Final validation — did users prefer the new version?</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you know if your evals are actually measuring the right thing?</div><div class="qa-a">Correlation with human judgment is the only real test. Take 50-100 outputs, have domain experts score them, then compute Spearman correlation between your automated metric and the human scores. If it's above 0.7, your metric is tracking what matters. Below that, you're optimizing for the wrong thing. We ran this calibration when we first set up RAGAS — faithfulness correlated well (0.82) but answer relevancy correlated poorly (0.51) because our judge model was rating grammatical fluency, not whether the answer matched the user's intent. We replaced it with a custom rubric.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's the most common eval mistake you've seen?</div><div class="qa-a">Building the eval set AFTER the system, then using the same examples you already fixed to tune the system. That's overfitting disguised as evaluation. The eval set must be held out — built from real user queries before you know what your system gets wrong, and never touched during development. A second common mistake: reporting averages. A 0.85 faithfulness average with a 0.40 tail for edge cases is dangerous — the average hides the failure mode that will actually surface in production.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- LLM-AS-JUDGE -->
+<div class="svc" id="svc-judge">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">LLM-as-Judge</span><span class="sp">Bias · Rubrics · Multi-model · Calibration</span></div>
+    <div class="sd">Using an LLM to evaluate LLM outputs is scalable and increasingly accurate — but it comes with systematic biases that must be designed around. The judge model is not neutral.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('judge',0)">Concept &amp; Biases</button>
+    <button class="dt" onclick="dim('judge',1)">Code</button>
+    <button class="dt" onclick="dim('judge',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Bias</th><th>What it does</th><th>Mitigation</th></tr>
+      <tr><td>Self-consistency</td><td>Model rates outputs similar to its own generation style higher</td><td>Use a different model as judge than the one generating answers</td></tr>
+      <tr><td>Position bias</td><td>Rates the first option higher in pairwise comparisons</td><td>Run comparison twice, swap order; only count agreement</td></tr>
+      <tr><td>Verbosity bias</td><td>Longer answers rated higher even when less accurate</td><td>Explicit rubric: "rate only accuracy, not length"</td></tr>
+      <tr><td>Sycophancy</td><td>If the prompt says "this is a great answer, how would you rate it?" the judge agrees</td><td>Never prime the judge; present context neutrally</td></tr>
+      <tr><td>Authority bias</td><td>Answers citing sources rated higher regardless of citation accuracy</td><td>Separate faithfulness check: verify citations exist in retrieved context</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>War Story — Self-Consistency Trap</strong>
+    Used GPT-4o to generate clinical drug interaction summaries and GPT-4o to judge them. Faithfulness scores: 0.91. Switched to Claude Sonnet as the judge — scores dropped to 0.74. Investigated: GPT-4o was rating its own verbose style highly. Claude penalized vague hedging language that GPT-4o had been generating. The real faithfulness was 0.74. We'd been shipping a system that was less accurate than we thought for 3 weeks.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Structured LLM-as-judge with rubric and different model</div>
+<pre><span class="k">from</span> pydantic <span class="k">import</span> BaseModel, Field
+<span class="k">from</span> langchain_anthropic <span class="k">import</span> ChatAnthropic
+
+<span class="k">class</span> <span class="fn">JudgeScore</span>(BaseModel):
+    reasoning: str = Field(description=<span class="s">"Step-by-step evaluation before scoring"</span>)
+    faithfulness: int = Field(ge=<span class="n">1</span>, le=<span class="n">5</span>, description=<span class="s">"1=hallucinated, 5=fully grounded"</span>)
+    relevance:   int = Field(ge=<span class="n">1</span>, le=<span class="n">5</span>, description=<span class="s">"1=off-topic, 5=directly answers question"</span>)
+    completeness:int = Field(ge=<span class="n">1</span>, le=<span class="n">5</span>, description=<span class="s">"1=missing key info, 5=comprehensive"</span>)
+
+JUDGE_PROMPT = <span class="s">"""Evaluate the assistant's answer against the reference documents.
+Score ONLY based on the rubric below. Ignore answer length and writing style.
+
+Rubric:
+- Faithfulness: Does every claim appear verbatim or as a clear inference in the documents?
+- Relevance: Does the answer directly address the user's question?
+- Completeness: Does the answer include all key information from the documents?
+
+Documents: {context}
+Question: {question}
+Answer: {answer}"""</span>
+
+<span class="c"># Judge model is DIFFERENT from the generation model</span>
+judge = ChatAnthropic(model=<span class="s">"claude-sonnet-4-5"</span>).with_structured_output(JudgeScore)
+
+<span class="fn">def</span> <span class="fn">evaluate_answer</span>(question, answer, context) -> JudgeScore:
+    <span class="k">return</span> judge.invoke(JUDGE_PROMPT.format(
+        context=context, question=question, answer=answer
+    ))</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Your LLM-as-judge scores were high but users were unhappy. What went wrong?</div><div class="qa-a">Metric-task mismatch. The judge was scoring faithfulness and fluency — both were high because the answers were well-written and grounded in the documents. But users were asking procedural questions ("how do I submit a PTO request?") and getting policy descriptions ("employees are entitled to X days of PTO per year"). Technically faithful, completely unhelpful. We added a new rubric dimension: actionability. "Does the answer tell the user what to do, not just what is true?" That score was 0.48. Fixed by adding procedural examples to the prompt and adding a step-by-step output requirement for "how do I" queries.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- RAGAS -->
+<div class="svc" id="svc-ragas">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">RAGAS Deep Dive</span><span class="sp">4 metrics · Diagnosis map · Failure modes</span></div>
+    <div class="sd">RAGAS gives you four independent signals. Each one points to a specific pipeline layer. Reading them together tells you WHERE to fix the system, not just that it's broken.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('ragas',0)">Metrics &amp; Diagnosis</button>
+    <button class="dt" onclick="dim('ragas',1)">Code</button>
+    <button class="dt" onclick="dim('ragas',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Metric</th><th>Formula (simplified)</th><th>Low → fix here</th><th>Common cause</th></tr>
+      <tr><td>Faithfulness</td><td>Claims in answer that appear in context / total claims</td><td>Generation layer</td><td>Model ignoring context, hallucinating from parametric memory</td></tr>
+      <tr><td>Answer Relevancy</td><td>Similarity of reverse-generated questions to original question</td><td>Retrieval + prompt</td><td>Wrong chunks retrieved; model off-topic; incomplete answer</td></tr>
+      <tr><td>Context Recall</td><td>Ground truth statements covered by retrieved context</td><td>Retrieval (chunking, embedding, search)</td><td>Wrong chunk boundaries, domain embedding mismatch, doc not in index</td></tr>
+      <tr><td>Context Precision</td><td>Useful chunks / total retrieved chunks</td><td>Retrieval (top-K, reranking)</td><td>Top-K too large, reranker needed, BM25 returning noise</td></tr>
+    </table>
+    <div class="ca ca-g"><strong>Diagnosis Decision Tree</strong>
+    Context Recall low → fix retrieval (chunking, embeddings, hybrid search) before touching anything else. Context Precision low with Recall high → add reranker or reduce K. Faithfulness low with Recall high → fix the generation prompt (grounding, citation requirements). Answer Relevancy low with Faithfulness high → the answer is grounded but doesn't address the question — check retrieval relevance and prompt focus.</div>
+    <ul class="bl">
+      <li><strong>Always fix recall before precision</strong> — if the right chunk isn't retrieved, nothing else matters</li>
+      <li><strong>Sample failing cases</strong> — aggregate metrics hide patterns; look at the 10 lowest-scoring examples per metric manually</li>
+      <li><strong>Requires ground truth for recall</strong> — faithfulness and precision don't need it, recall does; this is why golden datasets matter</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · RAGAS with MLflow logging on Databricks</div>
+<pre><span class="k">from</span> ragas <span class="k">import</span> evaluate, EvaluationDataset
+<span class="k">from</span> ragas.metrics <span class="k">import</span> faithfulness, answer_relevancy, context_recall, context_precision
+<span class="k">import</span> mlflow
+
+mlflow.set_experiment(<span class="s">"/Users/me/hr-rag-evals"</span>)
+
+<span class="k">with</span> mlflow.start_run(run_name=<span class="s">"ragas-eval-v3"</span>):
+    results = evaluate(
+        dataset=eval_dataset,
+        metrics=[faithfulness, answer_relevancy, context_recall, context_precision],
+    )
+    scores = results.to_pandas()
+
+    <span class="c"># Log aggregate scores</span>
+    <span class="k">for</span> col <span class="k">in</span> [<span class="s">"faithfulness"</span>, <span class="s">"answer_relevancy"</span>, <span class="s">"context_recall"</span>, <span class="s">"context_precision"</span>]:
+        mlflow.log_metric(col, scores[col].mean())
+        mlflow.log_metric(<span class="s">f"{col}_p10"</span>, scores[col].quantile(<span class="n">0.10</span>))  <span class="c"># tail matters</span>
+
+    <span class="c"># Log full results as artifact for later analysis</span>
+    scores.to_csv(<span class="s">"eval_results.csv"</span>, index=<span class="k">False</span>)
+    mlflow.log_artifact(<span class="s">"eval_results.csv"</span>)
+
+    <span class="c"># Flag regressions vs. last run</span>
+    last = mlflow.search_runs(order_by=[<span class="s">"start_time DESC"</span>], max_results=<span class="n">2</span>)
+    <span class="k">if</span> len(last) > <span class="n">1</span>:
+        delta = scores[<span class="s">"faithfulness"</span>].mean() - last.iloc[<span class="n">1</span>][<span class="s">"metrics.faithfulness"</span>]
+        <span class="k">if</span> delta < -<span class="n">0.05</span>:
+            mlflow.set_tag(<span class="s">"alert"</span>, <span class="s">f"faithfulness regression: {delta:.3f}"</span>)</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Context recall was 0.65 and faithfulness was 0.90. What's your diagnosis?</div><div class="qa-a">Good news and bad news. Good news: when retrieval does find the right content, the model uses it faithfully — generation is working. Bad news: retrieval is only finding the relevant chunk 65% of the time, which means 35% of user queries are getting answers built on incomplete or wrong context — and those answers are being generated faithfully from that incomplete context, which means they're confidently wrong. Fix retrieval first: check chunk boundaries (are the right sentences being cut?), check if the embedding model handles the domain vocabulary, add BM25 hybrid if you're not using it. Don't touch the generation layer until recall is above 0.80.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- GROUND TRUTH -->
+<div class="svc" id="svc-ground">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Ground Truth Creation</span><span class="sp">Golden sets · Synthetic · Human labels · Slice testing</span></div>
+    <div class="sd">The quality of your eval is bounded by the quality of your ground truth. Bad labels produce misleading scores. Eval set construction is a product decision, not a data engineering task.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('ground',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('ground',1)">Code</button>
+    <button class="dt" onclick="dim('ground',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>Sample from real queries first</strong> — build your eval set from actual user queries before you know what the system gets wrong; engineer-written test cases miss the long tail</li>
+      <li><strong>Include hard negatives</strong> — questions where the answer is NOT in the documents; these catch the failure mode where the model confidently hallucinates</li>
+      <li><strong>Multi-hop questions</strong> — "does the PPO plan cover the medication my doctor prescribes for my condition?" requires combining plan coverage + drug formulary + prior auth rules; single-chunk retrieval fails these</li>
+      <li><strong>Domain expert validation</strong> — HR attorneys review benefits answers, pharmacists review drug data, engineers review pipeline safety specs; wrong ground truth is worse than no ground truth</li>
+      <li><strong>Slice testing</strong> — break the eval set into slices by query type (factual lookup, comparison, procedural, unanswerable); aggregate score can hide that one slice is broken</li>
+    </ul>
+    <div class="ca ca-a"><strong>Synthetic Generation Trade-off</strong>
+    LLMs can generate Q&amp;A pairs from your documents at low cost (RAGAS testset generator, Giskard). Fast to bootstrap — but the generated questions are biased toward what appears verbatim in the docs, not how users actually phrase queries. Use synthetic to cover breadth quickly; sample real user queries to cover the distribution that matters. Validate a random sample of synthetic pairs against domain experts before using them as ground truth.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · RAGAS synthetic testset generation + real query augmentation</div>
+<pre><span class="k">from</span> ragas.testset <span class="k">import</span> TestsetGenerator
+<span class="k">from</span> ragas.testset.evolutions <span class="k">import</span> simple, reasoning, multi_context
+<span class="k">from</span> langchain_anthropic <span class="k">import</span> ChatAnthropic
+<span class="k">from</span> langchain_openai <span class="k">import</span> OpenAIEmbeddings
+
+generator = TestsetGenerator.from_langchain(
+    generator_llm=ChatAnthropic(model=<span class="s">"claude-sonnet-4-5"</span>),
+    critic_llm=ChatAnthropic(model=<span class="s">"claude-sonnet-4-5"</span>),
+    embeddings=OpenAIEmbeddings(),
+)
+
+<span class="c"># Generate diverse question types from your docs</span>
+testset = generator.generate_with_langchain_docs(
+    documents=docs,
+    test_size=<span class="n">50</span>,
+    distributions={
+        simple: <span class="n">0.4</span>,        <span class="c"># "What is the PPO deductible?"</span>
+        reasoning: <span class="n">0.3</span>,     <span class="c"># "Why would someone choose the HMO over PPO?"</span>
+        multi_context: <span class="n">0.3</span>, <span class="c"># requires combining 2+ documents</span>
+    },
+)
+df = testset.to_pandas()
+
+<span class="c"># Augment with REAL user queries (most valuable)</span>
+real_queries = [
+    {<span class="s">"question"</span>: <span class="s">"can I use FSA money for sunscreen?"</span>, <span class="s">"ground_truth"</span>: <span class="s">"..."</span>},
+    {<span class="s">"question"</span>: <span class="s">"what happens to my 401k if I leave mid-year?"</span>, <span class="s">"ground_truth"</span>: <span class="s">"..."</span>},
+]
+<span class="c"># Domain expert validates ground_truth answers before adding to eval set</span></pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How many examples do you need in a golden eval set?</div><div class="qa-a">Enough to detect a 5% regression with statistical confidence — typically 100-200 examples. Below 50, you're rolling dice; variance is too high to distinguish a real regression from noise. Above 500, the cost of running evals per PR becomes prohibitive. Practical approach: start with 30-50 hand-crafted examples that cover your most important query slices. Add real user queries as they come in. Use synthetic generation to quickly expand coverage. Run the full set weekly; run a 30-example "smoke test" subset on every code change. Grow the set over time as you discover edge cases.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What do you do when domain experts disagree on the ground truth?</div><div class="qa-a">That disagreement is data, not a problem. If two pharmacists disagree on a drug interaction answer, that query should be flagged as ambiguous and excluded from automated evals — or included with multiple valid answers and scored for partial credit. More importantly, it signals a question your system should NOT answer autonomously: it should escalate to a human. The disagreement rate among your domain experts is a ceiling on the automated eval accuracy you can achieve. If experts agree 85% of the time, your automated eval can at best approach that — and you should be skeptical of any metric claiming higher accuracy than human inter-rater agreement.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- REGRESSION -->
+<div class="svc" id="svc-regression">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Regression &amp; CI</span><span class="sp">Eval-first dev · Change detection · Prompt pinning</span></div>
+    <div class="sd">Prompt changes, model upgrades, and chunking tweaks all cause regressions — often on edge cases you fixed earlier. Without a regression suite, every improvement risks breaking something else.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('regression',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('regression',1)">Code</button>
+    <button class="dt" onclick="dim('regression',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>Prompt changes are code changes</strong> — any edit to a system prompt, few-shot example, or output format should trigger the full eval suite, not just manual spot-checking</li>
+      <li><strong>Model upgrade = unknown regression</strong> — when the LLM provider releases a new version, behavior changes in ways you didn't anticipate; run evals before switching in production</li>
+      <li><strong>Regression subset</strong> — keep a slice of 15-20 queries that previously failed and were fixed; run these on every change; this is your "don't break what we fixed" gate</li>
+      <li><strong>Eval-first development</strong> — when a user reports a failure, add that query to the eval set FIRST, then fix it; prevents fixing the same bug twice</li>
+      <li><strong>Statistical significance</strong> — a 0.02 score change on 50 examples is noise; require a 0.05 change on 100+ examples before calling it a regression or improvement</li>
+    </ul>
+    <div class="ca ca-r"><strong>War Story — Model Upgrade Regression</strong>
+    Upgraded from claude-haiku to claude-sonnet thinking it was strictly better. Faithfulness went from 0.81 to 0.88 on the main eval set — looked great. Deployed. Three days later, users reported that "unanswerable" questions were getting hallucinated answers instead of "I don't have that information." The new model was more confident and less willing to decline. Our eval set had only 2 "unanswerable" examples — not enough to catch the regression. Added 20 unanswerable examples to the eval set and caught the failure before the next upgrade.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Eval CI gate — block deployment if regression detected</div>
+<pre><span class="c"># Run as part of CI before merging prompt or pipeline changes</span>
+<span class="k">import</span> sys
+
+THRESHOLDS = {
+    <span class="s">"faithfulness"</span>:       <span class="n">0.80</span>,
+    <span class="s">"context_recall"</span>:     <span class="n">0.78</span>,
+    <span class="s">"answer_relevancy"</span>:   <span class="n">0.75</span>,
+    <span class="s">"context_precision"</span>:  <span class="n">0.70</span>,
+}
+REGRESSION_TOLERANCE = <span class="n">0.05</span>  <span class="c"># allow up to 5% drop vs baseline</span>
+
+scores = run_eval_suite()          <span class="c"># returns dict of metric → score</span>
+baseline = load_baseline_scores()  <span class="c"># scores from last approved run</span>
+
+failures = []
+<span class="k">for</span> metric, threshold <span class="k">in</span> THRESHOLDS.items():
+    score = scores[metric]
+    base  = baseline.get(metric, threshold)
+    <span class="k">if</span> score < threshold:
+        failures.append(<span class="s">f"{metric} below minimum: {score:.3f} < {threshold}"</span>)
+    <span class="k">elif</span> score < base - REGRESSION_TOLERANCE:
+        failures.append(<span class="s">f"{metric} regression: {score:.3f} vs baseline {base:.3f}"</span>)
+
+<span class="k">if</span> failures:
+    <span class="k">for</span> f <span class="k">in</span> failures: print(<span class="s">f"FAIL: {f}"</span>)
+    sys.exit(<span class="n">1</span>)
+print(<span class="s">"All eval gates passed."</span>)</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">You changed the chunking strategy and evals improved overall but something broke. How did you catch it?</div><div class="qa-a">The regression subset caught it. We keep 20 queries that previously failed and were fixed — every change runs against this subset first. The chunking change improved context recall on narrative queries from 0.74 to 0.83, but the regression subset showed that 3 table-heavy queries regressed from correctly answered to incorrect. The new semantic chunker was treating table rows as natural boundaries and splitting them. The overall metric improved because we had 15x more narrative queries than table queries in the eval set. Slice metrics — looking at table queries separately from narrative queries — was what made the regression visible. Now every change reports per-slice metrics, not just aggregate.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- PRODUCTION -->
+<div class="svc" id="svc-prod">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Production Monitoring</span><span class="sp">Online evals · Drift · Human feedback · Alerts</span></div>
+    <div class="sd">Offline evals tell you how the system performs on your test set. Production monitoring tells you how it performs on real users, with real data, that changes over time. Both are required.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('prod',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('prod',1)">Code</button>
+    <button class="dt" onclick="dim('prod',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>Online eval = sample &amp; score in production</strong> — run automated metrics (faithfulness, relevancy) on 5-10% of live traffic; alert when scores drop below threshold</li>
+      <li><strong>Distribution shift</strong> — users ask different questions than your eval set; new document types get ingested; model updates change behavior; all cause silent degradation</li>
+      <li><strong>Human feedback loop</strong> — thumbs up/down, corrections, escalations are the highest-signal production data; build a pipeline to convert these into new eval examples</li>
+      <li><strong>Trace every request</strong> — log query, retrieved chunks, answer, latency, and cost per request; you cannot debug production failures without this data</li>
+      <li><strong>Escalation as signal</strong> — if the system is routing to human review more than baseline, something is degrading; track escalation rate as a leading indicator</li>
+    </ul>
+    <div class="ca ca-b"><strong>MLflow Traces on Databricks</strong>
+    MLflow 2.15+ captures agent traces automatically with <span class="mono">mlflow.langchain.autolog()</span>. Traces land in <span class="mono">system.agent_traces</span> Delta table — queryable with SQL, retained for 90 days by default. Use this for production debugging: filter by low faithfulness scores, group by query_type, find the failure pattern.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Online eval sampling + MLflow trace logging</div>
+<pre><span class="k">import</span> mlflow
+<span class="k">import</span> random
+<span class="k">from</span> ragas.metrics <span class="k">import</span> faithfulness
+
+mlflow.langchain.autolog()  <span class="c"># traces every LangChain call automatically</span>
+
+<span class="fn">def</span> <span class="fn">answer_with_online_eval</span>(query: str, user_id: str) -> str:
+    chunks, answer = retrieve_and_generate(query)
+
+    <span class="c"># Sample 10% of production traffic for online eval</span>
+    <span class="k">if</span> random.random() < <span class="n">0.10</span>:
+        <span class="k">with</span> mlflow.start_run(run_name=<span class="s">"online-eval"</span>, nested=<span class="k">True</span>):
+            score = faithfulness.score({
+                <span class="s">"question"</span>: query,
+                <span class="s">"answer"</span>:   answer,
+                <span class="s">"contexts"</span>: [c[<span class="s">"text"</span>] <span class="k">for</span> c <span class="k">in</span> chunks],
+            })
+            mlflow.log_metric(<span class="s">"online_faithfulness"</span>, score)
+            mlflow.log_param(<span class="s">"query_hash"</span>, hash(query) % <span class="n">10000</span>)
+
+            <span class="k">if</span> score < <span class="n">0.70</span>:
+                <span class="c"># Write to review queue for human inspection</span>
+                review_queue.append({<span class="s">"query"</span>: query, <span class="s">"answer"</span>: answer,
+                                     <span class="s">"chunks"</span>: chunks, <span class="s">"score"</span>: score})
+    <span class="k">return</span> answer</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How did you detect that your production system was degrading before users complained?</div><div class="qa-a">Two signals fired before any user report. First, online faithfulness scores sampled from 10% of production traffic dropped from a 7-day rolling average of 0.83 to 0.71 over 4 days. Second, escalation rate (queries routed to human review) went from 8% to 19%. Both crossed alert thresholds in the same 6-hour window. Root cause: a new batch of benefit documents had been ingested with a different PDF layout — two-column, which the fast parser had garbled. The index now had corrupted chunks that looked syntactically valid but were semantically meaningless. No user had complained yet, but we caught and fixed it in 3 hours. Without the online eval pipeline, we'd have found out from an angry user on Monday.</div></li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</div>
+<script>
+function show(id){document.querySelectorAll('.svc').forEach(function(el){el.classList.remove('active');});document.querySelectorAll('.sb').forEach(function(el){el.classList.remove('active');});document.getElementById('svc-'+id).classList.add('active');document.querySelector('[data-svc="'+id+'"]').classList.add('active');window.scrollTo(0,0);}
+function dim(svcId,idx){var svc=document.getElementById('svc-'+svcId);var panels=svc.querySelectorAll('.dp');var tabs=svc.querySelectorAll('.dt');panels.forEach(function(el){el.classList.remove('active');});tabs.forEach(function(el){el.classList.remove('active');});panels[idx].classList.add('active');tabs[idx].classList.add('active');}
+function toggleTheme(){var root=document.documentElement;root.setAttribute('data-theme',root.getAttribute('data-theme')==='light'?'dark':'light');}
+</script>
+</body>
+</html>
