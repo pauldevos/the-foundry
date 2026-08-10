@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RAG — Study Reference</title>
+<style>
+:root{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--accent:#FF4D1C;--blue:#4D9EFF;--green:#3DBA6F;--amber:#F0A030;--code:#0D1621;}
+@media(prefers-color-scheme:light){:root{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}}
+:root[data-theme=light]{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}
+:root[data-theme=dark]{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--code:#0D1621;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:1rem;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.logo span{color:var(--t2);font-weight:400}
+.title{font-size:.8rem;color:var(--t2)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+.badge{font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(61,186,111,.15);color:var(--green);border:1px solid rgba(61,186,111,.3)}
+.tbtn{background:var(--s2);border:1px solid var(--border);color:var(--t2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem}
+.tbtn:hover{color:var(--t1)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1rem .75rem;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:52px;max-height:calc(100vh - 52px);overflow-y:auto}
+.sg{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);font-weight:700;padding:.75rem .5rem .2rem}
+.sb{display:flex;flex-direction:column;width:100%;text-align:left;background:none;border:none;border-radius:6px;padding:.4rem .6rem;cursor:pointer;color:var(--t2);font-size:.8rem;line-height:1.3;transition:background .12s,color .12s}
+.sb:hover{background:var(--s2);color:var(--t1)}
+.sb.active{background:rgba(255,77,28,.12);color:var(--accent);font-weight:600}
+.sb small{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.sb.active small{color:rgba(255,77,28,.6)}
+.main{flex:1;padding:1.5rem 2rem;min-width:0}
+.svc{display:none}.svc.active{display:block}
+.sh{margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sh-top{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.4rem}
+.sn{font-size:1.4rem;font-weight:700;color:var(--t1)}
+.sp{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.sd{font-size:.88rem;color:var(--t2);max-width:72ch}
+.dtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto}
+.dt{padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;background:none;border:none;color:var(--t2);border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.dt:hover{color:var(--t1)}.dt.active{color:var(--accent);border-bottom-color:var(--accent)}
+.dp{display:none}.dp.active{display:block}
+.ps{margin-bottom:1.5rem}
+.pt{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--t3);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.pt::after{content:'';flex:1;height:1px;background:var(--border)}
+pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;font-size:.76rem;line-height:1.6;margin-bottom:.75rem;color:#A8C7FA;font-family:'Courier New',monospace}
+.cl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700;margin-bottom:.25rem;font-family:monospace}
+.k{color:#FF7B72}.s{color:#A5D6FF}.c{color:#5A6A80;font-style:italic}.fn{color:#79C0FF}.n{color:#FFA657}
+ul.bl{list-style:none;padding:0;margin-bottom:1rem}
+ul.bl li{font-size:.84rem;color:var(--t2);padding:.2rem 0 .2rem 1.1rem;position:relative;line-height:1.5}
+ul.bl li::before{content:'▸';position:absolute;left:0;color:var(--t3)}
+ul.bl li strong{color:var(--t1)}
+table.ft{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.75rem}
+table.ft th{text-align:left;padding:.4rem .75rem;background:var(--s2);color:var(--t2);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--border)}
+table.ft td{padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t1);vertical-align:top}
+table.ft tr:last-child td{border-bottom:none}
+table.ft td:first-child{color:var(--blue);font-family:monospace;font-size:.75rem;white-space:nowrap}
+table.ft tr:hover td{background:var(--s2)}
+.ca{border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.83rem;line-height:1.55;border-left:3px solid}
+.ca strong{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.ca-b{background:rgba(77,158,255,.07);border-color:var(--blue)}.ca-b strong{color:var(--blue)}
+.ca-a{background:rgba(240,160,48,.08);border-color:var(--amber)}.ca-a strong{color:var(--amber)}
+.ca-g{background:rgba(61,186,111,.07);border-color:var(--green)}.ca-g strong{color:var(--green)}
+.ca-r{background:rgba(255,77,28,.07);border-color:var(--accent)}.ca-r strong{color:var(--accent)}
+.mono{font-family:'Courier New',monospace;font-size:.85em;color:var(--blue);background:rgba(77,158,255,.08);padding:1px 4px;border-radius:3px}
+.qa{list-style:none;padding:0}
+.qi{border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;overflow:hidden}
+.qq{padding:.6rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:flex-start;gap:.6rem;background:var(--s2);color:var(--t1)}
+.qq::before{content:'Q';flex-shrink:0;font-size:.62rem;font-weight:800;padding:1px 5px;border-radius:3px;background:rgba(77,158,255,.2);color:var(--blue);margin-top:.05rem}
+.qa-a{padding:.6rem .9rem;font-size:.8rem;color:var(--t2);line-height:1.55;border-top:1px solid var(--border);display:none}
+.qi.open .qa-a{display:block}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%;max-height:none;position:static;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--border)}.sg{display:none}.main{padding:1rem}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">RAG <span>Study Reference</span></div>
+  <div class="title">Ingestion · Chunking · Retrieval · Hybrid Search · Evals · Aug 2026</div>
+  <div class="tr">
+    <span class="badge">Director Level</span>
+    <button class="tbtn" onclick="toggleTheme()">Toggle Theme</button>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="sg">Ingestion</div>
+  <button class="sb active" data-svc="parsing" onclick="show('parsing')">Document Parsing<small>PDF · OCR · Layout · Tables</small></button>
+  <button class="sb" data-svc="chunking" onclick="show('chunking')">Chunking Strategy<small>Fixed · Semantic · Hierarchical</small></button>
+  <div class="sg">Retrieval</div>
+  <button class="sb" data-svc="embedding" onclick="show('embedding')">Embedding &amp; Indexing<small>Model selection · Domain mismatch</small></button>
+  <button class="sb" data-svc="hybrid" onclick="show('hybrid')">Hybrid Search<small>Dense + BM25 · Reranking</small></button>
+  <div class="sg">Output</div>
+  <button class="sb" data-svc="generation" onclick="show('generation')">Generation &amp; Faithfulness<small>Prompt design · Hallucination</small></button>
+  <button class="sb" data-svc="evals" onclick="show('evals')">RAG Evals &amp; Iteration<small>RAGAS · Faithfulness · Recall</small></button>
+</nav>
+
+<main class="main">
+
+<!-- ═══ DOCUMENT PARSING ═══ -->
+<div class="svc active" id="svc-parsing">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Document Parsing</span><span class="sp">PDF · OCR · Tables · Layout</span></div>
+    <div class="sd">Garbage in, garbage out. Parsing is where RAG pipelines fail silently — the text reaches your vector store but it's scrambled, truncated, or stripped of structure. Every downstream step degrades.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('parsing',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('parsing',1)">Code</button>
+    <button class="dt" onclick="dim('parsing',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <div class="ps"><div class="pt">What Can Go Wrong</div>
+    <table class="ft"><tr><th>Failure</th><th>Cause</th><th>Fix</th></tr>
+      <tr><td>Text in wrong order</td><td>Multi-column PDF: parser reads left-to-right across columns instead of down each column</td><td>Layout-aware parser (PyMuPDF, Unstructured with fast strategy, LlamaParse)</td></tr>
+      <tr><td>Tables become gibberish</td><td>Native PDF text extraction flattens table rows into a single string</td><td>Unstructured <span class="mono">hi_res</span> strategy or LlamaParse table extraction; store as Markdown table</td></tr>
+      <tr><td>Scanned doc = empty string</td><td>PDF is an image — no text layer at all</td><td>OCR: Unstructured <span class="mono">hi_res</span> with tesseract, or AWS Textract / Azure Document Intelligence for production</td></tr>
+      <tr><td>Headers/footers in every chunk</td><td>Page numbers, running headers extracted as content</td><td>Post-process: strip lines matching header/footer patterns before chunking</td></tr>
+      <tr><td>Different layouts, same pipeline</td><td>2019 benefit guide has 2-column layout; 2024 guide is single-column — same parser fails one</td><td>Detect layout type per-doc; route to different parser strategy; log parse quality score</td></tr>
+    </table></div>
+    <div class="ca ca-a"><strong>War Story Pattern — HR Benefit Docs</strong>
+    Loaded 12 HR policy PDFs. RAGAS context recall was 0.61 — far below the 0.85 target. Traced it: the 401K guide was a scanned image from 2019. Parser returned 3 pages of empty strings. Model had no context for 401K questions → hallucinated plan details. Fix: added an OCR fallback triggered when extracted text length &lt; 100 chars per page. Recall jumped to 0.84.</div>
+    <ul class="bl">
+      <li><strong>Parse quality check</strong> — log char count, word count, and table count per doc at ingest time; alert on anomalies before they reach the index</li>
+      <li><strong>LlamaParse</strong> — cloud service, handles complex layouts well, costs per page; good for production where accuracy matters more than cost</li>
+      <li><strong>Unstructured hi_res</strong> — local/self-hosted, slower but free; <span class="mono">strategy="hi_res"</span> uses vision model for layout detection</li>
+      <li><strong>Azure Document Intelligence / AWS Textract</strong> — best for mixed scanned + native PDFs in enterprise; returns structured JSON with bounding boxes</li>
+    </ul>
+  </div>
+
+  <div class="dp">
+    <div class="ps"><div class="pt">Parser Comparison + OCR Fallback</div>
+    <div class="cl">Python · Unstructured with hi_res + length-based OCR fallback</div>
+<pre><span class="k">from</span> unstructured.partition.pdf <span class="k">import</span> partition_pdf
+<span class="k">from</span> pathlib <span class="k">import</span> Path
+
+<span class="fn">def</span> <span class="fn">parse_pdf</span>(path: str) -> list[dict]:
+    <span class="c"># First pass: fast native extraction</span>
+    elements = partition_pdf(path, strategy=<span class="s">"fast"</span>)
+    text_len = sum(len(e.text) <span class="k">for</span> e <span class="k">in</span> elements <span class="k">if</span> hasattr(e, <span class="s">"text"</span>))
+
+    <span class="k">if</span> text_len < <span class="n">500</span>:
+        <span class="c"># Likely scanned — fall back to OCR-based hi_res</span>
+        print(<span class="s">f"Low text yield ({text_len} chars), retrying with OCR: {path}"</span>)
+        elements = partition_pdf(
+            path,
+            strategy=<span class="s">"hi_res"</span>,
+            infer_table_structure=<span class="k">True</span>,
+            languages=[<span class="s">"eng"</span>],
+        )
+
+    chunks = []
+    <span class="k">for</span> el <span class="k">in</span> elements:
+        <span class="k">if</span> el.category == <span class="s">"Table"</span>:
+            <span class="c"># Preserve tables as markdown — don't let them get chunked mid-row</span>
+            chunks.append({<span class="s">"text"</span>: el.metadata.text_as_html, <span class="s">"type"</span>: <span class="s">"table"</span>})
+        <span class="k">elif</span> hasattr(el, <span class="s">"text"</span>) <span class="k">and</span> len(el.text.strip()) > <span class="n">30</span>:
+            chunks.append({<span class="s">"text"</span>: el.text, <span class="s">"type"</span>: el.category})
+    <span class="k">return</span> chunks</pre></div>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Your RAGAS scores were good in dev but fell apart in production. What happened?</div><div class="qa-a">Classic parser mismatch. Dev used a clean, single-column PDF I'd prepared manually. Production ingested 40+ documents from different years — some scanned, some multi-column, one was a PowerPoint exported as PDF. The fast parser returned garbled text for all three cases. I added a parse quality check at ingest time: char count per page, table detection, and a short human spot-check on 5 random chunks. Anything below the threshold got flagged for manual review or routed to the hi_res OCR path. After that, context recall went from 0.61 to 0.83.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you handle documents that have tables? They always seem to break retrieval.</div><div class="qa-a">Two strategies depending on the table type. If the table has a clear semantic header row (like a benefits comparison table), I serialize it to Markdown and store the whole table as a single chunk with a metadata tag <span class="mono">type=table</span>. This keeps row context intact. If the table is huge (like a drug formulary with 3,000 rows), I convert each row to a sentence: "Drug X has tier 2 coverage with a $40 copay and requires prior auth." That way each row is retrievable independently and the model sees natural language rather than a cell dump.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ CHUNKING ═══ -->
+<div class="svc" id="svc-chunking">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Chunking Strategy</span><span class="sp">Fixed-size · Semantic · Hierarchical · Overlap</span></div>
+    <div class="sd">How you split documents determines what the retriever can find. Too large: irrelevant content dilutes the answer. Too small: context is lost mid-thought. The right strategy depends on document structure, not a default token count.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('chunking',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('chunking',1)">Code</button>
+    <button class="dt" onclick="dim('chunking',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <table class="ft"><tr><th>Strategy</th><th>How it works</th><th>Fails when</th></tr>
+      <tr><td>Fixed-size</td><td>Split every N tokens, optional overlap of K tokens</td><td>Splits mid-sentence, mid-clause, mid-table row. Works only on narrative prose.</td></tr>
+      <tr><td>Recursive character</td><td>Try splitting on \n\n, then \n, then ". ", then " " — use the largest that fits under limit</td><td>Better than fixed-size but still arbitrary at paragraph boundaries</td></tr>
+      <tr><td>Semantic</td><td>Embed sentences, find cosine similarity drops → split at topic boundaries</td><td>Slow, expensive. Boundary detection noisy on technical docs with dense jargon.</td></tr>
+      <tr><td>Hierarchical / parent-child</td><td>Index small child chunks for retrieval, but return the parent chunk to the model</td><td>Parent chunks must be well-defined (section, page). Poorly structured docs have no clear parent.</td></tr>
+      <tr><td>Document-native</td><td>Use document's own structure: headings, sections, pages as chunk boundaries</td><td>Best strategy when it works. Requires rich metadata from the parser.</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>War Story Pattern — Policy Documents</strong>
+    Used 512-token fixed-size chunks on an HR handbook. The chunk boundary landed in the middle of a sentence about FMLA eligibility: one chunk ended with "Employees are eligible for FMLA leave if they have worked at least" and the next started with "1,250 hours in the past 12 months." Queries about FMLA eligibility returned the first chunk — the model said the eligibility criteria were unclear. Switched to recursive splitting on section headers, overlap of 50 tokens. FMLA answers became accurate.</div>
+    <ul class="bl">
+      <li><strong>Overlap is a band-aid</strong> — it helps at boundaries but also increases index size and can introduce duplicate context in the model's prompt</li>
+      <li><strong>Chunk size trade-off</strong> — smaller chunks = better retrieval precision, worse context (model sees fragment). Larger chunks = more context, lower precision (irrelevant content dilutes)</li>
+      <li><strong>Metadata per chunk</strong> — always store: source doc, page number, section title, doc date. Without these you can't filter, cite, or detect stale content</li>
+      <li><strong>Hierarchical is underused</strong> — retrieve the small chunk (512 tokens), return its parent section (2048 tokens) to the LLM. Best precision + context combo</li>
+    </ul>
+  </div>
+
+  <div class="dp">
+    <div class="ps"><div class="pt">Recursive Splitter + Hierarchical Parent-Child</div>
+    <div class="cl">Python · LangChain splitters with metadata preservation</div>
+<pre><span class="k">from</span> langchain_text_splitters <span class="k">import</span> RecursiveCharacterTextSplitter
+<span class="k">from</span> langchain.retrievers <span class="k">import</span> ParentDocumentRetriever
+<span class="k">from</span> langchain_community.storage <span class="k">import</span> InMemoryStore
+
+<span class="c"># Child chunks: small, precise, for retrieval</span>
+child_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=<span class="n">400</span>,
+    chunk_overlap=<span class="n">50</span>,
+    separators=[<span class="s">"\n## "</span>, <span class="s">"\n### "</span>, <span class="s">"\n\n"</span>, <span class="s">"\n"</span>, <span class="s">". "</span>, <span class="s">" "</span>],
+)
+<span class="c"># Parent chunks: larger, for context returned to the LLM</span>
+parent_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=<span class="n">2000</span>,
+    chunk_overlap=<span class="n">100</span>,
+    separators=[<span class="s">"\n## "</span>, <span class="s">"\n\n"</span>],
+)
+
+<span class="c"># ParentDocumentRetriever: indexes child chunks,</span>
+<span class="c"># but returns the parent when a child matches</span>
+retriever = ParentDocumentRetriever(
+    vectorstore=vectorstore,
+    docstore=InMemoryStore(),       <span class="c"># swap for Redis/DB in prod</span>
+    child_splitter=child_splitter,
+    parent_splitter=parent_splitter,
+)
+retriever.add_documents(docs, ids=None)
+
+<span class="c"># Retrieval: finds small, precise chunk; returns full section</span>
+results = retriever.invoke(<span class="s">"What is the FMLA eligibility requirement?"</span>)</pre></div>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you decide what chunk size to use?</div><div class="qa-a">Start with the document structure, not a number. If the documents have clear sections (headings, numbered policies), split on those boundaries first — the document's own structure is the best chunker. If it's free-form prose, 400-600 tokens with 10-15% overlap is a reasonable starting point. Then run RAGAS context recall on 20-30 representative queries: if it's below 0.8, your chunks are probably too large (irrelevant content) or the boundary is wrong. If faithfulness is low, chunks may be too small and the model is stitching together fragments. Iterate from there — chunk size is a hyperparameter, not a constant.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's the failure mode of too much chunk overlap?</div><div class="qa-a">Two problems. First, index bloat — 20% overlap means 20% more vectors to search, which slows retrieval and increases cost. Second, and worse: when you retrieve the top-K chunks and two of them heavily overlap, the model's context window gets filled with near-duplicate content. You've wasted context space that could have gone to a different relevant document. In one case I saw the same paragraph appear 3 times in a 4-chunk result set — the model cited "multiple sources" that were all the same source. Set overlap to the minimum needed to avoid mid-sentence splits (usually 30-80 tokens), not a percentage of chunk size.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ EMBEDDING & INDEXING ═══ -->
+<div class="svc" id="svc-embedding">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Embedding &amp; Indexing</span><span class="sp">Model selection · Domain mismatch · Vector stores</span></div>
+    <div class="sd">The embedding model determines how well semantic similarity maps to actual relevance in your domain. A model trained on web text may rank "employee handbook" and "HR policy guide" as distant — because in its training data they were different topics.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('embedding',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('embedding',1)">Code</button>
+    <button class="dt" onclick="dim('embedding',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <table class="ft"><tr><th>Model</th><th>Strengths</th><th>Watch out for</th></tr>
+      <tr><td>text-embedding-3-large</td><td>Strong general purpose, 3072 dims, long context</td><td>Cost at scale; no free tier for batch ingest</td></tr>
+      <tr><td>text-embedding-3-small</td><td>Cheap, fast, good quality for most use cases</td><td>Domain-specific queries may underperform large</td></tr>
+      <tr><td>voyage-3 / voyage-finance</td><td>Domain-tuned variants (law, finance, code)</td><td>Less broad community support; cost per token</td></tr>
+      <tr><td>nomic-embed-text</td><td>Open-source, runs locally, 8192 token context</td><td>Quality below frontier models on complex queries</td></tr>
+      <tr><td>databricks-gte-large-en</td><td>Databricks-native, Unity Catalog integration, no egress</td><td>English-only; requires Databricks Model Serving</td></tr>
+    </table>
+    <div class="ca ca-a"><strong>War Story Pattern — Domain Mismatch</strong>
+    Built an NFL Gamebook RAG using <span class="mono">text-embedding-3-small</span>. Queries about "third down conversion rate in the red zone" scored poorly against chunks that said "3rd-and-goal efficiency inside the 20." The model hadn't seen much football statistics text — these phrases weren't semantically close in its embedding space. Added BM25 alongside dense vectors (hybrid search) to catch exact-term matches. Alternatively, fine-tuning the embedding model on domain text improved recall by 18%, but added 2 weeks of work. Hybrid was faster to ship.</div>
+    <ul class="bl">
+      <li><strong>Embedding model ≠ LLM</strong> — you can use different models for each step; the embedding model just needs to produce good similarity scores for your domain</li>
+      <li><strong>Re-indexing cost</strong> — changing embedding models means re-embedding every chunk; plan for this before picking a model. Lock the model version in config.</li>
+      <li><strong>Dimensionality</strong> — higher dims = more expressive but slower search; pgvector and most hosted stores handle up to 1536 comfortably; 3072 dims may need HNSW tuning</li>
+      <li><strong>Databricks AI Search</strong> — fully managed vector index in Unity Catalog; integrates with Model Serving embeddings; Delta Sync keeps index current as tables update</li>
+    </ul>
+  </div>
+
+  <div class="dp">
+    <div class="cl">Python · Databricks AI Search (Unity Catalog) vector index setup</div>
+<pre><span class="k">from</span> databricks.vector_search.client <span class="k">import</span> VectorSearchClient
+
+client = VectorSearchClient(disable_notice=<span class="k">True</span>)
+
+<span class="c"># Create endpoint (one-time setup)</span>
+client.create_endpoint(
+    name=<span class="s">"hr-rag-endpoint"</span>,
+    endpoint_type=<span class="s">"STANDARD"</span>,
+)
+
+<span class="c"># Delta Sync index — auto-syncs as the source table updates</span>
+<span class="c"># No manual re-index needed when new benefit docs are added</span>
+client.create_delta_sync_index(
+    endpoint_name=<span class="s">"hr-rag-endpoint"</span>,
+    index_name=<span class="s">"main.hr.benefit_docs_index"</span>,
+    source_table_name=<span class="s">"main.hr.benefit_docs"</span>,
+    pipeline_type=<span class="s">"TRIGGERED"</span>,
+    primary_key=<span class="s">"chunk_id"</span>,
+    embedding_source_column=<span class="s">"chunk_text"</span>,
+    embedding_model_endpoint_name=<span class="s">"databricks-gte-large-en"</span>,
+)
+
+<span class="c"># Query</span>
+index = client.get_index(<span class="s">"hr-rag-endpoint"</span>, <span class="s">"main.hr.benefit_docs_index"</span>)
+results = index.similarity_search(
+    query_text=<span class="s">"What is the deductible for the PPO plan?"</span>,
+    columns=[<span class="s">"chunk_text"</span>, <span class="s">"source_doc"</span>, <span class="s">"doc_year"</span>],
+    num_results=<span class="n">5</span>,
+    filters={<span class="s">"doc_year"</span>: {<span class="s">"$gte"</span>: <span class="n">2025</span>}},  <span class="c"># filter stale docs</span>
+)</pre>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you handle stale documents in your index?</div><div class="qa-a">Metadata filtering is the first line of defense — store doc_date on every chunk and filter at query time to only retrieve documents from the current plan year. But filtering alone isn't enough: the stale doc is still in the index and will appear in unfiltered queries. The right fix is a deletion strategy: when a document is superseded, mark it deleted in the source table. With Databricks AI Search Delta Sync, the deletion propagates to the index automatically on the next sync. For self-managed vector stores, you need an explicit delete by chunk_id, which requires you to have tracked which chunk_ids came from which source document — another reason to store source metadata at ingest time.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When would you NOT use a cloud embedding model?</div><div class="qa-a">Three cases: (1) Data cannot leave the VPC — clinical trial data, PII-heavy HR records, proprietary formulations. Run a self-hosted model (nomic-embed, e5-large) inside your network. (2) Cost at scale — embedding 50M product descriptions daily at $0.00002/1K tokens adds up; a local model on GPU may be cheaper at that volume. (3) Latency is critical — a round-trip to an embedding API adds 50-200ms; for real-time search, a local model with sub-10ms inference is worth the quality trade-off. In most cases, a hosted model is the right default — the cost and ops savings outweigh the edge cases.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ HYBRID SEARCH ═══ -->
+<div class="svc" id="svc-hybrid">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Hybrid Search</span><span class="sp">Dense + BM25 · RRF · Reranking</span></div>
+    <div class="sd">Dense vector search finds semantically similar content. BM25 finds exact keyword matches. Neither alone is enough. Hybrid combines both — and a reranker makes the final call on which retrieved chunks are actually relevant.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('hybrid',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('hybrid',1)">Code</button>
+    <button class="dt" onclick="dim('hybrid',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>Dense-only fails on keywords</strong> — "COBRA continuation coverage" is a legal term. Dense vectors may embed it near "health insurance continuation" — but if the doc uses the exact phrase, BM25 finds it in one shot</li>
+      <li><strong>BM25-only fails on synonyms</strong> — "time off" vs "PTO" vs "vacation leave" — BM25 requires the exact term; dense vectors find all three as semantically equivalent</li>
+      <li><strong>Reciprocal Rank Fusion (RRF)</strong> — merge dense and BM25 result lists by combining their rank positions (not scores). Simple, no hyperparameter tuning. Works well as a baseline.</li>
+      <li><strong>Reranker</strong> — a cross-encoder model (e.g. Cohere Rerank, BGE Reranker) scores each query+chunk pair together, not independently. Much more accurate than cosine similarity alone. Adds 100-300ms latency. Use on top-20 candidates before returning top-5 to the LLM.</li>
+      <li><strong>When hybrid pays off most</strong> — product codes, drug names, policy numbers, legal citations, acronyms. Any domain with precise terminology that must be matched exactly.</li>
+    </ul>
+    <div class="ca ca-b"><strong>When to add BM25</strong>
+    First signal: users ask "why didn't it find the exact section I was looking for?" or RAGAS context recall is above 0.8 but answer correctness is below 0.7 on queries with specific terms. Dense search retrieved topically related chunks but missed the exact policy clause. BM25 hybrid fixed it in 2 hours — no re-indexing required.</div>
+  </div>
+
+  <div class="dp">
+    <div class="cl">Python · LangChain EnsembleRetriever: BM25 + Dense with RRF</div>
+<pre><span class="k">from</span> langchain_community.retrievers <span class="k">import</span> BM25Retriever
+<span class="k">from</span> langchain.retrievers <span class="k">import</span> EnsembleRetriever
+<span class="k">from</span> langchain_openai <span class="k">import</span> OpenAIEmbeddings
+<span class="k">from</span> langchain_community.vectorstores <span class="k">import</span> Chroma
+
+<span class="c"># Load same chunks into both retrievers</span>
+bm25_retriever = BM25Retriever.from_documents(docs)
+bm25_retriever.k = <span class="n">10</span>
+
+vectorstore = Chroma.from_documents(docs, OpenAIEmbeddings())
+dense_retriever = vectorstore.as_retriever(search_kwargs={<span class="s">"k"</span>: <span class="n">10</span>})
+
+<span class="c"># EnsembleRetriever uses RRF to merge results</span>
+<span class="c"># weights=[0.4, 0.6]: trust dense more for semantic queries</span>
+<span class="c"># flip to [0.6, 0.4] for keyword-heavy domains (legal, medical codes)</span>
+hybrid_retriever = EnsembleRetriever(
+    retrievers=[bm25_retriever, dense_retriever],
+    weights=[<span class="n">0.4</span>, <span class="n">0.6</span>],
+)
+
+<span class="c"># Optional: add a reranker on top</span>
+<span class="k">from</span> langchain.retrievers.contextual_compression <span class="k">import</span> ContextualCompressionRetriever
+<span class="k">from</span> langchain_cohere <span class="k">import</span> CohereRerank
+
+reranker = CohereRerank(model=<span class="s">"rerank-english-v3.0"</span>, top_n=<span class="n">5</span>)
+final_retriever = ContextualCompressionRetriever(
+    base_compressor=reranker,
+    base_retriever=hybrid_retriever,
+)</pre>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Why did you switch from pure vector search to hybrid? What broke?</div><div class="qa-a">Users were asking very specific questions — "what's the out-of-pocket maximum for the Cigna Select plan" — and the retriever kept returning chunks about out-of-pocket maximums in general, not the specific plan. The dense embeddings treated "Cigna Select" as just another health plan name; they all lived near each other in embedding space. BM25 matched "Cigna Select" as an exact phrase in one retrieval call. Adding BM25 with a 0.5/0.5 weight split solved the precision problem. I then tuned the weights — increased BM25 to 0.6 — because this domain (insurance plans) has a lot of product-name specificity that dense search consistently misses.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's the difference between a reranker and changing your top-K?</div><div class="qa-a">Increasing top-K retrieves more candidates but doesn't change their ranking — you just give the LLM more text, including more irrelevant text, which increases noise and cost. A reranker re-scores every candidate by evaluating the query and chunk together (cross-encoder), not separately. It's fundamentally more accurate because it sees the relationship between query and chunk, not just their independent embeddings. The cost: one inference per candidate. So you retrieve top-20 cheap with cosine similarity, then rerank to top-5 with the cross-encoder. The LLM sees a much cleaner, more relevant context window.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ GENERATION ═══ -->
+<div class="svc" id="svc-generation">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Generation &amp; Faithfulness</span><span class="sp">Prompt design · Grounding · Hallucination · Citations</span></div>
+    <div class="sd">Even perfect retrieval fails if the LLM ignores the context and answers from parametric memory. Prompt design, grounding instructions, and citation requirements are the levers.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('generation',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('generation',1)">Code</button>
+    <button class="dt" onclick="dim('generation',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>Model ignores context</strong> — "answer only from the provided documents" isn't enough. The model's parametric knowledge is strong and will fill gaps even when told not to. Require a citation for every claim.</li>
+      <li><strong>Context ordering matters</strong> — LLMs have a "lost in the middle" problem: they pay most attention to the beginning and end of the context. Put the most relevant chunk first, not last.</li>
+      <li><strong>Conflicting context</strong> — two retrieved chunks say different things (e.g., 2023 vs 2024 deductible). Without date metadata, the model picks one arbitrarily. Fix: include doc_date in the chunk header; instruct the model to prefer the most recent.</li>
+      <li><strong>Unanswerable questions</strong> — if the answer isn't in the retrieved context, the model should say so. Default behavior is to hallucinate a plausible answer. Add explicit instruction: "If the answer is not in the provided documents, say 'I don't have that information' — do not guess."</li>
+      <li><strong>Citations prevent silent hallucination</strong> — requiring the model to cite a source doc and page number forces it to ground its answer. If it can't cite, it can't answer. This catches hallucinations before users do.</li>
+    </ul>
+    <div class="ca ca-g"><strong>Lost in the Middle</strong>
+    Liu et al. (2023) showed that LLMs perform significantly worse when the relevant document is in the middle of a long context vs. at the beginning or end. Practical fix: put highest-scored chunks first, not in a random order. A reranker helps here too — its output order is already relevance-ranked.</div>
+  </div>
+
+  <div class="dp">
+    <div class="cl">Python · RAG prompt with grounding + citation requirement</div>
+<pre>RAG_SYSTEM_PROMPT = <span class="s">"""You are an HR benefits assistant. Answer questions only
+using the provided document excerpts. Follow these rules strictly:
+
+1. If the answer is in the documents, cite the source: [Doc: {source}, p.{page}]
+2. If the documents contain conflicting information, cite both and prefer the
+   more recent document (higher doc_year).
+3. If the answer is NOT in the provided documents, respond exactly:
+   "I don't have that information in the current benefits documents."
+   Do NOT guess, infer, or use general knowledge about benefits.
+4. Keep answers concise — 2-4 sentences unless the user asks for detail."""</span>
+
+<span class="fn">def</span> <span class="fn">build_rag_prompt</span>(query: str, chunks: list[dict]) -> list[dict]:
+    <span class="c"># Put highest-relevance chunk first (lost-in-middle fix)</span>
+    context = <span class="s">"\n\n"</span>.join(
+        <span class="s">f"[Doc: {c['source_doc']}, Year: {c['doc_year']}, p.{c['page']}]\n{c['text']}"</span>
+        <span class="k">for</span> c <span class="k">in</span> chunks  <span class="c"># already ranked by reranker</span>
+    )
+    <span class="k">return</span> [
+        {<span class="s">"role"</span>: <span class="s">"system"</span>, <span class="s">"content"</span>: RAG_SYSTEM_PROMPT},
+        {<span class="s">"role"</span>: <span class="s">"user"</span>,   <span class="s">"content"</span>: <span class="s">f"Documents:\n{context}\n\nQuestion: {query}"</span>},
+    ]</pre>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">The model keeps answering from general knowledge instead of the documents. How do you fix it?</div><div class="qa-a">Three things in combination. First, require citations in the system prompt — "every claim must be followed by [Doc: X, p.Y]." A model that can't cite can't answer. This single change cut hallucination rate significantly in my experience because it forces the model to verify its claim against the context before producing it. Second, when there's no relevant context, the model should fail loudly: give it an explicit escape hatch phrase ("I don't have that information") and few-shot examples of it being used. Third, if the model is still pulling from parametric memory, lower temperature to 0 — deterministic generation is less likely to creatively fill gaps. If all else fails, the retrieval is probably missing the relevant doc — check recall first before debugging generation.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ EVALS ═══ -->
+<div class="svc" id="svc-evals">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">RAG Evals &amp; Iteration</span><span class="sp">RAGAS · Faithfulness · Context Recall · Precision</span></div>
+    <div class="sd">You cannot improve what you don't measure. RAGAS gives you four independent signals across the pipeline — each one points to a different layer to fix. The eval loop is the job: measure, diagnose, fix, re-measure.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('evals',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('evals',1)">Code</button>
+    <button class="dt" onclick="dim('evals',2)">Interview Q&amp;A</button>
+  </div>
+
+  <div class="dp active">
+    <table class="ft"><tr><th>RAGAS Metric</th><th>What it measures</th><th>Low score → fix</th></tr>
+      <tr><td>Faithfulness</td><td>Are the answer's claims grounded in the retrieved context?</td><td>Generation prompt; model ignoring context; hallucination</td></tr>
+      <tr><td>Answer Relevance</td><td>Does the answer actually address the question asked?</td><td>Retrieval returning off-topic chunks; prompt not focusing model</td></tr>
+      <tr><td>Context Recall</td><td>Did retrieval find the chunks that contain the ground-truth answer?</td><td>Chunking strategy; embedding model; missing docs in index</td></tr>
+      <tr><td>Context Precision</td><td>Of the retrieved chunks, what fraction were actually useful?</td><td>Top-K too large; retrieval returning noise; reranker needed</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>The LLM-as-Judge Trap</strong>
+    Using the same model to generate answers AND judge their faithfulness is circular. The judge model gives higher scores to outputs that resemble its own generation style — it's not measuring ground truth, it's measuring self-consistency. Use a different, typically stronger model as the judge (e.g., generate with Claude Haiku, judge with Claude Sonnet). Or use RAGAS with a judge model different from your generation model.</div>
+    <ul class="bl">
+      <li><strong>Start with context recall</strong> — if retrieval isn't finding the right docs, nothing downstream matters. Fix retrieval first, then evaluate generation.</li>
+      <li><strong>20-30 golden questions</strong> — manually create a test set of representative questions with known correct answers. Your eval is only as good as this set.</li>
+      <li><strong>Regression testing</strong> — every chunking or prompt change should be run against the full eval set, not just the cases that motivated the change</li>
+      <li><strong>Business metric ≠ RAGAS metric</strong> — track both. A 0.92 faithfulness score with 40% user satisfaction means the questions in your eval set don't represent real user queries</li>
+    </ul>
+  </div>
+
+  <div class="dp">
+    <div class="cl">Python · RAGAS evaluation with separate judge model</div>
+<pre><span class="k">from</span> ragas <span class="k">import</span> evaluate, EvaluationDataset
+<span class="k">from</span> ragas.metrics <span class="k">import</span> faithfulness, answer_relevancy, context_recall, context_precision
+<span class="k">from</span> ragas.llms <span class="k">import</span> LangchainLLMWrapper
+<span class="k">from</span> langchain_anthropic <span class="k">import</span> ChatAnthropic
+
+<span class="c"># Use a DIFFERENT model as judge than the one that generated answers</span>
+<span class="c"># Prevents self-consistency bias inflating scores</span>
+judge_llm = LangchainLLMWrapper(ChatAnthropic(model=<span class="s">"claude-sonnet-4-5"</span>))
+
+dataset = EvaluationDataset.from_list([
+    {
+        <span class="s">"user_input"</span>:           <span class="s">"What is the PPO deductible for 2026?"</span>,
+        <span class="s">"response"</span>:             <span class="s">"The 2026 PPO deductible is $1,500 for individual coverage."</span>,
+        <span class="s">"retrieved_contexts"</span>:   [<span class="s">"...PPO plan: $1,500 individual deductible..."</span>],
+        <span class="s">"reference"</span>:            <span class="s">"The individual deductible for the PPO plan in 2026 is $1,500."</span>,
+    },
+    <span class="c"># ... 20-30 more golden Q&amp;A pairs</span>
+])
+
+results = evaluate(
+    dataset=dataset,
+    metrics=[faithfulness, answer_relevancy, context_recall, context_precision],
+    llm=judge_llm,
+)
+df = results.to_pandas()
+print(df[[<span class="s">"faithfulness"</span>, <span class="s">"answer_relevancy"</span>, <span class="s">"context_recall"</span>, <span class="s">"context_precision"</span>]].mean())</pre>
+  </div>
+
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Your evals were coming back poorly. Walk me through what you did.</div><div class="qa-a">First thing: look at each metric independently, not just the average. Context recall was 0.61 — that told me retrieval was the problem, not generation. I sampled 10 failing queries and looked at what was actually retrieved vs. what the ground truth answer required. Pattern: the right chunk existed in the index but ranked 8th or 9th — outside the top-5 I was returning. Two causes: chunk boundaries were wrong (the relevant sentence was split across two chunks, scoring lower than a full-context chunk), and pure dense search was missing keyword-specific queries. Fixed chunking boundaries first, then added BM25 hybrid. Recall went to 0.84. Faithfulness was already fine — generation was doing its job once retrieval fed it the right context.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you create a good golden eval set?</div><div class="qa-a">This is harder than the code. A few principles: (1) Sample from real user queries, not queries you'd think to ask — if users ask "can I use FSA money for sunscreen?" your golden set needs that, not just textbook benefit questions. (2) Cover edge cases explicitly: questions where the answer requires combining two chunks, questions where the answer is NOT in the documents, questions with ambiguous terms. (3) Have domain experts verify the ground truth answers — HR attorneys for benefits, clinical pharmacists for drug data. Wrong ground truth = misleading eval. (4) Create a regression subset of 10-15 queries that previously failed — run this on every change to make sure you're not breaking what you fixed.</div></li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.svc').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.sb').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('svc-'+id).classList.add('active');
+  document.querySelector('[data-svc="'+id+'"]').classList.add('active');
+  window.scrollTo(0,0);
+}
+function dim(svcId, idx) {
+  var svc = document.getElementById('svc-'+svcId);
+  var panels = svc.querySelectorAll('.dp');
+  var tabs = svc.querySelectorAll('.dt');
+  panels.forEach(function(el){el.classList.remove('active');});
+  tabs.forEach(function(el){el.classList.remove('active');});
+  panels[idx].classList.add('active');
+  tabs[idx].classList.add('active');
+}
+function toggleTheme() {
+  var root = document.documentElement;
+  root.setAttribute('data-theme', root.getAttribute('data-theme')==='light'?'dark':'light');
+}
+</script>
+</body>
+</html>
