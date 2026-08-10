@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Strategy — Study Reference</title>
+<style>
+:root{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--accent:#FF4D1C;--blue:#4D9EFF;--green:#3DBA6F;--amber:#F0A030;--code:#0D1621;}
+@media(prefers-color-scheme:light){:root{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}}
+:root[data-theme=light]{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}
+:root[data-theme=dark]{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--code:#0D1621;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:1rem;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.logo span{color:var(--t2);font-weight:400}
+.title{font-size:.8rem;color:var(--t2)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+.badge{font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(61,186,111,.15);color:var(--green);border:1px solid rgba(61,186,111,.3)}
+.tbtn{background:var(--s2);border:1px solid var(--border);color:var(--t2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem}
+.tbtn:hover{color:var(--t1)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1rem .75rem;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:52px;max-height:calc(100vh - 52px);overflow-y:auto}
+.sg{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);font-weight:700;padding:.75rem .5rem .2rem}
+.sb{display:flex;flex-direction:column;width:100%;text-align:left;background:none;border:none;border-radius:6px;padding:.4rem .6rem;cursor:pointer;color:var(--t2);font-size:.8rem;line-height:1.3;transition:background .12s,color .12s}
+.sb:hover{background:var(--s2);color:var(--t1)}
+.sb.active{background:rgba(255,77,28,.12);color:var(--accent);font-weight:600}
+.sb small{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.sb.active small{color:rgba(255,77,28,.6)}
+.main{flex:1;padding:1.5rem 2rem;min-width:0}
+.svc{display:none}.svc.active{display:block}
+.sh{margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sh-top{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.4rem}
+.sn{font-size:1.4rem;font-weight:700;color:var(--t1)}
+.sp{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.sd{font-size:.88rem;color:var(--t2);max-width:72ch}
+.dtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto}
+.dt{padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;background:none;border:none;color:var(--t2);border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.dt:hover{color:var(--t1)}.dt.active{color:var(--accent);border-bottom-color:var(--accent)}
+.dp{display:none}.dp.active{display:block}
+.ps{margin-bottom:1.5rem}
+.pt{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--t3);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.pt::after{content:'';flex:1;height:1px;background:var(--border)}
+pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;font-size:.76rem;line-height:1.6;margin-bottom:.75rem;color:#A8C7FA;font-family:'Courier New',monospace}
+.cl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700;margin-bottom:.25rem;font-family:monospace}
+.k{color:#FF7B72}.s{color:#A5D6FF}.c{color:#5A6A80;font-style:italic}.fn{color:#79C0FF}.n{color:#FFA657}
+ul.bl{list-style:none;padding:0;margin-bottom:1rem}
+ul.bl li{font-size:.84rem;color:var(--t2);padding:.2rem 0 .2rem 1.1rem;position:relative;line-height:1.5}
+ul.bl li::before{content:'▸';position:absolute;left:0;color:var(--t3)}
+ul.bl li strong{color:var(--t1)}
+table.ft{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.75rem}
+table.ft th{text-align:left;padding:.4rem .75rem;background:var(--s2);color:var(--t2);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--border)}
+table.ft td{padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t1);vertical-align:top}
+table.ft tr:last-child td{border-bottom:none}
+table.ft td:first-child{color:var(--blue);font-family:monospace;font-size:.75rem;white-space:nowrap}
+table.ft tr:hover td{background:var(--s2)}
+.ca{border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.83rem;line-height:1.55;border-left:3px solid}
+.ca strong{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.ca-b{background:rgba(77,158,255,.07);border-color:var(--blue)}.ca-b strong{color:var(--blue)}
+.ca-a{background:rgba(240,160,48,.08);border-color:var(--amber)}.ca-a strong{color:var(--amber)}
+.ca-g{background:rgba(61,186,111,.07);border-color:var(--green)}.ca-g strong{color:var(--green)}
+.ca-r{background:rgba(255,77,28,.07);border-color:var(--accent)}.ca-r strong{color:var(--accent)}
+.mono{font-family:'Courier New',monospace;font-size:.85em;color:var(--blue);background:rgba(77,158,255,.08);padding:1px 4px;border-radius:3px}
+.qa{list-style:none;padding:0}
+.qi{border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;overflow:hidden}
+.qq{padding:.6rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:flex-start;gap:.6rem;background:var(--s2);color:var(--t1)}
+.qq::before{content:'Q';flex-shrink:0;font-size:.62rem;font-weight:800;padding:1px 5px;border-radius:3px;background:rgba(77,158,255,.2);color:var(--blue);margin-top:.05rem}
+.qa-a{padding:.6rem .9rem;font-size:.8rem;color:var(--t2);line-height:1.55;border-top:1px solid var(--border);display:none}
+.qi.open .qa-a{display:block}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%;max-height:none;position:static;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--border)}.sg{display:none}.main{padding:1rem}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">Strategy <span>Study Reference</span></div>
+  <div class="title">Build vs Buy · RAG vs Fine-tune · Agents · POC to Prod · Org Buy-in · Tech Debt · Aug 2026</div>
+  <div class="tr"><span class="badge">Director Level</span><button class="tbtn" onclick="toggleTheme()">Toggle Theme</button></div>
+</div>
+<div class="layout">
+<nav class="sidebar">
+  <div class="sg">Architecture</div>
+  <button class="sb active" data-svc="buildvbuy" onclick="show('buildvbuy')">Build vs Buy<small>When to build · Vendor risk · Control</small></button>
+  <button class="sb" data-svc="ragvft" onclick="show('ragvft')">RAG vs Fine-tune vs Prompt<small>Decision framework · Cost · Data needs</small></button>
+  <div class="sg">Execution</div>
+  <button class="sb" data-svc="poc" onclick="show('poc')">POC to Production<small>The gap · What breaks · Maturity model</small></button>
+  <button class="sb" data-svc="agents" onclick="show('agents')">When to Use Agents<small>Chain vs agent · Complexity threshold</small></button>
+  <div class="sg">Organization</div>
+  <button class="sb" data-svc="buyin" onclick="show('buyin')">Org Buy-in &amp; ROI<small>Stakeholders · Metrics · Pilot design</small></button>
+  <button class="sb" data-svc="debt" onclick="show('debt')">AI Technical Debt<small>Prompt debt · Eval debt · Model lock-in</small></button>
+</nav>
+<main class="main">
+
+<!-- BUILD VS BUY -->
+<div class="svc active" id="svc-buildvbuy">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Build vs Buy</span><span class="sp">Custom · Vendor · Open source · Platform</span></div>
+    <div class="sd">The build vs buy decision in AI is more nuanced than in traditional software because the "buy" options span a wide range: fully managed platforms, open-source frameworks, foundation model APIs, and pre-built vertical solutions. The right answer depends on your differentiation, data, and ops capacity.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('buildvbuy',0)">Decision Framework</button>
+    <button class="dt" onclick="dim('buildvbuy',1)">Trade-offs Table</button>
+    <button class="dt" onclick="dim('buildvbuy',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>Build when the capability IS the product</strong> — if your AI is a competitive differentiator (proprietary data + workflow), buying an off-shelf solution gives competitors the same capability</li>
+      <li><strong>Buy when the capability is a commodity</strong> — document summarization, generic Q&amp;A, sentiment analysis — these are not moats; buy or use a foundation model API</li>
+      <li><strong>Open source is not free</strong> — self-hosting LLMs, vector DBs, and orchestration frameworks requires GPU ops, upgrades, security patching, and on-call. Total cost of ownership is often 3–5× the apparent cost.</li>
+      <li><strong>Vendor risk in AI is real</strong> — LLM providers change pricing, deprecate models, go down, or get acquired. Build with abstractions that let you swap providers (LangChain's chat interface, LiteLLM) for non-differentiating tasks.</li>
+      <li><strong>Platform bet vs. best-of-breed</strong> — Databricks full-stack (Delta + UC + Model Serving + AI Search + MLflow) vs. stitching best-of-breed tools. Platform: less ops, more lock-in. Best-of-breed: more flexibility, more integration work.</li>
+    </ul>
+    <div class="ca ca-g"><strong>Director Answer Framework</strong>
+    "I default to buying or using APIs for anything that's not proprietary — generic NLP tasks, standard RAG retrieval, evaluation metrics. I build custom for: (1) proprietary data pipelines where we have unique signal, (2) workflows where the business logic is a competitive advantage, (3) anything requiring integration with internal systems the vendor can't support. The question I always ask: if a competitor bought the same vendor solution, would they have the same capability? If yes, it's not a moat — buy it and spend engineering time on what actually differentiates us."</div>
+  </div>
+  <div class="dp">
+    <table class="ft"><tr><th>Option</th><th>Control</th><th>Speed</th><th>Cost</th><th>Lock-in risk</th><th>Best for</th></tr>
+      <tr><td>Foundation Model API</td><td>Low</td><td>Hours</td><td>Per token</td><td>Medium (swap providers)</td><td>Standard NLP, prototyping, non-sensitive data</td></tr>
+      <tr><td>Managed Platform (Databricks)</td><td>Medium</td><td>Days</td><td>Platform + compute</td><td>High</td><td>Enterprise data platform, governed AI, regulated industries</td></tr>
+      <tr><td>Open source + self-host</td><td>High</td><td>Weeks</td><td>Ops-heavy</td><td>Low</td><td>Data residency requirements, high volume, specific model needs</td></tr>
+      <tr><td>Custom build</td><td>Full</td><td>Months</td><td>Highest</td><td>None</td><td>Differentiating workflows, proprietary data advantage</td></tr>
+      <tr><td>Vertical SaaS AI</td><td>Lowest</td><td>Days</td><td>Subscription</td><td>Very high</td><td>Standard use cases where speed &gt; customization (HR chatbots, support bots)</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">A business unit wants to buy a vertical AI solution. What questions do you ask before approving?</div><div class="qa-a">Six questions. (1) Data: where does our data go? Who trains on it? Can we opt out of training data use? (2) Integration: how does it connect to our existing systems — API, connector, manual export? What's the integration maintenance burden? (3) Customization ceiling: when our requirements outgrow the product, what's the migration path? Have they seen customers need it before? (4) Vendor viability: what's their funding situation, customer base, enterprise contract terms? AI vendor landscape is volatile. (5) Governance: does it meet our compliance requirements (HIPAA BAA, SOC 2, data residency)? (6) True cost: what's the total cost including implementation, training, support, and the overage pricing when usage scales? The sticker price is almost never the real price.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- RAG VS FT -->
+<div class="svc" id="svc-ragvft">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">RAG vs Fine-tune vs Prompting</span><span class="sp">Decision framework · When each wins · Combining</span></div>
+    <div class="sd">These are not competing approaches — they solve different problems. The mistake is reaching for fine-tuning before exhausting prompting and RAG, which are faster, cheaper, and more maintainable for most use cases.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('ragvft',0)">Decision Framework</button>
+    <button class="dt" onclick="dim('ragvft',1)">When to Combine</button>
+    <button class="dt" onclick="dim('ragvft',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Problem</th><th>Best approach</th><th>Why</th></tr>
+      <tr><td>Model doesn't know recent or proprietary facts</td><td>RAG</td><td>Fine-tuning bakes in a knowledge snapshot; RAG stays current as docs update</td></tr>
+      <tr><td>Model uses wrong tone/format/terminology</td><td>Prompting (few-shot)</td><td>Behavior is in-context learnable; 5–20 examples usually fix it</td></tr>
+      <tr><td>Model needs to reliably produce a specific output structure</td><td>Prompting + Pydantic</td><td>Structured output + validation catches format errors; no training data needed</td></tr>
+      <tr><td>Model underperforms on a narrow, high-volume task despite good prompts</td><td>Fine-tuning (LoRA)</td><td>Parametric knowledge injection for domain-specific patterns that prompting can't fix</td></tr>
+      <tr><td>Model needs domain vocabulary/jargon to score well on embeddings</td><td>Fine-tune the embedding model</td><td>Retrieval domain mismatch requires embedding adaptation, not generation fine-tuning</td></tr>
+      <tr><td>Model knows the domain but answers from wrong docs</td><td>Fix RAG retrieval</td><td>This is a retrieval problem, not a model capability problem</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>Common Mistake — Fine-tuning the Wrong Thing</strong>
+    Team spent 3 weeks fine-tuning a generation model because "it doesn't know our product well enough." The real problem: retrieval was returning wrong chunks. The model was hallucinating because it had no relevant context, not because it lacked product knowledge. After fixing the chunking and adding hybrid search, the base model performed fine. Three weeks of fine-tuning work abandoned. Diagnose retrieval before tuning generation.</div>
+  </div>
+  <div class="dp">
+    <ul class="bl">
+      <li><strong>RAG + prompting = solve 80% of cases</strong> — get to production faster, iterate on real user feedback, then invest in fine-tuning for the specific gaps that remain</li>
+      <li><strong>RAG + fine-tuned embedding</strong> — fine-tune the embedding model on domain Q&amp;A pairs to improve retrieval, keep the generation model as-is; often 2× improvement in context recall</li>
+      <li><strong>Fine-tuned generation + RAG</strong> — fine-tune for tone, format, and domain terminology; RAG provides current knowledge; the combination is stronger than either alone</li>
+      <li><strong>Prompt caching + long context instead of RAG</strong> — for small, static document sets (&lt;100K tokens) that rarely change, long context + prompt caching can be simpler than a full RAG pipeline; no index maintenance, simpler architecture</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When should you fine-tune instead of using RAG?</div><div class="qa-a">Four situations where fine-tuning wins. First: the knowledge is stable and doesn't change — safety regulations, established medical protocols, legal statutes. RAG adds retrieval cost and latency for knowledge that could be baked in. Second: you need the model to internalize reasoning patterns, not just facts — how to analyze a contract clause, how to structure a clinical note. Retrieval can provide examples, but fine-tuning internalizes the reasoning style. Third: latency is critical — a fine-tuned small model can match a larger model on a narrow task at 10× lower latency. Fourth: you need to reduce context window usage — a fine-tuned model knows the domain implicitly, so your RAG context can be shorter. In practice, I'd almost always ship RAG first, then fine-tune for the gaps it can't cover rather than fine-tuning upfront.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- POC TO PROD -->
+<div class="svc" id="svc-poc">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">POC to Production</span><span class="sp">The gap · Maturity model · What breaks at scale</span></div>
+    <div class="sd">The gap between a working demo and a production AI system is where most projects fail. A POC that impresses in a demo can take 6–12 months to harden for production. Understanding the gap before you start is what makes timelines realistic.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('poc',0)">The Gap</button>
+    <button class="dt" onclick="dim('poc',1)">Maturity Stages</button>
+    <button class="dt" onclick="dim('poc',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>What works in POC</th><th>What breaks in production</th><th>Fix required</th></tr>
+      <tr><td>Hand-selected "good" documents</td><td>Real corpus has bad PDFs, stale docs, mixed layouts</td><td>Production ingestion pipeline with quality gates</td></tr>
+      <tr><td>Manually crafted test queries</td><td>Real users ask unexpected, messy questions</td><td>Real query eval set; online monitoring</td></tr>
+      <tr><td>Single user, no concurrency</td><td>Rate limits hit; P99 latency spikes; cost scales linearly</td><td>Caching, queuing, autoscaling, cost tracking</td></tr>
+      <tr><td>No access control</td><td>Users see each other's data; confidential docs retrieved</td><td>RBAC at retrieval layer; audit logging</td></tr>
+      <tr><td>No error handling</td><td>API timeouts, bad parses, model refusals crash the system</td><td>Graceful degradation, fallbacks, retry logic</td></tr>
+      <tr><td>Eval = "it looked good"</td><td>Quality degrades silently after prompt or doc changes</td><td>Automated eval suite; regression gate; online monitoring</td></tr>
+    </table>
+    <div class="ca ca-a"><strong>The Hardest Gap</strong>
+    The hardest part of POC-to-production isn't the ML — it's the data pipeline. In the POC, someone curated 20 clean documents. In production, you need to ingest 500 documents from 12 different sources, with ongoing updates, format variations, and quality issues, on a schedule, with alerting when something goes wrong. That's a data engineering project, not an AI project. Budget for it accordingly.</div>
+  </div>
+  <div class="dp">
+    <table class="ft"><tr><th>Stage</th><th>Characteristics</th><th>What's missing</th></tr>
+      <tr><td>Stage 0: Demo</td><td>Works on 20 hand-selected examples; impressive in a meeting</td><td>Everything except the core idea</td></tr>
+      <tr><td>Stage 1: Alpha</td><td>Real data ingested; basic eval suite; single user test</td><td>Scale, access control, monitoring, error handling</td></tr>
+      <tr><td>Stage 2: Beta</td><td>Multi-user; basic access control; P50 latency acceptable; cost tracked</td><td>P99 latency; full governance; production monitoring; runbook</td></tr>
+      <tr><td>Stage 3: Production</td><td>RBAC; audit logs; eval CI; online monitoring; documented runbook; SLA defined</td><td>Mature: ongoing eval improvement, cost optimization</td></tr>
+      <tr><td>Stage 4: Mature</td><td>Self-healing alerts; continuous eval improvement; A/B infrastructure; fine-tuning loop</td><td>Nothing — this is the goal</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">The demo worked great, but the team is saying 6 months to production. Why so long?</div><div class="qa-a">The demo showed the ML works — which is actually the easy part. What takes 6 months is: building the production data ingestion pipeline with quality validation and scheduling (4–8 weeks); building and populating the eval suite with real user queries and domain-expert-validated answers (2–4 weeks); implementing access control, audit logging, and compliance requirements (3–6 weeks depending on regulatory burden); building the monitoring infrastructure and runbooks (2–4 weeks); load testing, fixing the P99 latency issues that don't show up in single-user demos (2–4 weeks); deployment pipeline with staging environment, eval gates, and rollback procedures (2–4 weeks). None of this is glamorous, but all of it is necessary. The demo proves feasibility; the 6 months is the production engineering. If leadership is surprised by this, it means the POC was presented as a production system — which is a communications problem worth fixing before the next project.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- AGENTS STRATEGY -->
+<div class="svc" id="svc-agents">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">When to Use Agents</span><span class="sp">Chain vs agent · Complexity threshold · Cost of autonomy</span></div>
+    <div class="sd">Agents are powerful and overused. Every agentic step adds latency, cost, and unpredictability. The right question isn't "could an agent do this?" but "does this problem require dynamic, runtime decision-making that a fixed pipeline can't provide?"</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('agents',0)">Decision Framework</button>
+    <button class="dt" onclick="dim('agents',1)">Complexity Signals</button>
+    <button class="dt" onclick="dim('agents',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Use a chain/pipeline when</th><th>Use an agent when</th></tr>
+      <tr><td>Steps are known and fixed at design time</td><td>Steps depend on what the system discovers at runtime</td></tr>
+      <tr><td>Every query follows the same path</td><td>Different queries need different tools or sequences</td></tr>
+      <tr><td>Latency and cost matter and must be predictable</td><td>Flexibility and task completion matter more than predictability</td></tr>
+      <tr><td>The task is well-defined and bounded</td><td>The task is open-ended or exploratory</td></tr>
+      <tr><td>You need 100% reproducibility for audit</td><td>The plan-and-execute pattern provides the audit trail</td></tr>
+    </table>
+    <ul class="bl">
+      <li><strong>Agents are not always better</strong> — a 3-step chain that reliably does the right thing beats an agent that sometimes loops, sometimes uses the wrong tool, and costs 5× more per query</li>
+      <li><strong>Start with the simplest architecture that could work</strong> — chain first; add dynamic routing only when the chain demonstrably can't handle the variance you observe in production</li>
+      <li><strong>Cost of autonomy</strong> — every decision the agent makes instead of deterministic code is a source of variance; for high-stakes decisions (financial, medical, legal), prefer explicit logic over agent judgment</li>
+      <li><strong>The hardest agent problems are coordination</strong> — multi-agent systems add inter-agent communication, shared state management, and cascade failure risks; worth it only when a single agent genuinely can't do the job</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <ul class="bl">
+      <li><strong>Signal 1: branching based on content</strong> — "if the document is a contract, do X; if it's a spec, do Y" — you can't determine which at design time without seeing the document → agent</li>
+      <li><strong>Signal 2: unknown number of steps</strong> — "investigate this issue until you find the root cause" — you don't know upfront how many tool calls it takes → agent</li>
+      <li><strong>Signal 3: tool selection depends on prior results</strong> — "search the web if the internal docs don't have the answer" — the decision to use the second tool depends on the first result → agent</li>
+      <li><strong>Non-signal: "it's complex"</strong> — complexity alone doesn't justify an agent; a very complex but fixed pipeline is still a chain. If you can enumerate all the paths, it's a chain with conditionals.</li>
+      <li><strong>Non-signal: "we want it to be smart"</strong> — intelligence comes from the model, not from the agent architecture. A well-prompted single LLM call is often smarter than a poorly-designed agent loop.</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you decide between a RAG chain and a RAG agent?</div><div class="qa-a">One question: does every query follow the same retrieval path, or does the retrieval strategy depend on what the model discovers mid-query? A standard HR benefits question — "what's the PPO deductible?" — always follows: embed query → search benefit docs → generate answer. That's a chain. The retrieval strategy is fixed. An agent is warranted when: the query might require checking multiple indices (benefits docs + plan comparison + enrollment calendar) and which indices to check depends on what the query is about; or when the answer to the first retrieval changes what to retrieve next ("the PPO doesn't cover this — is it covered under the supplemental plan?"). If fewer than 20% of your queries need dynamic retrieval, serve all of them with a chain. The 20% that need it will just get the chain path, which is acceptable.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- BUY-IN -->
+<div class="svc" id="svc-buyin">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Org Buy-in &amp; ROI</span><span class="sp">Stakeholder mapping · Metrics · Pilot design · Failure modes</span></div>
+    <div class="sd">The best AI system fails if the organization doesn't trust it, adopt it, or fund its operation. Getting buy-in is as important as building the system — and requires a different skill set than engineering.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('buyin',0)">Stakeholder Strategy</button>
+    <button class="dt" onclick="dim('buyin',1)">ROI Metrics</button>
+    <button class="dt" onclick="dim('buyin',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>Find the champion first</strong> — one VP or Director who feels the pain the AI solves is worth more than 10 technical supporters; they provide budget, air cover, and access to real data</li>
+      <li><strong>Show, don't tell</strong> — a 30-minute demo on real company data beats a 30-slide deck; executives need to see it work on their problem, not a generic example</li>
+      <li><strong>Address the fear directly</strong> — "will this replace my team?" is always in the room; address it early: "this handles the low-value repetitive work; your team focuses on judgment calls and exceptions"</li>
+      <li><strong>Design the pilot for a visible win</strong> — pick the use case with: (a) a measurable before/after, (b) a champion who will broadcast the result, (c) low regulatory risk for the first version</li>
+      <li><strong>Measure what the business cares about</strong> — not RAGAS scores; hours saved per week, resolution time, error rate, cost per transaction, employee satisfaction. RAGAS is for you; the business metric is for them.</li>
+    </ul>
+    <div class="ca ca-b"><strong>The Pilot Design Rule</strong>
+    A pilot that succeeds quietly fails organizationally. Design the pilot so the result is visible to leadership, the champion can point to a number, and the failure mode (if it happens) is contained and recoverable. A pilot that half the company hears about succeeding funds the next project. A pilot that no one hears about — even if technically successful — doesn't.</div>
+  </div>
+  <div class="dp">
+    <table class="ft"><tr><th>Business metric</th><th>How to measure</th><th>Typical AI impact</th></tr>
+      <tr><td>Resolution / processing time</td><td>Before/after median time per case (from ticketing system)</td><td>50–90% reduction for structured, repetitive tasks</td></tr>
+      <tr><td>Cost per transaction</td><td>(Staff time × rate + infra cost) / volume</td><td>60–80% reduction when agents replace manual lookup</td></tr>
+      <tr><td>Error / rework rate</td><td>% of cases requiring correction after AI-assisted resolution</td><td>20–40% reduction vs manual (if eval-driven, higher with HITL)</td></tr>
+      <tr><td>Employee satisfaction</td><td>Survey: "Does the AI tool help you do your job better?"</td><td>High if the AI handles drudge work; low if it's unreliable</td></tr>
+      <tr><td>Escalation rate</td><td>% of queries requiring human review (target: &lt;15% for mature system)</td><td>Starts high (30–50%), improves with eval iteration</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Leadership is skeptical after a failed AI project. How do you rebuild confidence?</div><div class="qa-a">Don't pitch technology — pitch a contained, measurable problem. The failed project probably over-promised and under-delivered on scope. Rebuild trust with a small win: "I want to solve one specific, painful problem for one team in 6 weeks, with clear success metrics defined upfront. If it doesn't hit the metrics, we stop." Pick the problem with the most sympathetic champion and the clearest measurement. Build a paper trail: define the metrics before you start, measure them weekly, report honestly including setbacks. When you deliver — even something modest — the champion broadcasts it. That social proof is worth more than any technical argument. Then use that success to scope the next project, slightly larger. Trust is rebuilt incrementally, not in a single pitch.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- TECH DEBT -->
+<div class="svc" id="svc-debt">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">AI Technical Debt</span><span class="sp">Prompt debt · Eval debt · Model lock-in · Data debt</span></div>
+    <div class="sd">AI systems accumulate technical debt faster than traditional software, and it's less visible. A prompt that "just works" with no tests, an eval set that was never updated, a model version no one wants to upgrade — these are AI debt, and they compound.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('debt',0)">Types of AI Debt</button>
+    <button class="dt" onclick="dim('debt',1)">Debt Management</button>
+    <button class="dt" onclick="dim('debt',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Debt type</th><th>What it looks like</th><th>Cost of ignoring</th></tr>
+      <tr><td>Prompt debt</td><td>System prompts with no version history, no tests, modified by hand in production</td><td>Silent regressions; can't roll back; no one knows what changed or when</td></tr>
+      <tr><td>Eval debt</td><td>Eval set built once at launch, never updated with real user queries or new failure modes</td><td>False confidence; system degrades on real traffic while eval scores stay green</td></tr>
+      <tr><td>Model lock-in debt</td><td>Prompts so model-specific they break on any version upgrade; no abstraction layer</td><td>Stuck on deprecated model version; expensive migration when provider forces upgrade</td></tr>
+      <tr><td>Data pipeline debt</td><td>Ingestion script that works but has no tests, no monitoring, no quality gate</td><td>Bad docs silently corrupt the index; discovered when users complain, not when docs change</td></tr>
+      <tr><td>Observability debt</td><td>No tracing, no quality metrics, no cost tracking — "it seems to be working"</td><td>Can't debug production failures; can't prove value to stakeholders; cost surprises</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>The Hardest Debt to Pay Down</strong>
+    Eval debt is the most insidious. An outdated eval set gives you false confidence. You ship changes that look good on the eval but degrade on real traffic. Users complain; you can't diagnose it because your eval doesn't represent real queries. Paying it down requires going back to real user logs, having domain experts re-validate answers, and rebuilding the eval set — while the system is in production and users are depending on it. Prevention: allocate 10% of AI engineering time to eval maintenance, not as a one-time project but as ongoing operational work.</div>
+  </div>
+  <div class="dp">
+    <ul class="bl">
+      <li><strong>Treat prompts like code</strong> — version control, code review, tests, and deployment pipelines for system prompt changes; no hand-editing production prompts</li>
+      <li><strong>Eval set maintenance as a quarterly ritual</strong> — review the eval set every quarter; add the top 10 failure cases from the prior quarter; remove examples that no longer represent real queries</li>
+      <li><strong>Abstraction layer over model APIs</strong> — use LiteLLM or LangChain's chat interface so swapping providers is a config change, not a code rewrite</li>
+      <li><strong>Data pipeline SLA</strong> — treat the ingestion pipeline as a production service with an SLA; alert on parse quality drops, staleness, and indexing failures like you would a web service outage</li>
+      <li><strong>Debt inventory</strong> — maintain a visible list of known AI debt items with an owner and a target date; make it part of sprint planning, not a separate backlog that never gets touched</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Your AI system has been running for a year with minimal engineering attention. How do you assess its health?</div><div class="qa-a">Five-point health check. (1) Model currency: is the model version still supported? Are we on an alias that may have silently updated? Run the eval suite on the current pinned version vs. the latest available. (2) Eval validity: pull the 50 most recent user queries from the logs. How many are represented in the eval set? If &lt;30%, the eval set is stale — it's measuring old behavior, not current usage. (3) Data freshness: when was the document corpus last updated? Are there stale docs in the index? What's the parse quality distribution? (4) Cost trajectory: is cost per query trending up? Often means prompts have gotten longer, agents are looping more, or the model was quietly upgraded to a larger tier. (5) User signal: what's the thumbs-down rate? Escalation rate? Support ticket volume for AI-related issues? These lagging indicators tell you what the automated metrics missed. After this assessment, I'd know what to fix and in what order.</div></li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</div>
+<script>
+function show(id){document.querySelectorAll('.svc').forEach(function(el){el.classList.remove('active');});document.querySelectorAll('.sb').forEach(function(el){el.classList.remove('active');});document.getElementById('svc-'+id).classList.add('active');document.querySelector('[data-svc="'+id+'"]').classList.add('active');window.scrollTo(0,0);}
+function dim(svcId,idx){var svc=document.getElementById('svc-'+svcId);var panels=svc.querySelectorAll('.dp');var tabs=svc.querySelectorAll('.dt');panels.forEach(function(el){el.classList.remove('active');});tabs.forEach(function(el){el.classList.remove('active');});panels[idx].classList.add('active');tabs[idx].classList.add('active');}
+function toggleTheme(){var root=document.documentElement;root.setAttribute('data-theme',root.getAttribute('data-theme')==='light'?'dark':'light');}
+</script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Production — Study Reference</title>
+<style>
+:root{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--accent:#FF4D1C;--blue:#4D9EFF;--green:#3DBA6F;--amber:#F0A030;--code:#0D1621;}
+@media(prefers-color-scheme:light){:root{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}}
+:root[data-theme=light]{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}
+:root[data-theme=dark]{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--code:#0D1621;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:1rem;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.logo span{color:var(--t2);font-weight:400}
+.title{font-size:.8rem;color:var(--t2)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+.badge{font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(61,186,111,.15);color:var(--green);border:1px solid rgba(61,186,111,.3)}
+.tbtn{background:var(--s2);border:1px solid var(--border);color:var(--t2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem}
+.tbtn:hover{color:var(--t1)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1rem .75rem;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:52px;max-height:calc(100vh - 52px);overflow-y:auto}
+.sg{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);font-weight:700;padding:.75rem .5rem .2rem}
+.sb{display:flex;flex-direction:column;width:100%;text-align:left;background:none;border:none;border-radius:6px;padding:.4rem .6rem;cursor:pointer;color:var(--t2);font-size:.8rem;line-height:1.3;transition:background .12s,color .12s}
+.sb:hover{background:var(--s2);color:var(--t1)}
+.sb.active{background:rgba(255,77,28,.12);color:var(--accent);font-weight:600}
+.sb small{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.sb.active small{color:rgba(255,77,28,.6)}
+.main{flex:1;padding:1.5rem 2rem;min-width:0}
+.svc{display:none}.svc.active{display:block}
+.sh{margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sh-top{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.4rem}
+.sn{font-size:1.4rem;font-weight:700;color:var(--t1)}
+.sp{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.sd{font-size:.88rem;color:var(--t2);max-width:72ch}
+.dtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto}
+.dt{padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;background:none;border:none;color:var(--t2);border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.dt:hover{color:var(--t1)}.dt.active{color:var(--accent);border-bottom-color:var(--accent)}
+.dp{display:none}.dp.active{display:block}
+.ps{margin-bottom:1.5rem}
+.pt{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--t3);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.pt::after{content:'';flex:1;height:1px;background:var(--border)}
+pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;font-size:.76rem;line-height:1.6;margin-bottom:.75rem;color:#A8C7FA;font-family:'Courier New',monospace}
+.cl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700;margin-bottom:.25rem;font-family:monospace}
+.k{color:#FF7B72}.s{color:#A5D6FF}.c{color:#5A6A80;font-style:italic}.fn{color:#79C0FF}.n{color:#FFA657}
+ul.bl{list-style:none;padding:0;margin-bottom:1rem}
+ul.bl li{font-size:.84rem;color:var(--t2);padding:.2rem 0 .2rem 1.1rem;position:relative;line-height:1.5}
+ul.bl li::before{content:'▸';position:absolute;left:0;color:var(--t3)}
+ul.bl li strong{color:var(--t1)}
+table.ft{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.75rem}
+table.ft th{text-align:left;padding:.4rem .75rem;background:var(--s2);color:var(--t2);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--border)}
+table.ft td{padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t1);vertical-align:top}
+table.ft tr:last-child td{border-bottom:none}
+table.ft td:first-child{color:var(--blue);font-family:monospace;font-size:.75rem;white-space:nowrap}
+table.ft tr:hover td{background:var(--s2)}
+.ca{border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.83rem;line-height:1.55;border-left:3px solid}
+.ca strong{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.ca-b{background:rgba(77,158,255,.07);border-color:var(--blue)}.ca-b strong{color:var(--blue)}
+.ca-a{background:rgba(240,160,48,.08);border-color:var(--amber)}.ca-a strong{color:var(--amber)}
+.ca-g{background:rgba(61,186,111,.07);border-color:var(--green)}.ca-g strong{color:var(--green)}
+.ca-r{background:rgba(255,77,28,.07);border-color:var(--accent)}.ca-r strong{color:var(--accent)}
+.mono{font-family:'Courier New',monospace;font-size:.85em;color:var(--blue);background:rgba(77,158,255,.08);padding:1px 4px;border-radius:3px}
+.qa{list-style:none;padding:0}
+.qi{border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;overflow:hidden}
+.qq{padding:.6rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:flex-start;gap:.6rem;background:var(--s2);color:var(--t1)}
+.qq::before{content:'Q';flex-shrink:0;font-size:.62rem;font-weight:800;padding:1px 5px;border-radius:3px;background:rgba(77,158,255,.2);color:var(--blue);margin-top:.05rem}
+.qa-a{padding:.6rem .9rem;font-size:.8rem;color:var(--t2);line-height:1.55;border-top:1px solid var(--border);display:none}
+.qi.open .qa-a{display:block}
+@media(max-width:700px){.layout{flex-direction:column}.sidebar{width:100%;max-height:none;position:static;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--border)}.sg{display:none}.main{padding:1rem}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">Production <span>Study Reference</span></div>
+  <div class="title">Latency · Cost · Streaming · Drift · Monitoring · Scaling · Aug 2026</div>
+  <div class="tr"><span class="badge">Director Level</span><button class="tbtn" onclick="toggleTheme()">Toggle Theme</button></div>
+</div>
+<div class="layout">
+<nav class="sidebar">
+  <div class="sg">Performance</div>
+  <button class="sb active" data-svc="latency" onclick="show('latency')">Latency &amp; P99<small>Cold starts · Streaming · Token budget</small></button>
+  <button class="sb" data-svc="cost" onclick="show('cost')">Cost Management<small>Caching · Model tiers · Batching</small></button>
+  <div class="sg">Reliability</div>
+  <button class="sb" data-svc="streaming" onclick="show('streaming')">Streaming<small>SSE · Partial responses · Tool calls</small></button>
+  <button class="sb" data-svc="drift" onclick="show('drift')">Deployment &amp; Drift<small>Blue/green · Shadow mode · Rollback</small></button>
+  <div class="sg">Operations</div>
+  <button class="sb" data-svc="monitoring" onclick="show('monitoring')">Monitoring &amp; Alerting<small>What to track · Thresholds · On-call</small></button>
+  <button class="sb" data-svc="scaling" onclick="show('scaling')">Scaling &amp; Rate Limits<small>Queuing · Autoscale · Throttling</small></button>
+</nav>
+<main class="main">
+
+<!-- LATENCY -->
+<div class="svc active" id="svc-latency">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Latency &amp; P99</span><span class="sp">Cold starts · TTFT · Token budget · P50 vs P99</span></div>
+    <div class="sd">P50 latency is what your system does on a good day. P99 is what users experience when something is slightly wrong. AI systems have latency distributions that are much wider than traditional APIs — a 2s P50 can have a 14s P99.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('latency',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('latency',1)">Code</button>
+    <button class="dt" onclick="dim('latency',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Latency component</th><th>Typical range</th><th>Primary lever</th></tr>
+      <tr><td>Embedding (query)</td><td>20–150ms</td><td>Cache frequent queries; batch embed; self-host for &lt;10ms</td></tr>
+      <tr><td>Vector search</td><td>10–200ms</td><td>HNSW tuning; approximate search; warm index</td></tr>
+      <tr><td>Reranking</td><td>100–400ms</td><td>Rerank top-20 only, not top-100; run async if possible</td></tr>
+      <tr><td>LLM TTFT (time to first token)</td><td>200ms–3s</td><td>Streaming; smaller model for drafts; prompt caching</td></tr>
+      <tr><td>LLM generation (full response)</td><td>1s–15s</td><td>Reduce max_tokens; smaller model; streaming UX</td></tr>
+      <tr><td>Cold start (serverless)</td><td>2s–10s added</td><td>Pre-warm containers; provisioned concurrency; keep-alive pings</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>War Story — P99 Disaster</strong>
+    Launched an HR chatbot with P50 = 1.8s — acceptable. First week in production, P99 was 14.2s. Users were abandoning queries. Root cause: cold starts on the embedding model container (serverless Lambda). The container had a 6–8s startup time. Fixed with two changes: (1) provisioned concurrency on the embedding endpoint to keep 2 containers warm at all times; (2) separated the fast path (cached frequent queries) from the slow path (cold retrieval), so 80% of queries hit cache at &lt;200ms. P99 dropped to 3.1s.</div>
+    <ul class="bl">
+      <li><strong>Measure TTFT separately</strong> — time-to-first-token is the user's perceived latency when streaming; optimize this over total response time</li>
+      <li><strong>Prompt caching</strong> — Anthropic and OpenAI cache the system prompt portion when it's long (&gt;1K tokens); subsequent calls reuse the KV cache, cutting TTFT by 30–60%</li>
+      <li><strong>Token budget for agents</strong> — unbounded agent loops have unbounded latency; set a max_tokens budget per turn AND a max_steps budget per run</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Latency instrumentation + prompt cache headers</div>
+<pre><span class="k">import</span> time
+<span class="k">import</span> anthropic
+<span class="k">import</span> mlflow
+
+client = anthropic.Anthropic()
+
+<span class="fn">def</span> <span class="fn">timed_invoke</span>(messages: list, system: str) -> dict:
+    t0 = time.perf_counter()
+    first_token_time = <span class="k">None</span>
+
+    <span class="k">with</span> client.messages.stream(
+        model=<span class="s">"claude-sonnet-4-5"</span>,
+        system=system,
+        messages=messages,
+        max_tokens=<span class="n">1024</span>,
+    ) <span class="k">as</span> stream:
+        <span class="k">for</span> chunk <span class="k">in</span> stream:
+            <span class="k">if</span> first_token_time <span class="k">is</span> <span class="k">None</span> <span class="k">and</span> hasattr(chunk, <span class="s">"delta"</span>):
+                first_token_time = time.perf_counter() - t0
+        final = stream.get_final_message()
+
+    total_time = time.perf_counter() - t0
+    usage = final.usage
+
+    mlflow.log_metrics({
+        <span class="s">"ttft_ms"</span>:          (first_token_time <span class="k">or</span> <span class="n">0</span>) * <span class="n">1000</span>,
+        <span class="s">"total_latency_ms"</span>: total_time * <span class="n">1000</span>,
+        <span class="s">"input_tokens"</span>:     usage.input_tokens,
+        <span class="s">"output_tokens"</span>:    usage.output_tokens,
+        <span class="s">"cache_read_tokens"</span>: getattr(usage, <span class="s">"cache_read_input_tokens"</span>, <span class="n">0</span>),
+    })
+    <span class="k">return</span> {<span class="s">"content"</span>: final.content[<span class="n">0</span>].text, <span class="s">"latency_ms"</span>: total_time * <span class="n">1000</span>}</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">P50 was fine but P99 was 14 seconds. Walk me through how you diagnosed it.</div><div class="qa-a">First, segment the latency into components — embedding, retrieval, reranking, LLM. I added timing spans to each step and looked at the P99 distribution per component. The embedding step had a bimodal distribution: 80ms (fast) and 7,000ms (slow). That's a cold start signature, not a throughput problem. Confirmed by correlating slow requests with container init events in CloudWatch — any request that hit an unwarmed container paid the 6–8s startup cost. Fix: provisioned concurrency to keep 2 containers always warm. For the remaining P99 budget, added semantic caching (cache the embedding + top-K chunks for semantically similar queries) — hit rate of ~35% for frequent HR questions, those now return in under 200ms. P99 went from 14.2s to 3.1s.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- COST -->
+<div class="svc" id="svc-cost">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Cost Management</span><span class="sp">Token costs · Caching · Model tiering · Batching</span></div>
+    <div class="sd">LLM costs scale with tokens × requests. An agent that loops 10 times per query costs 10× what a single-call chain costs. Cost management is an architectural decision, not an ops task.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('cost',0)">Concept &amp; Levers</button>
+    <button class="dt" onclick="dim('cost',1)">Code</button>
+    <button class="dt" onclick="dim('cost',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Lever</th><th>Savings potential</th><th>Trade-off</th></tr>
+      <tr><td>Prompt / KV caching</td><td>30–80% on repeated system prompts</td><td>System prompt must be long (&gt;1K tokens) and stable; cache TTL varies by provider</td></tr>
+      <tr><td>Semantic query cache</td><td>20–50% on repetitive user queries</td><td>Cache invalidation on doc updates; similarity threshold tuning</td></tr>
+      <tr><td>Model tiering</td><td>5–20× cost reduction</td><td>Quality drop on complex tasks; must eval each tier carefully</td></tr>
+      <tr><td>Reduce max_tokens</td><td>Proportional to reduction</td><td>Truncated answers if set too low; measure P99 output length first</td></tr>
+      <tr><td>Batch inference</td><td>50% discount (Anthropic/OpenAI batch API)</td><td>Async only; 24h SLA; not for real-time user queries</td></tr>
+      <tr><td>Agent step budget</td><td>Prevents cost explosions</td><td>Agents that hit the budget hard-stop; may need human handoff</td></tr>
+    </table>
+    <div class="ca ca-a"><strong>War Story — Runaway Agent Cost</strong>
+    An agent processing NFL Gamebook questions looped 47 times on a single ambiguous query — "compare Manning's stats across all playoff appearances." Each loop called the embedding model + LLM. Single request cost: $2.14. At 500 queries/day that's $1,070/day. Added a max_steps=12 hard stop and a per-request token budget of 8,000 tokens. Cost dropped to $0.08/query. The hard stop also revealed the underlying problem: the query was too broad for the tool definitions; the agent was looping because no single tool could answer it. Split into a structured query pre-processor that broke broad queries into bounded sub-queries before the agent ran.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Semantic cache + model tiering by query complexity</div>
+<pre><span class="k">from</span> langchain_community.cache <span class="k">import</span> RedisSemanticCache
+<span class="k">from</span> langchain_openai <span class="k">import</span> OpenAIEmbeddings
+<span class="k">import</span> langchain
+
+<span class="c"># Semantic cache: reuse answers for similar queries</span>
+<span class="c"># score_threshold: cosine sim above this → cache hit</span>
+langchain.llm_cache = RedisSemanticCache(
+    redis_url=<span class="s">"redis://localhost:6379"</span>,
+    embedding=OpenAIEmbeddings(),
+    score_threshold=<span class="n">0.95</span>,
+)
+
+<span class="fn">def</span> <span class="fn">route_by_complexity</span>(query: str) -> str:
+    <span class="s">"""Route to cheaper model for simple lookups."""</span>
+    simple_patterns = [<span class="s">"what is"</span>, <span class="s">"when is"</span>, <span class="s">"how many"</span>, <span class="s">"who is"</span>]
+    <span class="k">if</span> any(query.lower().startswith(p) <span class="k">for</span> p <span class="k">in</span> simple_patterns) <span class="k">and</span> len(query) < <span class="n">80</span>:
+        <span class="k">return</span> <span class="s">"claude-haiku-4-5"</span>      <span class="c"># ~20x cheaper than Sonnet</span>
+    <span class="k">return</span> <span class="s">"claude-sonnet-4-5"</span>        <span class="c"># complex reasoning, synthesis</span>
+
+<span class="c"># Per-request cost tracking</span>
+<span class="fn">def</span> <span class="fn">estimate_cost</span>(input_tokens: int, output_tokens: int, model: str) -> float:
+    rates = {
+        <span class="s">"claude-haiku-4-5"</span>:   (<span class="n">0.80</span>, <span class="n">4.00</span>),   <span class="c"># per 1M tokens (in, out)</span>
+        <span class="s">"claude-sonnet-4-5"</span>:  (<span class="n">3.00</span>, <span class="n">15.00</span>),
+    }
+    r_in, r_out = rates.get(model, (<span class="n">3.0</span>, <span class="n">15.0</span>))
+    <span class="k">return</span> (input_tokens * r_in + output_tokens * r_out) / <span class="n">1_000_000</span></pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Your LLM spend tripled in a week. How do you debug it?</div><div class="qa-a">Pull the MLflow trace data — every request logs input_tokens, output_tokens, model, and step_count. Group by: (1) model — did someone switch from Haiku to Sonnet? (2) step_count — are agents looping more? (3) input_tokens — did a prompt change add 2K tokens to every request? (4) query pattern — is one specific user or workflow generating disproportionate cost? In the runaway agent case, the grouping by step_count immediately showed a tail of requests at 40+ steps — normal was 3–8. Found the problematic query pattern in 10 minutes. Without per-request token logging, this would have taken days of guesswork.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- STREAMING -->
+<div class="svc" id="svc-streaming">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Streaming</span><span class="sp">SSE · Partial responses · Tool call streaming · Failure modes</span></div>
+    <div class="sd">Streaming dramatically improves perceived latency — users see the first token in 300ms instead of waiting 5s for the full response. But streaming adds complexity: partial state, tool calls mid-stream, and disconnect handling all require explicit design.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('streaming',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('streaming',1)">Code</button>
+    <button class="dt" onclick="dim('streaming',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>SSE (Server-Sent Events)</strong> — the protocol for streaming LLM responses; each chunk is a <span class="mono">data: {...}</span> line; the client accumulates text as it arrives</li>
+      <li><strong>Tool calls interrupt the stream</strong> — when the model decides to call a tool mid-generation, the text stream stops; tool is executed; then generation resumes; the UI must handle this transition</li>
+      <li><strong>Buffering at the API gateway</strong> — if your reverse proxy or API gateway buffers responses, streaming is silently broken; users see the full response arrive at once after the full generation completes. Must configure <span class="mono">proxy_buffering off</span> (nginx) or equivalent</li>
+      <li><strong>Client disconnect handling</strong> — if the user closes the browser mid-stream, the LLM API keeps generating and billing; add AbortController on the client and server-side request cancellation</li>
+      <li><strong>Partial state display</strong> — streaming JSON or structured output is tricky; display intermediate markdown, not raw partial JSON that renders as broken UI</li>
+    </ul>
+    <div class="ca ca-r"><strong>War Story — Buffered Gateway</strong>
+    Built streaming support, tested locally — worked perfectly. Deployed behind an AWS Application Load Balancer. All streaming queries now took the full generation time before any response appeared. ALB was buffering the entire response before forwarding. Fix: set <span class="mono">idle_timeout</span> to 300s, added <span class="mono">X-Accel-Buffering: no</span> header on streaming responses, switched to ALB streaming mode. Took 2 days to diagnose because the behavior was correct locally and only appeared behind the load balancer.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · FastAPI streaming endpoint with tool call handling</div>
+<pre><span class="k">from</span> fastapi <span class="k">import</span> FastAPI
+<span class="k">from</span> fastapi.responses <span class="k">import</span> StreamingResponse
+<span class="k">import</span> anthropic, json
+
+app = FastAPI()
+client = anthropic.Anthropic()
+
+<span class="k">async</span> <span class="fn">def</span> <span class="fn">stream_response</span>(query: str):
+    <span class="k">with</span> client.messages.stream(
+        model=<span class="s">"claude-sonnet-4-5"</span>,
+        messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: query}],
+        max_tokens=<span class="n">1024</span>,
+    ) <span class="k">as</span> stream:
+        <span class="k">for</span> text_chunk <span class="k">in</span> stream.text_stream:
+            <span class="c"># SSE format: each chunk as a data event</span>
+            yield <span class="s">f"data: {json.dumps({'text': text_chunk})}\n\n"</span>
+        <span class="c"># Signal completion</span>
+        yield <span class="s">"data: [DONE]\n\n"</span>
+
+<span class="k">@</span>app.get(<span class="s">"/stream"</span>)
+<span class="k">async</span> <span class="fn">def</span> <span class="fn">stream_endpoint</span>(query: str):
+    <span class="k">return</span> StreamingResponse(
+        stream_response(query),
+        media_type=<span class="s">"text/event-stream"</span>,
+        headers={
+            <span class="s">"X-Accel-Buffering"</span>: <span class="s">"no"</span>,         <span class="c"># disable nginx buffering</span>
+            <span class="s">"Cache-Control"</span>:      <span class="s">"no-cache"</span>,
+            <span class="s">"Connection"</span>:         <span class="s">"keep-alive"</span>,
+        },
+    )</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Streaming worked in local testing but not in production. What do you check?</div><div class="qa-a">Check the full request path in order: (1) API gateway or load balancer — most ALBs and API Gateways buffer by default; need explicit streaming config. (2) Reverse proxy — nginx <span class="mono">proxy_buffering off</span> and <span class="mono">proxy_read_timeout</span> long enough for slow generations. (3) CDN — if there's a CDN in front, it almost certainly buffers; disable caching for streaming routes. (4) Application server — WSGI servers (Gunicorn) don't support streaming well; need ASGI (Uvicorn/Hypercorn) with async generators. (5) Client — browser fetch with proper SSE parsing or EventSource. The ALB buffering case is the most common and most surprising — it looks like a latency problem, not a streaming problem, because you eventually get the response.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- DRIFT -->
+<div class="svc" id="svc-drift">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Deployment &amp; Drift</span><span class="sp">Blue/green · Shadow mode · Model version pinning · Rollback</span></div>
+    <div class="sd">AI systems drift in ways traditional software doesn't: model provider updates, embedding model changes, document corpus changes, and query distribution shifts can all degrade quality silently without any code change on your part.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('drift',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('drift',1)">Deployment Patterns</button>
+    <button class="dt" onclick="dim('drift',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Drift type</th><th>Cause</th><th>Detection</th><th>Fix</th></tr>
+      <tr><td>Model drift</td><td>Provider updates model silently (e.g., gpt-4 → gpt-4-0125)</td><td>Automated eval regression alert</td><td>Pin model version; pin date in API call</td></tr>
+      <tr><td>Data drift</td><td>New documents ingested with different format or quality</td><td>Parse quality score at ingest; online faithfulness monitoring</td><td>Ingest validation pipeline; per-doc quality gate</td></tr>
+      <tr><td>Query drift</td><td>Users start asking new types of questions not in eval set</td><td>Cluster new queries; compare to eval set coverage</td><td>Add new query types to eval set; expand training examples</td></tr>
+      <tr><td>Embedding drift</td><td>Embedding model updated; embeddings in index now inconsistent</td><td>Retrieval quality drop; mismatched vector dimensions</td><td>Always re-index from scratch when changing embedding model</td></tr>
+    </table>
+    <div class="ca ca-a"><strong>War Story — Silent Model Update</strong>
+    Pinned to <span class="mono">"gpt-4"</span> in the API call — thought this was stable. The provider updated the model underneath the same API alias. Automated eval caught a 0.08 drop in faithfulness 12 hours after the update. Didn't know the model had changed until we checked the model version in the API response headers. Now always pin with a date: <span class="mono">"gpt-4-0125-preview"</span> or <span class="mono">"claude-sonnet-4-5-20251001"</span>. Never use an alias without a version.</div>
+  </div>
+  <div class="dp">
+    <ul class="bl">
+      <li><strong>Blue/green deployment</strong> — two identical environments; route 100% traffic to one; update the other; shift traffic; instant rollback by shifting back</li>
+      <li><strong>Shadow mode</strong> — run the new version in parallel with production, compare outputs without affecting users; best for validating model or prompt changes before promotion</li>
+      <li><strong>Canary release</strong> — shift 5% of traffic to new version; monitor quality metrics for 24h; promote or revert based on data</li>
+      <li><strong>Model version pinning</strong> — always specify the full model version string including date; log the model version used in every MLflow trace; test upgrades explicitly before promoting</li>
+      <li><strong>Rollback plan</strong> — keep the previous prompt version and model version in config; rollback = config change, not code deployment</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you deploy a prompt change safely?</div><div class="qa-a">Three-stage process. Stage 1: offline eval — run the new prompt against the full RAGAS eval suite in a branch; must match or improve on all metrics, no regressions on the regression subset. Stage 2: shadow mode — deploy the new prompt alongside production for 48 hours; route all requests to both versions; compare faithfulness scores and answer length on live traffic without users seeing the new version. Stage 3: canary — shift 5% of live traffic to the new prompt; monitor online metrics for 24 hours; if no degradation, promote to 100%. Any failure at any stage reverts to the previous prompt version, which takes 30 seconds — it's a config value, not a code deployment. This process sounds heavy but it's saved us from three significant regressions that looked fine in manual testing.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- MONITORING -->
+<div class="svc" id="svc-monitoring">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Monitoring &amp; Alerting</span><span class="sp">What to track · Alert thresholds · On-call · Dashboards</span></div>
+    <div class="sd">AI systems fail in ways that don't surface as HTTP 500s. A system returning confident wrong answers is functionally broken but looks healthy to traditional monitoring. Quality metrics must be first-class in your observability stack.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('monitoring',0)">What to Track</button>
+    <button class="dt" onclick="dim('monitoring',1)">Code</button>
+    <button class="dt" onclick="dim('monitoring',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <table class="ft"><tr><th>Metric</th><th>Alert threshold</th><th>Indicates</th></tr>
+      <tr><td>Online faithfulness (sampled)</td><td>&lt; 0.75 on 7-day rolling avg</td><td>Generation degradation or data drift</td></tr>
+      <tr><td>Escalation rate</td><td>&gt; 2× baseline</td><td>Confidence gate firing more → something upstream is wrong</td></tr>
+      <tr><td>P99 latency</td><td>&gt; 8s (adjust per SLA)</td><td>Cold start regression, rate limiting, slow retrieval</td></tr>
+      <tr><td>Error rate (5xx)</td><td>&gt; 1%</td><td>API quota exceeded, model unavailable, parsing failure</td></tr>
+      <tr><td>Cost per query</td><td>&gt; 2× 30-day avg</td><td>Agent loop regression, prompt got longer, model tier changed</td></tr>
+      <tr><td>Context recall (offline)</td><td>&lt; 0.78 on weekly eval</td><td>Index drift, new document formats, chunking regression</td></tr>
+      <tr><td>User thumbs-down rate</td><td>&gt; 15%</td><td>Real user signal — quality degradation the metrics may have missed</td></tr>
+    </table>
+    <ul class="bl">
+      <li><strong>Leading vs lagging indicators</strong> — escalation rate and cost-per-query are leading (they spike before users notice); thumbs-down and support tickets are lagging (users already experienced the failure)</li>
+      <li><strong>Dashboards for each persona</strong> — engineering: latency breakdown by component, error rates, token usage; product: query volume, escalation rate, user satisfaction; finance: cost per query, total spend vs budget</li>
+    </ul>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · MLflow-based monitoring dashboard query (Databricks SQL)</div>
+<pre><span class="c">-- Databricks SQL: query system.agent_traces for production health</span>
+<span class="c">-- Run as a scheduled job every 15 minutes; alert on threshold breach</span>
+
+<span class="k">SELECT</span>
+    date_trunc(<span class="s">'hour'</span>, timestamp)           <span class="k">AS</span> hour,
+    count(*)                                  <span class="k">AS</span> total_requests,
+    avg(execution_time_ms)                    <span class="k">AS</span> avg_latency_ms,
+    percentile(execution_time_ms, <span class="n">0.99</span>)      <span class="k">AS</span> p99_latency_ms,
+    sum(<span class="k">CASE</span> <span class="k">WHEN</span> status = <span class="s">'ERROR'</span> <span class="k">THEN</span> <span class="n">1</span> <span class="k">ELSE</span> <span class="n">0</span> <span class="k">END</span>) <span class="k">AS</span> errors,
+    avg(input_tokens + output_tokens)         <span class="k">AS</span> avg_tokens_per_request,
+    avg(faithfulness_score)                   <span class="k">AS</span> avg_faithfulness
+<span class="k">FROM</span> system.agent_traces
+<span class="k">WHERE</span> timestamp >= current_timestamp() - <span class="k">INTERVAL</span> <span class="n">24</span> HOURS
+  <span class="k">AND</span> app_name = <span class="s">'hr-rag-chatbot'</span>
+<span class="k">GROUP BY</span> <span class="n">1</span>
+<span class="k">ORDER BY</span> <span class="n">1</span> <span class="k">DESC</span>
+
+<span class="c">-- Alert rule: if avg_faithfulness &lt; 0.75 in last 2 hours, page on-call</span></pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What do you put in your AI system runbook for on-call?</div><div class="qa-a">Six sections. (1) System overview: what the system does, who uses it, what breaks if it's down. (2) Alert definitions: what each alert means, which are P1 (page immediately) vs P2 (fix next business day). (3) Diagnosis playbook: for each alert, the first 3 things to check — e.g., faithfulness alert → check ingest logs for new doc format, check model version in traces, check retrieval scores on the failing queries. (4) Known failure modes: escalation rate spike usually means data ingestion issue, not generation; cost spike usually means agent loop, check step_count distribution. (5) Rollback procedure: exactly how to revert to previous prompt/model version, who approves it, how long it takes. (6) Escalation contacts: who to call if the on-call engineer can't resolve in 30 minutes.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- SCALING -->
+<div class="svc" id="svc-scaling">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Scaling &amp; Rate Limits</span><span class="sp">Rate limits · Queuing · Autoscale · Throttling</span></div>
+    <div class="sd">LLM APIs have rate limits measured in tokens-per-minute and requests-per-minute. At scale, hitting these limits is a production outage. Rate limit management is infrastructure, not an afterthought.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('scaling',0)">Concept &amp; Failures</button>
+    <button class="dt" onclick="dim('scaling',1)">Code</button>
+    <button class="dt" onclick="dim('scaling',2)">Interview Q&amp;A</button>
+  </div>
+  <div class="dp active">
+    <ul class="bl">
+      <li><strong>TPM vs RPM limits</strong> — tokens-per-minute is usually the binding constraint; a batch of long documents can hit TPM even at low RPM; measure both separately</li>
+      <li><strong>Exponential backoff with jitter</strong> — when hitting a 429, retrying immediately makes it worse (thundering herd); add random jitter (0.5–1.5× base delay) to spread retries</li>
+      <li><strong>Request queuing</strong> — for batch workloads, queue requests and drain them at a controlled rate below the limit; don't fire all requests simultaneously</li>
+      <li><strong>Multiple API keys / accounts</strong> — for very high throughput, spread load across multiple accounts; coordinate rate limits at the queue layer</li>
+      <li><strong>Databricks Model Serving autoscaling</strong> — define min/max concurrent requests per endpoint; scales to zero when idle (cost efficient); configure scale-up time to match latency requirements</li>
+    </ul>
+    <div class="ca ca-r"><strong>War Story — Batch Job Rate Limit Storm</strong>
+    Launched a nightly batch job to re-embed 50K benefit document chunks after a corpus update. Job fired all 50K embedding requests simultaneously. Hit the 60 RPM limit in 2 seconds; 429s for the next 14 minutes; job took 6 hours instead of 30 minutes. Fixed with a token bucket rate limiter: max 50 requests/sec with burst of 100. Job now completes in 18 minutes reliably.</div>
+  </div>
+  <div class="dp">
+    <div class="cl">Python · Token bucket rate limiter for batch embedding</div>
+<pre><span class="k">import</span> asyncio, time
+<span class="k">from</span> collections <span class="k">import</span> deque
+
+<span class="k">class</span> <span class="fn">RateLimiter</span>:
+    <span class="fn">def</span> <span class="fn">__init__</span>(self, max_rate: float, burst: int = <span class="n">1</span>):
+        self.max_rate = max_rate   <span class="c"># requests per second</span>
+        self.burst    = burst
+        self.tokens   = float(burst)
+        self.last     = time.monotonic()
+
+    <span class="k">async</span> <span class="fn">def</span> <span class="fn">acquire</span>(self):
+        <span class="k">while</span> <span class="k">True</span>:
+            now = time.monotonic()
+            self.tokens = min(self.burst, self.tokens + (now - self.last) * self.max_rate)
+            self.last = now
+            <span class="k">if</span> self.tokens >= <span class="n">1</span>:
+                self.tokens -= <span class="n">1</span>
+                <span class="k">return</span>
+            wait = (<span class="n">1</span> - self.tokens) / self.max_rate
+            <span class="k">await</span> asyncio.sleep(wait)
+
+limiter = RateLimiter(max_rate=<span class="n">40</span>, burst=<span class="n">80</span>)  <span class="c"># conservative vs 60 RPM limit</span>
+
+<span class="k">async</span> <span class="fn">def</span> <span class="fn">embed_with_limit</span>(text: str) -> list[float]:
+    <span class="k">await</span> limiter.acquire()
+    <span class="k">return</span> embedding_client.embed(text)</pre>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you handle LLM API rate limits in a multi-tenant system?</div><div class="qa-a">Three layers. First, fair queuing at the application layer — each tenant gets a share of the rate limit budget; high-priority tenants (e.g., paying customers) get a larger share; requests from over-quota tenants are queued with a max wait time before returning a 503. Second, adaptive throttling — track the rolling token usage per minute; when usage approaches 80% of the limit, slow down proactively rather than waiting for a 429. Third, circuit breaker — if we get three consecutive 429s in a 10-second window, open the circuit for 30 seconds and return a graceful degradation response ("system is busy, please retry in 30 seconds") rather than queuing indefinitely. The combination prevents the thundering herd that makes rate limit recovery take much longer than the original limit window.</div></li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</div>
+<script>
+function show(id){document.querySelectorAll('.svc').forEach(function(el){el.classList.remove('active');});document.querySelectorAll('.sb').forEach(function(el){el.classList.remove('active');});document.getElementById('svc-'+id).classList.add('active');document.querySelector('[data-svc="'+id+'"]').classList.add('active');window.scrollTo(0,0);}
+function dim(svcId,idx){var svc=document.getElementById('svc-'+svcId);var panels=svc.querySelectorAll('.dp');var tabs=svc.querySelectorAll('.dt');panels.forEach(function(el){el.classList.remove('active');});tabs.forEach(function(el){el.classList.remove('active');});panels[idx].classList.add('active');tabs[idx].classList.add('active');}
+function toggleTheme(){var root=document.documentElement;root.setAttribute('data-theme',root.getAttribute('data-theme')==='light'?'dark':'light');}
+</script>
+</body>
+</html>
