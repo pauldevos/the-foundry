@@ -1,0 +1,1107 @@
+<title>Databricks 5-Dimension Reference — FFF Enterprises Interview</title>
+<style>
+:root {
+  --bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;
+  --t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;
+  --accent:#FF4D1C;--blue:#4D9EFF;--green:#3DBA6F;--amber:#F0A030;
+  --code:#0D1621;
+}
+@media(prefers-color-scheme:light){:root{
+  --bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;
+  --t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;
+}}
+:root[data-theme=light]{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}
+:root[data-theme=dark]{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--code:#0D1621;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:1rem;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.logo span{color:var(--t2);font-weight:400}
+.title{font-size:.8rem;color:var(--t2)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+.badge{font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(61,186,111,.15);color:var(--green);border:1px solid rgba(61,186,111,.3)}
+.tbtn{background:var(--s2);border:1px solid var(--border);color:var(--t2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem}
+.tbtn:hover{color:var(--t1)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1rem .75rem;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:52px;max-height:calc(100vh - 52px);overflow-y:auto}
+.sg{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);font-weight:700;padding:.75rem .5rem .2rem}
+.sb{display:flex;flex-direction:column;width:100%;text-align:left;background:none;border:none;border-radius:6px;padding:.4rem .6rem;cursor:pointer;color:var(--t2);font-size:.8rem;line-height:1.3;transition:background .12s,color .12s}
+.sb:hover{background:var(--s2);color:var(--t1)}
+.sb.active{background:rgba(255,77,28,.12);color:var(--accent);font-weight:600}
+.sb small{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.sb.active small{color:rgba(255,77,28,.6)}
+.main{flex:1;padding:1.5rem 2rem;min-width:0}
+.svc{display:none}
+.svc.active{display:block}
+.sh{margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sh-top{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.4rem}
+.sn{font-size:1.4rem;font-weight:700;color:var(--t1)}
+.sp{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.sd{font-size:.88rem;color:var(--t2);max-width:72ch}
+.dtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto}
+.dt{padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;background:none;border:none;color:var(--t2);border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.dt:hover{color:var(--t1)}
+.dt.active{color:var(--accent);border-bottom-color:var(--accent)}
+.dp{display:none}
+.dp.active{display:block}
+.ps{margin-bottom:1.5rem}
+.pt{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--t3);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.pt::after{content:'';flex:1;height:1px;background:var(--border)}
+pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;font-size:.76rem;line-height:1.6;margin-bottom:.75rem;color:#A8C7FA;font-family:'Courier New',monospace}
+.cl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700;margin-bottom:.25rem;font-family:monospace}
+.k{color:#FF7B72}.s{color:#A5D6FF}.c{color:#5A6A80;font-style:italic}.fn{color:#79C0FF}.n{color:#FFA657}.kw{color:#FF7B72}
+table.ft{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.75rem}
+table.ft th{text-align:left;padding:.4rem .75rem;background:var(--s2);color:var(--t2);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--border)}
+table.ft td{padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t1);vertical-align:top}
+table.ft tr:last-child td{border-bottom:none}
+table.ft td:first-child{color:var(--blue);font-family:monospace;font-size:.75rem;white-space:nowrap}
+table.ft tr:hover td{background:var(--s2)}
+.ca{border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.83rem;line-height:1.55;border-left:3px solid}
+.ca strong{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.ca-r{background:rgba(255,77,28,.07);border-color:var(--accent)}.ca-r strong{color:var(--accent)}
+.ca-b{background:rgba(77,158,255,.07);border-color:var(--blue)}.ca-b strong{color:var(--blue)}
+.ca-g{background:rgba(61,186,111,.07);border-color:var(--green)}.ca-g strong{color:var(--green)}
+.ca-a{background:rgba(240,160,48,.08);border-color:var(--amber)}.ca-a strong{color:var(--amber)}
+ol.st{list-style:none;counter-reset:s;padding:0}
+ol.st li{counter-increment:s;display:flex;gap:.75rem;margin-bottom:.45rem;font-size:.83rem;line-height:1.5}
+ol.st li::before{content:counter(s);flex-shrink:0;width:1.4rem;height:1.4rem;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--t2);margin-top:.1rem}
+.eg{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:.75rem}
+.ec{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:.75rem}
+.et{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:.5rem}
+.et.dev{color:var(--amber)}.et.tst{color:var(--blue)}.et.prd{color:var(--green)}
+.ec ul{list-style:none;padding:0}
+.ec li{font-size:.77rem;color:var(--t2);padding:.1rem 0;line-height:1.4}
+.ec li::before{content:'▸ ';color:var(--t3)}
+.qa{list-style:none;padding:0}
+.qi{border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;overflow:hidden}
+.qq{padding:.6rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:flex-start;gap:.6rem;background:var(--s2);color:var(--t1)}
+.qq::before{content:'Q';flex-shrink:0;font-size:.62rem;font-weight:800;letter-spacing:.06em;padding:1px 5px;border-radius:3px;background:rgba(77,158,255,.2);color:var(--blue);margin-top:.05rem}
+.qa-a{padding:.6rem .9rem;font-size:.8rem;color:var(--t2);line-height:1.55;border-top:1px solid var(--border);display:none}
+.qi.open .qa-a{display:block}
+.mono{font-family:'Courier New',monospace;font-size:.85em;color:var(--blue);background:rgba(77,158,255,.08);padding:1px 4px;border-radius:3px}
+@media(max-width:700px){
+  .layout{flex-direction:column}
+  .sidebar{width:100%;max-height:none;position:static;flex-direction:row;flex-wrap:wrap;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
+  .sg{display:none}
+  .main{padding:1rem}
+  .eg{grid-template-columns:1fr}
+}
+</style>
+
+<div class="topbar">
+  <div class="logo">DBX <span>5-Dim Reference</span></div>
+  <div class="title">FFF Enterprises · Director AI/ML Interview</div>
+  <div class="tr">
+    <span class="badge">August 2026</span>
+    <button class="tbtn" onclick="toggleTheme()">Toggle Theme</button>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="sg">AgentBricks</div>
+  <button class="sb active" data-svc="supervisor" onclick="show('supervisor')">Supervisor Agent<small>Orchestration Layer</small></button>
+  <button class="sb" data-svc="genie" onclick="show('genie')">Genie Agents<small>NL-to-SQL</small></button>
+  <button class="sb" data-svc="ka" onclick="show('ka')">Knowledge Assistant<small>Managed RAG</small></button>
+  <button class="sb" data-svc="ucfunc" onclick="show('ucfunc')">UC Function Tools<small>System Integration</small></button>
+  <div class="sg">ML & Serving</div>
+  <button class="sb" data-svc="mlflow" onclick="show('mlflow')">MLflow<small>ML Lifecycle</small></button>
+  <button class="sb" data-svc="serving" onclick="show('serving')">Model Serving<small>Inference Endpoints</small></button>
+  <div class="sg">Governance</div>
+  <button class="sb" data-svc="uc" onclick="show('uc')">Unity Catalog<small>Data Governance</small></button>
+  <div class="sg">Storage & Search</div>
+  <button class="sb" data-svc="delta" onclick="show('delta')">Delta Lake<small>Table Format</small></button>
+  <button class="sb" data-svc="aisearch" onclick="show('aisearch')">Databricks AI Search<small>Vector + Hybrid</small></button>
+  <div class="sg">DevOps & Ops</div>
+  <button class="sb" data-svc="dabs" onclick="show('dabs')">Decl. Auto. Bundles<small>CI/CD</small></button>
+  <button class="sb" data-svc="workflows" onclick="show('workflows')">Workflows<small>Orchestration</small></button>
+  <button class="sb" data-svc="monitoring" onclick="show('monitoring')">Lakehouse Monitoring<small>Drift & Quality</small></button>
+</nav>
+
+<main class="main">
+
+<!-- ═══ SUPERVISOR AGENT ═══ -->
+<div class="svc active" id="svc-supervisor">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Supervisor Agent</span><span class="sp">AgentBricks · Orchestration</span><span class="badge">GA</span></div>
+    <div class="sd">No-code orchestration layer that routes user intent to sub-agents (Genie, Knowledge Assistant, UC Function Tools). The brain of FFF's OS&amp;D agent network — 10+ days → 1–3 minutes.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('supervisor',0)">Implementation</button>
+    <button class="dt" onclick="dim('supervisor',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('supervisor',2)">Environments</button>
+    <button class="dt" onclick="dim('supervisor',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="ps"><div class="pt">UI — No-Code Setup</div>
+    <ol class="st">
+      <li>Navigate <strong>Workspace → AI &amp; BI → AI Agents</strong></li>
+      <li>Click <strong>Create Agent → Supervisor Agent</strong></li>
+      <li>Name the agent; select a UC catalog/schema to register it in</li>
+      <li>Add sub-agents from the palette: Genie Agents, Knowledge Assistant, UC Function Tools</li>
+      <li>Set confidence threshold (0–1 float) for routing decisions</li>
+      <li>Click <strong>Deploy</strong> — generates a serving endpoint + MLflow trace logging automatically</li>
+      <li>Expose via <strong>Review App</strong> for testing, or Teams integration for production</li>
+    </ol></div>
+    <div class="ps"><div class="pt">SDK — Query the Deployed Agent</div>
+    <div class="cl">Python · Query via serving endpoint</div>
+<pre><span class="k">from</span> databricks.sdk <span class="k">import</span> WorkspaceClient
+
+w = WorkspaceClient()
+response = w.serving_endpoints.query(
+    name=<span class="s">"prod-osd-supervisor"</span>,
+    dataframe_records=[{<span class="s">"messages"</span>: [{
+        <span class="s">"role"</span>: <span class="s">"user"</span>,
+        <span class="s">"content"</span>: <span class="s">"What is the status of order SAP-2024-8891?"</span>
+    }]}]
+)
+print(response.predictions[0])
+<span class="c"># OBO auth configured in agent settings:
+# "Enable On-Behalf-Of token forwarding"
+# — agent calls tools as the querying user, not a service principal</span></pre></div>
+    <div class="ps"><div class="pt">MLflow 3 Tracing (auto-enabled)</div>
+    <div class="cl">Python · Read traces from UC Delta table</div>
+<pre><span class="k">import</span> mlflow
+<span class="c"># Traces auto-land in: system.agent_traces (UC managed Delta table)
+# View in MLflow UI: Experiments → Traces tab
+# Or query programmatically:</span>
+traces = mlflow.search_traces(
+    experiment_ids=[<span class="s">"your-experiment-id"</span>],
+    filter_string=<span class="s">"status = 'ERROR'"</span>,
+    max_results=<span class="n">50</span>
+)
+<span class="c"># Each trace: span tree → supervisor → sub-agent → tool call</span></pre></div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-r"><strong>FFF Production Architecture</strong>Supervisor routes to 5 sub-agents: SAP Agent, Warehouse Agent, Salesforce Agent, FedEx Agent, Video Agent. Confidence gate before Summary Agent. Result: 10+ days → 1–3 min for OS&amp;D investigations.</div>
+    <table class="ft"><tr><th>Parameter</th><th>Detail</th></tr>
+      <tr><td>routing_mode</td><td>LLM-based intent classification using sub-agent descriptions — no explicit routing rules</td></tr>
+      <tr><td>confidence_threshold</td><td>Float 0–1; below threshold → returns "I don't know" rather than hallucinating</td></tr>
+      <tr><td>sub_agents</td><td>Up to ~10 registered per Supervisor; Genie Agents, Knowledge Assistant, UC Function Tools</td></tr>
+      <tr><td>auth_mode</td><td>OBO (On-Behalf-Of) — passes user identity token to all sub-agent calls; UC row-level enforcement</td></tr>
+      <tr><td>tracing</td><td>MLflow 3 traces auto-logged to system.agent_traces (Delta table in UC)</td></tr>
+      <tr><td>deployment</td><td>Serverless Model Serving endpoint (auto-scale to zero)</td></tr>
+      <tr><td>teams_integration</td><td>All sub-agents individually reusable in Microsoft Teams via connector</td></tr>
+      <tr><td>review_app</td><td>Built-in web UI for testing before production deploy</td></tr>
+      <tr><td>availability</td><td>Enterprise tier required — NOT in Free Edition</td></tr>
+    </table>
+    <div class="ca ca-a"><strong>Renamed — Know Current Terminology</strong>AgentBricks is the product umbrella. Genie Spaces → Genie Agents (2025). Vector Search → AI Search (2025). DABs → Declarative Automation Bundles.</div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-b"><strong>Catalog = Environment Boundary</strong>Supervisor Agent registered in <span class="mono">dev.agents.*</span> for dev, <span class="mono">prod.agents.*</span> for prod. Tools point to the same-catalog UC functions. OBO uses the appropriate service principal per environment.</div>
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Catalog: <span class="mono">dev.*</span></li><li>Register in <span class="mono">dev.agents.*</span></li><li>Tools → dev UC functions</li><li>Test via Review App</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Catalog: <span class="mono">staging.*</span></li><li>Promoted via DABs target</li><li>Test confidence thresholds</li><li>Real sub-agent endpoints</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Catalog: <span class="mono">prod.*</span></li><li>OBO enforces UC row filters</li><li>Traces → system.agent_traces</li><li>Provisioned throughput endpoint</li></ul></div>
+    </div>
+    <div class="ca ca-g"><strong>Medallion Layer Mapping</strong>Supervisor sits above Gold layer — queries Gold Delta tables via Genie Agent (structured), Gold Volumes via Knowledge Assistant (unstructured). Bronze/Silver are upstream and invisible to the agent at query time.</div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What is OBO authentication and why does it matter for Supervisor Agent?</div><div class="qa-a">On-Behalf-Of (OBO) passes the end-user's identity token — not a service principal — to all downstream tool calls. UC row-level security and column masks enforce permissions based on who is asking, not who the agent runs as. For FFF: a warehouse manager can only query their region's inventory via the Warehouse Agent; an exec sees all. Without OBO you'd replicate row-level permissions in every sub-agent separately.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How does the Supervisor route to the right sub-agent?</div><div class="qa-a">An LLM intent classifier reads the user's message against the registered descriptions of each sub-agent. Confidence scoring determines whether to answer or return uncertainty. The descriptions you write ARE the routing logic — make them semantically distinct and specific (e.g. "Call this when user asks about SAP order status or fulfillment records" vs "Call this when user asks about drug SOP or handling procedures").</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you debug a mis-routed Supervisor query?</div><div class="qa-a">Inspect the MLflow 3 trace in system.agent_traces: the span tree shows the classification decision, which sub-agent was called, inputs/outputs, confidence score. Use the Review App for interactive testing. Improve routing by editing sub-agent descriptions to be more semantically distinct.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Supervisor Agent vs custom LangChain agent — when would you choose each?</div><div class="qa-a">Supervisor Agent: managed, no-code, UC-governed natively, built-in OBO auth, MLflow tracing, Teams integration — right for enterprise governance-first deployments like pharma distribution. LangChain: more flexibility, custom orchestration logic, multi-provider LLMs, but requires manual UC integration and auth logic. SA answer: for FFF's regulated environment, Supervisor Agent reduces implementation risk and provides auditability out-of-the-box.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ GENIE AGENTS ═══ -->
+<div class="svc" id="svc-genie">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Genie Agents</span><span class="sp">AgentBricks · NL-to-SQL</span><span class="badge">GA</span></div>
+    <div class="sd">Natural language to SQL sub-agent powered by the Unity Catalog semantic layer. Routes structured data queries against Gold Delta tables. Formerly "Genie Spaces."</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('genie',0)">Implementation</button>
+    <button class="dt" onclick="dim('genie',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('genie',2)">Environments</button>
+    <button class="dt" onclick="dim('genie',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="ps"><div class="pt">UI — Create a Genie Agent</div>
+    <ol class="st">
+      <li>Navigate <strong>AI &amp; BI → Genie</strong></li>
+      <li>Click <strong>New Genie Agent</strong> (was "New Space")</li>
+      <li>Add tables (up to 30) from your UC catalog/schema</li>
+      <li>For each table: add column descriptions, table description, and trusted assets (curated SQL)</li>
+      <li>Select a <strong>Pro or Serverless SQL Warehouse</strong> (Classic not supported)</li>
+      <li>Add sample questions to guide the model's understanding</li>
+      <li>Run <strong>Genie Benchmarks</strong> to evaluate accuracy before publishing</li>
+      <li>Register as a sub-agent in the Supervisor Agent</li>
+    </ol></div>
+    <div class="ps"><div class="pt">Semantic Layer — Column Descriptions (the accuracy lever)</div>
+    <div class="cl">SQL · UC column metadata that drives Genie routing and accuracy</div>
+<pre><span class="kw">ALTER TABLE</span> prod.supply_chain.shipments
+  <span class="kw">ALTER COLUMN</span> delivery_status
+  <span class="kw">COMMENT</span> <span class="s">'Fulfillment state. Values: DELIVERED, IN_TRANSIT,
+  OS_D_FLAGGED (OS&amp;D investigation opened), RETURNED.'</span>;
+
+<span class="kw">ALTER TABLE</span> prod.supply_chain.shipments
+  <span class="kw">SET TBLPROPERTIES</span> (<span class="s">'comment'</span> = <span class="s">'Gold layer: one row per shipment
+  event from FedEx/SAP. Source of truth for OS&amp;D reporting.'</span>);</pre></div>
+    <div class="ps"><div class="pt">REST API — Query Programmatically</div>
+    <div class="cl">Python · Genie REST API</div>
+<pre><span class="k">import</span> requests
+
+resp = requests.post(
+    f<span class="s">"https://workspace/api/2.0/genie/spaces/{space_id}/start-conversation"</span>,
+    headers={<span class="s">"Authorization"</span>: f<span class="s">"Bearer {token}"</span>},
+    json={<span class="s">"content"</span>: <span class="s">"Top 10 delayed shipments this week?"</span>}
+)
+conversation_id = resp.json()[<span class="s">"conversation_id"</span>]
+<span class="c"># Returns: generated SQL + result table + natural language explanation</span></pre></div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-g"><strong>Accuracy = Metadata Quality</strong>Genie accuracy is directly proportional to column/table description quality. The LLM reads COMMENT text to understand semantics. For FFF: describe delivery_status values, what osd_flag codes mean, units for quantity fields. This is the #1 recommendation an SA should make.</div>
+    <div class="ca ca-b"><strong>NOT a RAG System — Critical Distinction</strong>Genie does NOT do vector retrieval over unstructured text. It generates SQL from NL and runs it against Delta tables. Knowledge Assistant handles unstructured docs. Get this distinction right in the interview.</div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>max_tables</td><td>30 tables per Genie Agent</td></tr>
+      <tr><td>warehouse</td><td>Pro SQL or Serverless SQL — Classic not supported</td></tr>
+      <tr><td>trusted_assets</td><td>Pre-validated SQL the agent can reuse exactly — highest accuracy path</td></tr>
+      <tr><td>genie_benchmarks</td><td>Evaluation framework: run test questions, measure SQL accuracy vs expected output</td></tr>
+      <tr><td>permissions</td><td>Inherits UC table-level and row-filter permissions from querying user (OBO)</td></tr>
+      <tr><td>output</td><td>Result table + generated SQL + natural language explanation</td></tr>
+      <tr><td>multi_turn</td><td>Conversation history maintained within session</td></tr>
+      <tr><td>data_type</td><td>Structured only — Delta tables. Not for unstructured docs.</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="ca ca-r"><strong>Gold Layer Only</strong>Never point a Genie Agent at Bronze (raw) or Silver (cleansed) tables — descriptions are sparse and joins are complex, destroying accuracy. Genie belongs on Gold: curated, business-ready, well-described tables.</div>
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Tables: <span class="mono">dev.supply_chain.*</span></li><li>Dev SQL Warehouse</li><li>Add sample edge-case questions</li><li>Run Genie Benchmarks</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Promote via DABs bundle</li><li>Test OBO permissions per role</li><li>Validate accuracy with prod-like data</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Tables: <span class="mono">prod.supply_chain.*</span> Gold</li><li>Serverless SQL Warehouse</li><li>Registered in Supervisor Agent</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">A Genie Agent gives wrong answers about shipment status. What do you investigate first?</div><div class="qa-a">Column and table descriptions in Unity Catalog. Check if ambiguous columns (status codes, date fields, quantity units) have clear COMMENT text. Second: add trusted assets — pre-validated SQL for the most common questions. Third: run Genie Benchmarks on a test set and measure accuracy. Only after metadata is comprehensive should you consider the warehouse type or query complexity as factors.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When would you use Genie vs a direct SQL dashboard?</div><div class="qa-a">Genie for ad-hoc NL exploration by non-technical users ("which drivers had the most OS&amp;D claims in Q3?"). SQL dashboards for known, fixed KPIs with scheduled refresh. Genie is not a replacement for dashboards — it's a dynamic query layer on top of the same Gold tables that power your dashboards.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How does Genie handle row-level security?</div><div class="qa-a">Via OBO — it inherits the authenticated user's UC permissions. Row filters defined as SQL UDFs on the Gold table apply transparently when Genie runs its generated query. The agent never sees data the user isn't authorized to see.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ KNOWLEDGE ASSISTANT ═══ -->
+<div class="svc" id="svc-ka">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Knowledge Assistant</span><span class="sp">AgentBricks · Managed RAG</span><span class="badge">GA</span></div>
+    <div class="sd">Pre-built managed RAG sub-agent for unstructured document retrieval with citations. Supervisor routes document-based questions here. Enterprise only — not in Free Edition.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('ka',0)">Implementation</button>
+    <button class="dt" onclick="dim('ka',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('ka',2)">Environments</button>
+    <button class="dt" onclick="dim('ka',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="ps"><div class="pt">UI Setup</div>
+    <ol class="st">
+      <li>Navigate <strong>AI &amp; BI → AI Agents → Knowledge Assistant</strong></li>
+      <li>Click <strong>New Knowledge Assistant</strong></li>
+      <li>Add data sources: UC Volumes (PDFs, Word, TXT) or SharePoint/Confluence connector</li>
+      <li>Configure sync schedule: Triggered or Continuous</li>
+      <li>Databricks manages chunking, embedding, and AI Search index internally</li>
+      <li>Register as a sub-agent in the Supervisor Agent</li>
+      <li>Test in the Review App — verify citations point to correct source documents</li>
+    </ol></div>
+    <div class="ca ca-b"><strong>What Happens Under the Hood</strong>Knowledge Assistant automatically: (1) ingests docs from UC Volumes, (2) chunks them semantically, (3) embeds using Databricks Foundation Models, (4) stores in a managed AI Search index, (5) performs hybrid retrieval at query time, (6) generates answers with citations to source docs in UC. You own the source files; Databricks manages the entire pipeline.</div>
+    <div class="ps"><div class="pt">Custom RAG Alternative (when you need full control)</div>
+    <div class="cl">Python · DIY RAG with AI Search</div>
+<pre><span class="k">from</span> databricks.vector_search.client <span class="k">import</span> VectorSearchClient
+
+vsc = VectorSearchClient()
+index = vsc.get_index(<span class="s">"prod-ai-search"</span>, <span class="s">"prod.docs.sop_index"</span>)
+results = index.similarity_search(
+    query_text=<span class="s">"drug shortage SOP controlled substances"</span>,
+    num_results=<span class="n">5</span>,
+    query_type=<span class="s">"hybrid"</span>  <span class="c"># BM25 + ANN via RRF</span>
+)
+<span class="c"># Use when: custom chunk size, specialized embedding model,
+# or custom reranking logic is required</span></pre></div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-r"><strong>SA Trade-off: Knowledge Assistant vs Custom RAG</strong>Knowledge Assistant = fast deployment, managed, less control. Custom RAG (AI Search + MLflow) = full control over chunking, embedding models, retrieval parameters, evaluation metrics. For FFF's regulatory SOPs: custom RAG may be preferred if domain-specific chunk quality or specialized embeddings are critical for compliance.</div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>data_sources</td><td>UC Volumes (PDF, DOCX, TXT, HTML), SharePoint, Confluence connector</td></tr>
+      <tr><td>index_type</td><td>Managed AI Search (hybrid: BM25 + ANN, RRF fusion) — fully managed</td></tr>
+      <tr><td>citations</td><td>Every answer includes source document reference + passage excerpt</td></tr>
+      <tr><td>sync</td><td>Triggered (manual) or Continuous (CDC-based near-real-time)</td></tr>
+      <tr><td>permissions</td><td>Inherits UC Volume permissions (OBO)</td></tr>
+      <tr><td>availability</td><td>Enterprise only — NOT in Free Edition</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Source: <span class="mono">dev.docs</span> Volume</li><li>Small doc sample</li><li>Triggered sync</li><li>Test citation accuracy</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Full corpus copy</li><li>Test edge queries</li><li>Validate OBO permissions</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Source: <span class="mono">prod.docs</span> Volume</li><li>Continuous sync for live docs</li><li>OBO enforces Volume access</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When does Supervisor route to Knowledge Assistant vs Genie Agent?</div><div class="qa-a">Genie Agent: structured data questions (inventory counts, order status, dates — queryable via SQL). Knowledge Assistant: unstructured document questions (SOPs, drug handling procedures, compliance docs). Both are needed: FFF's OS&amp;D system uses Genie for structured shipment data and Knowledge Assistant for regulatory SOPs. The routing is based on sub-agent descriptions read by the Supervisor's intent classifier.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What are citations and why do they matter for pharma?</div><div class="qa-a">Citations are source references — which document, which section, which passage the answer came from. In pharma distribution: if an agent says "follow SOP-1124 for controlled substance shortage handling," the citation links to the actual SOP in UC Volumes. Critical for compliance and auditability — an answer without citation is a hallucination risk; a citation creates a verifiable audit trail for FDA or DEA inspection.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ UC FUNCTION TOOLS ═══ -->
+<div class="svc" id="svc-ucfunc">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">UC Function Tools</span><span class="sp">AgentBricks · System Integration</span><span class="badge">GA</span></div>
+    <div class="sd">Python or SQL functions registered in Unity Catalog that the Supervisor Agent calls as tools. Enables integration with SAP, FedEx, Salesforce APIs. The action layer of FFF's agent network.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('ucfunc',0)">Implementation</button>
+    <button class="dt" onclick="dim('ucfunc',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('ucfunc',2)">Environments</button>
+    <button class="dt" onclick="dim('ucfunc',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="ps"><div class="pt">SQL Function Registration</div>
+    <div class="cl">SQL · Register a UC Function Tool with routing-ready COMMENT</div>
+<pre><span class="kw">CREATE OR REPLACE FUNCTION</span>
+  prod.supply_chain.get_sap_order_status(
+    order_id <span class="n">STRING</span> <span class="kw">COMMENT</span> <span class="s">'SAP order number, format SAP-YYYY-NNNN'</span>
+  )
+<span class="kw">RETURNS</span> <span class="n">STRING</span>
+<span class="kw">COMMENT</span> <span class="s">'Returns SAP fulfillment status for an order.
+Call when user asks about order status, shipment progress, or SAP records.'</span>
+<span class="kw">LANGUAGE PYTHON</span> <span class="kw">AS</span> $$
+  import requests
+  secret = dbutils.secrets.get(<span class="s">"sap-creds"</span>, <span class="s">"api-token"</span>)
+  resp = requests.get(
+    f<span class="s">"https://sap-api.fff.internal/orders/{order_id}"</span>,
+    headers={<span class="s">"Authorization"</span>: f<span class="s">"Bearer {secret}"</span>}
+  )
+  return resp.json()[<span class="s">"status"</span>]
+$$;
+
+<span class="c">-- Grant to the Supervisor Agent's service principal</span>
+<span class="kw">GRANT EXECUTE ON FUNCTION</span>
+  prod.supply_chain.get_sap_order_status
+<span class="kw">TO</span> <span class="s">`supervisor-agent-sp`</span>;</pre></div>
+    <div class="ps"><div class="pt">UI Registration in Supervisor Agent</div>
+    <ol class="st">
+      <li>In the Supervisor Agent editor → <strong>Add Tool → UC Function</strong></li>
+      <li>Browse to <span class="mono">prod.supply_chain.get_sap_order_status</span></li>
+      <li>The function's COMMENT becomes the tool description used for routing</li>
+      <li>Parameter COMMENTs tell the LLM how to extract arguments from the user message</li>
+      <li>Save and test via Review App</li>
+    </ol>
+    <div class="ca ca-b"><strong>COMMENT IS the Routing Logic</strong>Write the function COMMENT as an instruction to an LLM: "Call this when user asks about SAP order status or fulfillment records." Supervisor reads it to decide when to invoke this tool.</div></div>
+  </div>
+  <div class="dp">
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>languages</td><td>Python (external APIs, complex logic) or SQL (Delta table transformations)</td></tr>
+      <tr><td>registration</td><td>Unity Catalog — versioned, governed, discoverable, reusable across agents</td></tr>
+      <tr><td>auth</td><td>OBO passes user token; secrets via dbutils.secrets for external API credentials</td></tr>
+      <tr><td>parameter_binding</td><td>LLM extracts function arguments from user message using parameter COMMENTs</td></tr>
+      <tr><td>return_types</td><td>STRING, TABLE (multi-row), STRUCT</td></tr>
+      <tr><td>lineage</td><td>UC tracks which agents call which functions (column-level lineage)</td></tr>
+      <tr><td>governance</td><td>GRANT/REVOKE EXECUTE; audit logs in system.access.audit</td></tr>
+      <tr><td>testing</td><td>CALL function directly in SQL editor before registering as tool</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Functions in <span class="mono">dev.supply_chain.*</span></li><li>Point to mock/sandbox APIs</li><li>GRANT to dev service principal</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Functions in <span class="mono">staging.supply_chain.*</span></li><li>Real API endpoints, test credentials</li><li>Validate param extraction accuracy</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Functions in <span class="mono">prod.supply_chain.*</span></li><li>Prod credentials in Databricks Secrets</li><li>GRANT to prod supervisor SP only</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Why register tools in UC rather than defining them inline in the agent?</div><div class="qa-a">UC registration gives versioning, access control (GRANT/REVOKE EXECUTE), lineage tracking, discoverability, and reuse across multiple agents. The same get_sap_order_status function can be called by the Supervisor Agent AND directly by a Workflow job AND exposed to Teams via a different agent — without duplicating code. It's the single source of truth for that integration capability.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you handle secrets in UC function tools?</div><div class="qa-a">Use Databricks Secrets: <span class="mono">dbutils.secrets.get(scope="sap-creds", key="api-token")</span>. Never hardcode credentials in function bodies. The function's service principal (or user via OBO) must have GET permission on the secret scope. Secrets are encrypted at rest and never appear in MLflow traces or audit logs.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ MLFLOW ═══ -->
+<div class="svc" id="svc-mlflow">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">MLflow</span><span class="sp">ML Lifecycle Platform</span><span class="badge">GA</span></div>
+    <div class="sd">Experiments (tracking), UC Model Registry (aliases), and Tracing (agent observability). MLflow 3 ships with Databricks. Critical: stages (Staging/Production) are NOT supported in UC Model Registry — use aliases instead.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('mlflow',0)">Implementation</button>
+    <button class="dt" onclick="dim('mlflow',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('mlflow',2)">Environments</button>
+    <button class="dt" onclick="dim('mlflow',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="ps"><div class="pt">Experiments, Registry &amp; Aliases</div>
+    <div class="cl">Python · Full MLflow lifecycle</div>
+<pre><span class="k">import</span> mlflow
+mlflow.set_tracking_uri(<span class="s">"databricks"</span>)
+mlflow.set_experiment(<span class="s">"/Users/dev/osd_classifier_v2"</span>)
+
+<span class="k">with</span> mlflow.start_run() <span class="k">as</span> run:
+    mlflow.log_param(<span class="s">"n_estimators"</span>, <span class="n">200</span>)
+    mlflow.log_metric(<span class="s">"f1_score"</span>, <span class="n">0.943</span>)
+    mlflow.sklearn.log_model(
+        model, <span class="s">"model"</span>,
+        registered_model_name=<span class="s">"prod.ml.osd_classifier"</span>
+    )
+
+<span class="c"># Aliases replace Staging/Production stages (UC Registry only)</span>
+client = mlflow.MlflowClient()
+client.set_registered_model_alias(
+    <span class="s">"prod.ml.osd_classifier"</span>, <span class="s">"champion"</span>, version=<span class="n">5</span>
+)
+client.set_registered_model_alias(
+    <span class="s">"prod.ml.osd_classifier"</span>, <span class="s">"challenger"</span>, version=<span class="n">6</span>
+)
+
+<span class="c"># Load by alias — no version pinning in application code</span>
+model = mlflow.pyfunc.load_model(
+    <span class="s">"models:/prod.ml.osd_classifier@champion"</span>
+)</pre></div>
+    <div class="ps"><div class="pt">RAG Evaluation with MLflow</div>
+    <div class="cl">Python · Evaluate with RAGAS scorers</div>
+<pre><span class="k">import</span> mlflow
+
+<span class="c"># eval_dataset: question, context, ground_truth columns</span>
+results = mlflow.evaluate(
+    model=rag_chain,
+    data=eval_dataset,
+    model_type=<span class="s">"question-answering"</span>,
+    evaluators=<span class="s">"default"</span>,
+    extra_metrics=[
+        mlflow.metrics.genai.faithfulness(),       <span class="c"># most critical for pharma</span>
+        mlflow.metrics.genai.answer_relevance(),
+        mlflow.metrics.genai.relevance(),
+    ]
+)
+print(results.metrics)</pre></div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-a"><strong>Critical: Stages Are Gone in UC Model Registry</strong>Old Staging/Production/Archived model stages do NOT exist in Unity Catalog Model Registry. Use aliases (@champion, @challenger). This is a frequent exam question and interview trap. Workspaces using the legacy (non-UC) registry still have stages — that is the old path.</div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>aliases</td><td>@champion, @challenger — replace old lifecycle stages</td></tr>
+      <tr><td>uc_model_names</td><td>catalog.schema.model_name — enforces namespace isolation</td></tr>
+      <tr><td>autolog</td><td>mlflow.autolog() for sklearn, XGBoost, PyTorch, HuggingFace — captures params/metrics/artifacts</td></tr>
+      <tr><td>model_signatures</td><td>Enforce input/output schema at serving time</td></tr>
+      <tr><td>tracing_v3</td><td>Hierarchical span trees; stored as Delta in system.agent_traces; queryable via mlflow.search_traces()</td></tr>
+      <tr><td>evaluate()</td><td>mlflow.evaluate() with RAGAS scorers: faithfulness, context_precision, answer_relevance</td></tr>
+      <tr><td>free_edition</td><td>Full MLflow available — experiments, registry, tracking. Limited serving compute.</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="ca ca-b"><strong>Promotion Pattern</strong>Models are NOT moved between catalogs. Register fresh in each catalog namespace after validation. CI/CD pipeline: train in dev → register dev.ml.* → evaluate → copy artifact to prod.ml.* → set @champion alias. Serving endpoint reads @champion automatically — no restart needed.</div>
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Namespace: <span class="mono">dev.ml.*</span></li><li>Alias: <span class="mono">@dev-latest</span></li><li>Many iterations, frequent runs</li><li>Experiment in /Users/ path</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Namespace: <span class="mono">staging.ml.*</span></li><li>Alias: <span class="mono">@challenger</span></li><li>A/B eval against champion</li><li>Integration tests run</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Namespace: <span class="mono">prod.ml.*</span></li><li>Alias: <span class="mono">@champion</span></li><li>Serving endpoint reads @champion</li><li>Lakehouse Monitoring tracks drift</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you promote a model from dev to prod in UC Model Registry?</div><div class="qa-a">Register a new version in the prod catalog (prod.ml.osd_classifier) — models are not moved or transitioned. Your CI/CD pipeline: (1) train in dev, register in dev.ml.*, (2) run evaluation, (3) if passing, register same artifact in prod.ml.* using copy_model_version(), (4) set @champion alias on the new version. Model Serving endpoint reads @champion automatically — no restart, no URL change.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What does mlflow.evaluate() measure for RAG and why is faithfulness most critical for pharma?</div><div class="qa-a">Faithfulness: does the answer stay within the retrieved context (no hallucinations)? Context precision: is the retrieved context relevant? Answer relevance: does the answer address the question? Context recall: was all relevant context retrieved? For pharma distribution: faithfulness is most critical — a hallucinated drug dosage, availability status, or handling procedure is a patient safety risk and potential regulatory violation.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's the difference between MLflow 3 tracing and earlier versions?</div><div class="qa-a">MLflow 3 introduces hierarchical span trees (not just flat run logs) — each agent call produces a tree of spans: supervisor routing, sub-agent calls, tool invocations, each with inputs/outputs and timing. Traces are stored as Delta tables in UC (system.agent_traces) making them queryable via SQL. Earlier MLflow only had flat run metrics — not suitable for debugging multi-step agent pipelines.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ MODEL SERVING ═══ -->
+<div class="svc" id="svc-serving">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Model Serving</span><span class="sp">ML Deployment</span><span class="badge">GA</span></div>
+    <div class="sd">REST endpoints for ML models and LLMs. Serverless (scale-to-zero, pay-per-token) or provisioned throughput (guaranteed latency). Foundation Models API for hosted LLMs. Legacy serving EOL Sept 2025.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('serving',0)">Implementation</button>
+    <button class="dt" onclick="dim('serving',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('serving',2)">Environments</button>
+    <button class="dt" onclick="dim('serving',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="ps"><div class="pt">SDK — Create Endpoint</div>
+    <div class="cl">Python · Databricks SDK</div>
+<pre><span class="k">from</span> databricks.sdk <span class="k">import</span> WorkspaceClient
+<span class="k">from</span> databricks.sdk.service.serving <span class="k">import</span> (
+    EndpointCoreConfigInput, ServedEntityInput
+)
+
+w = WorkspaceClient()
+w.serving_endpoints.create(
+    name=<span class="s">"prod-osd-classifier"</span>,
+    config=EndpointCoreConfigInput(
+        served_entities=[ServedEntityInput(
+            entity_name=<span class="s">"prod.ml.osd_classifier"</span>,
+            entity_version=<span class="s">"5"</span>,        <span class="c"># or use alias</span>
+            scale_to_zero_enabled=<span class="n">True</span>,
+            workload_size=<span class="s">"Small"</span>       <span class="c"># Small|Medium|Large</span>
+        )]
+    )
+)
+
+<span class="c"># Query the endpoint</span>
+resp = w.serving_endpoints.query(
+    name=<span class="s">"prod-osd-classifier"</span>,
+    dataframe_records=[{<span class="s">"weight"</span>: <span class="n">42.5</span>, <span class="s">"carrier"</span>: <span class="s">"FedEx"</span>}]
+)</pre></div>
+    <div class="ps"><div class="pt">Foundation Models API (no model hosting needed)</div>
+    <div class="cl">Python · Pay-per-token LLM inference</div>
+<pre><span class="k">import</span> mlflow.deployments
+
+client = mlflow.deployments.get_deploy_client(<span class="s">"databricks"</span>)
+response = client.predict(
+    endpoint=<span class="s">"databricks-meta-llama-3-3-70b-instruct"</span>,
+    inputs={<span class="s">"messages"</span>: [{
+        <span class="s">"role"</span>: <span class="s">"user"</span>,
+        <span class="s">"content"</span>: <span class="s">"Summarize this OS&amp;D report..."</span>
+    }]}
+)</pre></div>
+    <div class="ps"><div class="pt">UI — Create Endpoint</div>
+    <ol class="st">
+      <li>Left sidebar → <strong>Serving</strong></li>
+      <li>Click <strong>Create serving endpoint</strong></li>
+      <li>Entity: browse UC Model Registry → select model + version or alias</li>
+      <li>Choose Serverless (scale-to-zero) or Provisioned Throughput</li>
+      <li>Set workload size: Small / Medium / Large</li>
+      <li>Enable A/B traffic split to test @challenger vs @champion</li>
+      <li>Click Create — endpoint URL auto-generated</li>
+    </ol></div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-a"><strong>Legacy Model Serving EOL — September 2025</strong>All production endpoints must use the current serverless/provisioned throughput architecture. The new API uses workload_size instead of old concurrency parameters. If asked about "Databricks Model Serving" confirm this migration has already happened.</div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>serverless</td><td>Auto-scale to zero; pay per token/request; cold start ~2–5s; best for bursty traffic</td></tr>
+      <tr><td>provisioned_throughput</td><td>Dedicated GPU; guaranteed latency SLA; fixed cost; best for steady high-volume</td></tr>
+      <tr><td>workload_size</td><td>Small (4 concurrent), Medium (8), Large (16) — serverless</td></tr>
+      <tr><td>entity_types</td><td>Registered MLflow models, external models (OpenAI, Anthropic), Foundation Model API</td></tr>
+      <tr><td>traffic_split</td><td>A/B routing: 90% @champion / 10% @challenger for shadow testing</td></tr>
+      <tr><td>free_edition</td><td>CPU-only serving, no GPU, no provisioned throughput</td></tr>
+      <tr><td>inference_tables</td><td>Auto-log request/response for monitoring and drift detection</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Entity: <span class="mono">dev.ml.model@dev-latest</span></li><li>Serverless, Small</li><li>scale_to_zero=True</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Entity: <span class="mono">staging.ml.model@challenger</span></li><li>A/B split vs prod @champion</li><li>Load test production traffic shape</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Entity: <span class="mono">prod.ml.model@champion</span></li><li>Provisioned throughput for SLA</li><li>Inference tables → Lakehouse Monitoring</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When do you use provisioned throughput vs serverless Model Serving?</div><div class="qa-a">Provisioned throughput: steady-state, high-volume inference with latency SLA (e.g. FFF's real-time OS&amp;D classifier responding under 500ms p99). Serverless: bursty or unpredictable traffic where scale-to-zero saves cost (e.g. an overnight reporting model). Cost crossover: roughly when utilization exceeds 60% continuously. For LLMs: provisioned throughput guarantees tokens-per-second; serverless may queue under load.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you do zero-downtime model promotion with Model Serving?</div><div class="qa-a">Use traffic splitting: 90% to @champion, 10% to @challenger. Monitor metrics for both. When challenger is validated, run client.set_registered_model_alias("prod.ml.osd_classifier", "champion", version=N+1). The endpoint automatically shifts 100% traffic — no new endpoint URL, no downtime. Lakehouse Monitoring tracks prediction drift across both versions during transition.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ UNITY CATALOG ═══ -->
+<div class="svc" id="svc-uc">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Unity Catalog</span><span class="sp">Data Governance</span><span class="badge">GA</span></div>
+    <div class="sd">Account-level metastore providing unified governance. Three-level namespace (catalog.schema.table), ABAC with row filters and column masks as SQL UDFs, automatic column-level lineage.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('uc',0)">Implementation</button>
+    <button class="dt" onclick="dim('uc',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('uc',2)">Environments</button>
+    <button class="dt" onclick="dim('uc',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="cl">SQL · Core UC Governance Operations</div>
+<pre><span class="c">-- Three-level namespace</span>
+<span class="kw">CREATE CATALOG IF NOT EXISTS</span> prod;
+<span class="kw">CREATE SCHEMA IF NOT EXISTS</span> prod.supply_chain;
+
+<span class="c">-- Row-level security: SQL UDF-based row filter</span>
+<span class="kw">CREATE FUNCTION</span> prod.security.shipment_region_filter()
+<span class="kw">RETURNS BOOLEAN</span>
+<span class="kw">RETURN</span> is_account_group_member(<span class="s">'global-ops'</span>)
+    <span class="kw">OR</span> current_user() = region_owner;
+
+<span class="kw">ALTER TABLE</span> prod.supply_chain.shipments
+  <span class="kw">SET ROW FILTER</span> prod.security.shipment_region_filter() <span class="kw">ON</span> ();
+
+<span class="c">-- Column mask: hide patient ID except for PHI-access group</span>
+<span class="kw">CREATE FUNCTION</span> prod.security.mask_patient_id(patient_id <span class="n">STRING</span>)
+<span class="kw">RETURNS STRING</span>
+<span class="kw">RETURN CASE WHEN</span> is_account_group_member(<span class="s">'phi-access'</span>)
+    <span class="kw">THEN</span> patient_id <span class="kw">ELSE</span> <span class="s">'REDACTED'</span> <span class="kw">END</span>;
+
+<span class="kw">ALTER TABLE</span> prod.supply_chain.shipments
+  <span class="kw">ALTER COLUMN</span> patient_id <span class="kw">SET MASK</span> prod.security.mask_patient_id();
+
+<span class="c">-- Grants</span>
+<span class="kw">GRANT SELECT ON TABLE</span> prod.supply_chain.shipments <span class="kw">TO</span> <span class="s">`data-analysts`</span>;
+<span class="kw">GRANT USE CATALOG ON CATALOG</span> prod <span class="kw">TO</span> <span class="s">`data-analysts`</span>;</pre>
+    <div class="ps"><div class="pt">UI Navigation</div>
+    <ol class="st">
+      <li><strong>Catalog Explorer:</strong> Left sidebar → Catalog — browse catalog/schema/table hierarchy</li>
+      <li><strong>Permissions:</strong> Select table → Permissions tab → Grant/Revoke</li>
+      <li><strong>Lineage:</strong> Select table → Lineage tab — visual upstream/downstream graph</li>
+      <li><strong>Row Filters &amp; Masks:</strong> Table → Overview → Data access policies</li>
+      <li><strong>Discovery:</strong> Search bar — search by name, column, tag, or owner</li>
+    </ol></div>
+  </div>
+  <div class="dp">
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>namespace</td><td>catalog.schema.table — 3 levels; replaces Hive metastore (2 levels)</td></tr>
+      <tr><td>metastore</td><td>One per region per account; workspace-attached; account admin creates</td></tr>
+      <tr><td>row_filters</td><td>SQL UDF applied transparently at query time; evaluated per-row; OBO-aware</td></tr>
+      <tr><td>column_masks</td><td>SQL UDF on a column; returns masked value for unauthorized users</td></tr>
+      <tr><td>lineage</td><td>Automatic column-level lineage; includes notebook, job, DLT pipeline sources</td></tr>
+      <tr><td>volumes</td><td>UC-governed unstructured file storage (replaces DBFS mounts)</td></tr>
+      <tr><td>system_tables</td><td>system.access.audit, system.agent_traces, system.billing — queryable Delta</td></tr>
+      <tr><td>data_products</td><td>Governed, discoverable, versioned assets publishable internally or to Marketplace</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="ca ca-r"><strong>Catalog = Environment Boundary</strong>dev catalog for development, staging for integration, prod for production. Workspaces share one metastore but are granted access only to the appropriate catalogs. This is the standard environment isolation pattern in Databricks.</div>
+    <div class="eg">
+      <div class="ec"><div class="et dev">dev catalog</div><ul><li>Developers: USE + CREATE on own schema</li><li>Permissive for iteration</li><li>No row filters required</li></ul></div>
+      <div class="ec"><div class="et tst">staging catalog</div><ul><li>Same structure as prod</li><li>Row filters active — test security</li><li>Promoted via DABs</li></ul></div>
+      <div class="ec"><div class="et prd">prod catalog</div><ul><li>Strict GRANT/REVOKE</li><li>Row filters + masks enforced</li><li>Audit in system.access.audit</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Hive metastore vs Unity Catalog — key differences?</div><div class="qa-a">Hive metastore: workspace-level (2-level: schema.table), no cross-workspace governance, no row-level security, no column masking, no lineage. UC: account-level (3-level: catalog.schema.table), shared across workspaces, ABAC with row filters and column masks as SQL UDFs, automatic column-level lineage, governs models, functions, volumes, and agents too. For FFF with multiple workspaces: UC is the only option for unified governance.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How many metastores can you have per cloud region?</div><div class="qa-a">One metastore per region per Databricks account. Common exam question. Multiple catalogs within one metastore is fine, but not multiple metastores in the same region. Multi-region deployments get one metastore each; use Delta Sharing for cross-region data access.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Why does column-level lineage matter for pharma compliance?</div><div class="qa-a">UC automatically tracks which upstream columns contributed to each downstream column, across notebooks, jobs, and DLT pipelines. For a pharma distributor: if a compliance audit asks "where does patient_id in this report come from?", lineage traces it back to the Bronze source system. Critical for HIPAA compliance and FDA/DEA audit trails — no manual documentation needed, automated and always current.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ DELTA LAKE ═══ -->
+<div class="svc" id="svc-delta">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Delta Lake</span><span class="sp">Open Table Format</span><span class="badge">GA</span></div>
+    <div class="sd">ACID-compliant open table format powering the Lakehouse. Optimistic concurrency control, time travel, schema enforcement/evolution, streaming+batch unified. Foundation of medallion architecture.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('delta',0)">Implementation</button>
+    <button class="dt" onclick="dim('delta',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('delta',2)">Environments</button>
+    <button class="dt" onclick="dim('delta',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="cl">SQL · Core Delta Lake Operations</div>
+<pre><span class="c">-- Time travel: audit, rollback, reproducibility</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> prod.supply_chain.shipments <span class="kw">VERSION AS OF</span> <span class="n">42</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> prod.supply_chain.shipments
+  <span class="kw">TIMESTAMP AS OF</span> <span class="s">'2026-07-01 00:00:00'</span>;
+
+<span class="c">-- File compaction (small file problem → query performance)</span>
+<span class="kw">OPTIMIZE</span> prod.supply_chain.shipments;
+
+<span class="c">-- Z-ORDER: co-locate data for selective queries</span>
+<span class="kw">OPTIMIZE</span> prod.supply_chain.shipments
+  <span class="kw">ZORDER BY</span> (carrier_id, event_date);
+
+<span class="c">-- Purge old history files (default retention: 7 days / 168 hours)</span>
+<span class="kw">VACUUM</span> prod.supply_chain.shipments <span class="kw">RETAIN</span> <span class="n">168</span> <span class="kw">HOURS</span>;
+
+<span class="c">-- View full transaction log</span>
+<span class="kw">DESCRIBE HISTORY</span> prod.supply_chain.shipments;
+
+<span class="c">-- Upsert via MERGE (standard for streaming ingestion)</span>
+<span class="kw">MERGE INTO</span> prod.supply_chain.shipments <span class="kw">AS</span> target
+<span class="kw">USING</span> updates <span class="kw">AS</span> source
+<span class="kw">ON</span> target.shipment_id = source.shipment_id
+<span class="kw">WHEN MATCHED THEN UPDATE SET</span> *
+<span class="kw">WHEN NOT MATCHED THEN INSERT</span> *;</pre>
+    <div class="ps"><div class="pt">Change Data Feed (required for AI Search CONTINUOUS index)</div>
+    <div class="cl">SQL + Python · Enable CDF and read changes</div>
+<pre><span class="kw">ALTER TABLE</span> prod.supply_chain.documents
+  <span class="kw">SET TBLPROPERTIES</span> (<span class="s">'delta.enableChangeDataFeed'</span> = <span class="s">'true'</span>);
+
+<span class="c"># Python: stream changes since version 5</span>
+changes = (spark.readStream
+    .format(<span class="s">"delta"</span>)
+    .option(<span class="s">"readChangeFeed"</span>, <span class="s">"true"</span>)
+    .option(<span class="s">"startingVersion"</span>, <span class="n">5</span>)
+    .table(<span class="s">"prod.supply_chain.documents"</span>)
+)</pre></div>
+  </div>
+  <div class="dp">
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>acid</td><td>Serializable isolation via optimistic concurrency + transaction log (_delta_log/)</td></tr>
+      <tr><td>time_travel</td><td>VERSION AS OF n | TIMESTAMP AS OF date; history retained until VACUUM</td></tr>
+      <tr><td>vacuum_default</td><td>7 days / 168 hours retention minimum</td></tr>
+      <tr><td>optimize</td><td>Compacts small Parquet files; run on write-heavy tables nightly</td></tr>
+      <tr><td>zorder</td><td>Co-locates similar values on disk for 2–4 high-cardinality filter columns</td></tr>
+      <tr><td>liquid_clustering</td><td>Auto-optimized alternative to Z-ORDER (2024+); change columns without full rewrite</td></tr>
+      <tr><td>cdf</td><td>Change Data Feed — incremental reads; required for AI Search CONTINUOUS indexes</td></tr>
+      <tr><td>schema_enforcement</td><td>Default: reject writes with mismatched schema</td></tr>
+      <tr><td>schema_evolution</td><td>mergeSchema=true or ALTER TABLE ADD COLUMN</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="ca ca-b"><strong>Medallion = Delta Tables in UC</strong></div>
+    <div class="eg">
+      <div class="ec"><div class="et dev">Bronze (Raw)</div><ul><li>Append-only, no DELETE</li><li>Full history (long VACUUM)</li><li>CDF enabled → downstream</li><li>Source: Salesforce, SAP CDC</li></ul></div>
+      <div class="ec"><div class="et tst">Silver (Cleaned)</div><ul><li>MERGE (upsert) from Bronze</li><li>Schema enforcement strict</li><li>DQ constraints active</li></ul></div>
+      <div class="ec"><div class="et prd">Gold (Business)</div><ul><li>Aggregated, denormalized</li><li>OPTIMIZE + Z-ORDER nightly</li><li>Source for Genie Agents + dashboards</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How does Delta Lake achieve ACID without a traditional lock manager?</div><div class="qa-a">Optimistic concurrency control via the transaction log (_delta_log/). Each write appends a new JSON commit entry. On conflict (two concurrent writers), the second writer checks if the first's changes overlap with its read set. No overlap (different partitions) → both commits succeed. Overlap → one is rejected and must retry. This is optimistic — assumes conflicts are rare, true for typical Lakehouse workloads where writers are partition-separated.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Z-ORDER vs Liquid Clustering — when do you choose each?</div><div class="qa-a">Z-ORDER: stable, works on all Databricks versions, requires OPTIMIZE after significant loads, columns fixed at creation. Liquid Clustering (2024+): auto-managed, no explicit OPTIMIZE needed, change clustering columns without a full rewrite. SA recommendation: prefer Liquid Clustering for new tables on current runtime; Z-ORDER for legacy tables or compatibility requirements.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ AI SEARCH ═══ -->
+<div class="svc" id="svc-aisearch">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Databricks AI Search</span><span class="sp">Managed Vector + Hybrid Search</span><span class="badge">GA</span></div>
+    <div class="sd">Managed search combining ANN (semantic), BM25 (keyword), and hybrid (RRF fusion) in one API. Formerly "Databricks Vector Search." Delta Sync indexes auto-sync from Delta tables via Change Data Feed.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('aisearch',0)">Implementation</button>
+    <button class="dt" onclick="dim('aisearch',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('aisearch',2)">Environments</button>
+    <button class="dt" onclick="dim('aisearch',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="cl">Python · Create Delta Sync Index and Query (hybrid)</div>
+<pre><span class="k">from</span> databricks.vector_search.client <span class="k">import</span> VectorSearchClient
+
+vsc = VectorSearchClient()
+
+<span class="c"># 1. Create endpoint (once per workspace)</span>
+vsc.create_endpoint(name=<span class="s">"prod-ai-search"</span>, endpoint_type=<span class="s">"STANDARD"</span>)
+
+<span class="c"># 2. Delta Sync index — auto-syncs from Delta table via CDF</span>
+vsc.create_delta_sync_index(
+    endpoint_name=<span class="s">"prod-ai-search"</span>,
+    index_name=<span class="s">"prod.supply_chain.sop_index"</span>,
+    source_table_name=<span class="s">"prod.supply_chain.sop_documents"</span>,
+    pipeline_type=<span class="s">"TRIGGERED"</span>,   <span class="c"># or CONTINUOUS</span>
+    primary_key=<span class="s">"doc_id"</span>,
+    embedding_source_column=<span class="s">"content"</span>,
+    embedding_model_endpoint_name=<span class="s">"databricks-bge-large-en"</span>
+)
+
+<span class="c"># 3. Hybrid search (BM25 + ANN merged via RRF)</span>
+index = vsc.get_index(<span class="s">"prod-ai-search"</span>, <span class="s">"prod.supply_chain.sop_index"</span>)
+results = index.similarity_search(
+    query_text=<span class="s">"controlled substance shortage handling"</span>,
+    num_results=<span class="n">5</span>,
+    query_type=<span class="s">"hybrid"</span>,         <span class="c"># "ANN" | "HYBRID" | "KEYWORD"</span>
+    filters={<span class="s">"doc_type"</span>: <span class="s">"SOP"</span>}  <span class="c"># metadata pre-filter</span>
+)</pre>
+    <div class="ps"><div class="pt">UI Setup</div>
+    <ol class="st">
+      <li>Left sidebar → <strong>Compute → Vector Search</strong></li>
+      <li>Create endpoint → name it, type STANDARD</li>
+      <li>Create index → Delta Sync (auto-embed) or Direct Vector Access (custom embeddings)</li>
+      <li>Select source Delta table → embedding column → embedding model endpoint</li>
+      <li>TRIGGERED (manual sync) or CONTINUOUS (CDC-based)</li>
+    </ol></div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-g"><strong>Why Hybrid over Pure ANN for Enterprise Docs</strong>Semantic search (ANN) misses exact product codes, drug names, order IDs. BM25 alone misses conceptual queries. Hybrid RRF gets both. For FFF's drug SOP retrieval: always use query_type="hybrid".</div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>query_types</td><td>ANN (approximate nearest neighbor), KEYWORD (BM25), HYBRID (BM25 + ANN via RRF)</td></tr>
+      <tr><td>hybrid_fusion</td><td>Reciprocal Rank Fusion (RRF): rank-based merge of BM25 and ANN results</td></tr>
+      <tr><td>index_types</td><td>Delta Sync (auto-embed from Delta), Direct Vector Access (you push embeddings)</td></tr>
+      <tr><td>pipeline_types</td><td>TRIGGERED (manual sync) or CONTINUOUS (near-real-time CDC)</td></tr>
+      <tr><td>embedding_models</td><td>Databricks Foundation Models (bge-large-en, bge-small-en) or custom endpoint</td></tr>
+      <tr><td>metadata_filters</td><td>Pre-filter before vector search; reduces candidate space</td></tr>
+      <tr><td>permissions</td><td>Inherits UC table permissions on source Delta table (OBO-compatible)</td></tr>
+      <tr><td>old_name</td><td>Previously "Databricks Vector Search" — renamed to AI Search 2025</td></tr>
+      <tr><td>free_edition</td><td>1 endpoint, 1 search unit — functional but limited</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Endpoint: dev-ai-search</li><li>Source: <span class="mono">dev.docs.*</span></li><li>TRIGGERED pipeline</li><li>Small embedding model</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Mirror prod index structure</li><li>Evaluate retrieval quality</li><li>Test metadata filter logic</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Endpoint: prod-ai-search</li><li>Source: <span class="mono">prod.docs.*</span></li><li>CONTINUOUS for live docs</li><li>Multiple indexes, 1 endpoint</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What is Reciprocal Rank Fusion and why does it work for hybrid search?</div><div class="qa-a">RRF merges two ranked lists (BM25 results + ANN results) using: score = sum(1/(k + rank_i)) for each list, k=60 default. A document ranked high in both lists scores highest. RRF works because it's rank-based, not score-based — it doesn't require calibrating absolute similarity scores from two different metrics. Result: a document that's #1 BM25 match AND #3 ANN match scores higher than one that's #1 in only one list.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Delta Sync vs Direct Vector Access — when do you use each?</div><div class="qa-a">Delta Sync: your source data is in a Delta table — Databricks handles embedding generation and index updates automatically via CDF. This is 90% of cases. Direct Vector Access: you compute embeddings yourself (proprietary model, pre-computed elsewhere) and push vectors directly to the index. Use when embedding generation must happen outside Databricks or you need exact control over the chunking and embedding pipeline.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ DABs ═══ -->
+<div class="svc" id="svc-dabs">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Declarative Automation Bundles</span><span class="sp">CI/CD &amp; Deployment</span><span class="badge">GA</span></div>
+    <div class="sd">YAML-defined infrastructure-as-code for Databricks resources. Formerly "Databricks Asset Bundles (DABs)." Bundle targets per environment, variable substitution, CI/CD integration.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('dabs',0)">Implementation</button>
+    <button class="dt" onclick="dim('dabs',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('dabs',2)">Environments</button>
+    <button class="dt" onclick="dim('dabs',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="cl">YAML · databricks.yml — bundle with dev/prod targets</div>
+<pre>bundle:
+  name: fff_osd_pipeline
+
+variables:
+  catalog:
+    default: dev
+  prefix:
+    default: "dev-"
+
+targets:
+  dev:
+    default: true
+    mode: development
+    variables:
+      catalog: dev
+      prefix: "dev-"
+    workspace:
+      host: https://dev.databricks.fff.internal
+
+  prod:
+    mode: production
+    variables:
+      catalog: prod
+      prefix: ""
+    workspace:
+      host: https://prod.databricks.fff.internal
+
+resources:
+  jobs:
+    osd_investigation_job:
+      name: "${var.prefix}OSD Investigation"
+      tasks:
+        - task_key: ingest
+          notebook_task:
+            notebook_path: ./notebooks/01_ingest.py
+            base_parameters:
+              catalog: "${var.catalog}"
+
+  serving_endpoints:
+    osd_endpoint:
+      name: "${var.prefix}osd-classifier"
+      config:
+        served_entities:
+          - entity_name: "${var.catalog}.ml.osd_classifier@champion"</pre>
+    <div class="ps"><div class="pt">CLI Commands</div>
+<pre>databricks bundle validate          # validate config
+databricks bundle deploy            # deploy to dev (default)
+databricks bundle deploy --target prod
+databricks bundle run osd_investigation_job
+databricks bundle destroy           # teardown dev resources</pre></div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-a"><strong>Renamed — Critical for Interview</strong>"DABs" or "Databricks Asset Bundles" is the old name. Current name: Declarative Automation Bundles. The config file is still databricks.yml and the CLI is still "databricks bundle".</div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>resource_types</td><td>Jobs, DLT Pipelines, Model Serving Endpoints, Genie Agents, Clusters, SQL Warehouses, UC Schemas</td></tr>
+      <tr><td>variable_substitution</td><td>${var.name} in YAML; override per target; env vars via ${env.VAR}</td></tr>
+      <tr><td>mode_dev</td><td>Prefixes resources with username; pauses schedules — prevents accidental prod impact</td></tr>
+      <tr><td>mode_prod</td><td>No prefix; schedules active; service principal ownership</td></tr>
+      <tr><td>ci_cd</td><td>GitHub Actions, Azure DevOps, GitLab CI — databricks CLI in pipeline steps</td></tr>
+      <tr><td>permissions</td><td>Define per-resource permissions in YAML — deployed automatically</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="ca ca-b"><strong>Bundle Targets = Environments</strong>Same databricks.yml promotes identical resource definitions from dev → staging → prod with different variable values. No manual resource recreation.</div>
+    <div class="eg">
+      <div class="ec"><div class="et dev">dev target</div><ul><li>mode: development</li><li>Prefix: username</li><li>Schedules paused</li><li>catalog: dev</li></ul></div>
+      <div class="ec"><div class="et tst">staging target</div><ul><li>No mode prefix</li><li>Integration test jobs</li><li>catalog: staging</li></ul></div>
+      <div class="ec"><div class="et prd">prod target</div><ul><li>mode: production</li><li>Schedules active</li><li>Service principal ownership</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How does bundle mode: development prevent accidental prod impact?</div><div class="qa-a">Development mode automatically: (1) prefixes all resource names with the deploying user's username — "OSD Investigation" becomes "alice@fff.com OSD Investigation", (2) pauses all job schedules and triggers, (3) marks resources as "development" so they appear separately in the UI. A developer can bundle deploy freely without ever touching production resources — no risk of overwriting the prod job or triggering a prod schedule.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What resource types can be defined in a bundle?</div><div class="qa-a">Jobs (with tasks: notebooks, Python wheels, DLT triggers), DLT Pipelines, Model Serving Endpoints, Genie Agents, Clusters, SQL Warehouses, Unity Catalog schemas, MLflow Experiments. SA note: including Genie Agents and Model Serving Endpoints means you can promote the entire ML+AI stack — data pipeline + model + agent — as a single versioned unit through CI/CD.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ WORKFLOWS ═══ -->
+<div class="svc" id="svc-workflows">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Databricks Workflows</span><span class="sp">Job Orchestration</span><span class="badge">GA</span></div>
+    <div class="sd">Native job orchestration with task dependencies, retry logic, conditional branching, For Each parallelism, and file arrival triggers. Replaces ADF/Airflow for Databricks-native workloads.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('workflows',0)">Implementation</button>
+    <button class="dt" onclick="dim('workflows',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('workflows',2)">Environments</button>
+    <button class="dt" onclick="dim('workflows',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="cl">Python · SDK — Create Multi-Task Job with Condition</div>
+<pre><span class="k">from</span> databricks.sdk <span class="k">import</span> WorkspaceClient
+<span class="k">from</span> databricks.sdk.service.jobs <span class="k">import</span> *
+
+w = WorkspaceClient()
+w.jobs.create(
+    name=<span class="s">"OSD Full Pipeline"</span>,
+    tasks=[
+        Task(task_key=<span class="s">"ingest"</span>,
+             notebook_task=NotebookTask(
+                 notebook_path=<span class="s">"/Repos/prod/01_ingest"</span>,
+                 base_parameters={<span class="s">"catalog"</span>: <span class="s">"prod"</span>})),
+        Task(task_key=<span class="s">"classify"</span>,
+             depends_on=[TaskDependency(task_key=<span class="s">"ingest"</span>)],
+             python_wheel_task=PythonWheelTask(
+                 package_name=<span class="s">"osd_classifier"</span>,
+                 entry_point=<span class="s">"run"</span>)),
+        Task(task_key=<span class="s">"notify_if_osd"</span>,
+             depends_on=[TaskDependency(task_key=<span class="s">"classify"</span>)],
+             condition_task=ConditionTask(
+                 op=<span class="s">"GREATER_THAN"</span>,
+                 left=<span class="s">"{{tasks.classify.values.osd_count}}"</span>,
+                 right=<span class="s">"0"</span>))
+    ],
+    schedule=CronSchedule(
+        quartz_cron_expression=<span class="s">"0 0 6 * * ?"</span>,
+        timezone_id=<span class="s">"America/Los_Angeles"</span>
+    )
+)</pre>
+    <div class="ps"><div class="pt">Task Values — Pass Data Between Tasks</div>
+<pre><span class="c"># In upstream task (classify):</span>
+dbutils.jobs.taskValues.set(key=<span class="s">"osd_count"</span>, value=osd_df.count())
+
+<span class="c"># In downstream task:</span>
+count = dbutils.jobs.taskValues.get(
+    taskKey=<span class="s">"classify"</span>, key=<span class="s">"osd_count"</span>
+)
+<span class="c"># In YAML/condition: {{tasks.classify.values.osd_count}}</span></pre></div>
+  </div>
+  <div class="dp">
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>task_types</td><td>Notebook, Python Wheel, DLT Pipeline, SQL, dbt Cloud, Spark JAR, Condition, For Each</td></tr>
+      <tr><td>dependencies</td><td>depends_on between tasks; Condition task for branching; For Each for list parallelism</td></tr>
+      <tr><td>retries</td><td>Per-task: max retries, retry interval, on-timeout behavior</td></tr>
+      <tr><td>compute</td><td>Job Compute (dedicated ephemeral cluster) or Serverless (no cluster mgmt)</td></tr>
+      <tr><td>task_values</td><td>Pass data between tasks via dbutils.jobs.taskValues.set/get</td></tr>
+      <tr><td>triggers</td><td>Scheduled (CRON), File arrival, Continuous, Manual, API trigger</td></tr>
+      <tr><td>repair_run</td><td>Re-run only failed tasks — not the whole job</td></tr>
+      <tr><td>free_edition</td><td>5 concurrent task slots</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Manual trigger only</li><li>Interactive cluster (shared)</li><li>Parameters: catalog=dev</li><li>Defined in DABs dev target</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Schedule active for integration</li><li>Job Compute (ephemeral)</li><li>Repair Run for debugging</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Scheduled + file arrival trigger</li><li>Serverless Compute</li><li>Webhook on failure</li><li>system.workflow.runs audit</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Databricks Workflows vs Apache Airflow — when do you choose each?</div><div class="qa-a">Workflows for Databricks-native orchestration: native cluster management, deep DLT and Unity Catalog integration, Repair Run for failed tasks, and no external scheduler to manage. Airflow when you need to orchestrate heterogeneous systems (AWS Glue + Snowflake + dbt Cloud + Databricks) — Airflow's operator ecosystem is broader. For FFF's pure Databricks stack: Workflows. Mixed multi-cloud stack: consider Airflow or ADF with Databricks providers.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What is Repair Run and when is it valuable?</div><div class="qa-a">Repair Run lets you re-run only the failed tasks in a multi-task job — not the entire pipeline. If task 3 of 8 fails due to a transient API error, you fix the issue and repair from task 3 — tasks 1 and 2 don't re-run, saving compute time and avoiding re-processing of already-completed work. Critical for long Lakehouse pipelines where reprocessing Bronze ingestion is expensive.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ MONITORING ═══ -->
+<div class="svc" id="svc-monitoring">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Lakehouse Monitoring</span><span class="sp">Data &amp; ML Quality</span><span class="badge">GA</span></div>
+    <div class="sd">Tracks data quality, statistical drift, and model prediction quality over time. Stores metrics as Delta tables. Alert triggers for retraining signals. Covers data pipelines and ML serving endpoints.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('monitoring',0)">Implementation</button>
+    <button class="dt" onclick="dim('monitoring',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('monitoring',2)">Environments</button>
+    <button class="dt" onclick="dim('monitoring',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="cl">Python · Create InferenceLog Monitor on Gold Table</div>
+<pre><span class="k">from</span> databricks.sdk <span class="k">import</span> WorkspaceClient
+<span class="k">from</span> databricks.sdk.service.catalog <span class="k">import</span> MonitorInferenceLog
+
+w = WorkspaceClient()
+w.quality_monitors.create(
+    table_name=<span class="s">"prod.supply_chain.shipments"</span>,
+    assets_dir=<span class="s">"/Shared/monitors/shipments"</span>,
+    output_schema_name=<span class="s">"prod.monitoring"</span>,
+    inference_log=MonitorInferenceLog(
+        granularities=[<span class="s">"1 day"</span>, <span class="s">"1 week"</span>],
+        model_id_col=<span class="s">"model_version"</span>,
+        prediction_col=<span class="s">"predicted_osd_flag"</span>,
+        label_col=<span class="s">"actual_osd_flag"</span>,
+        problem_type=<span class="s">"CLASSIFICATION"</span>
+    )
+)
+
+<span class="c"># Metrics land in two Delta tables:
+#   prod.monitoring.shipments_profile_metrics  (descriptive stats)
+#   prod.monitoring.shipments_drift_metrics    (drift over time)
+
+# Query for drift alerts:</span>
+drift = spark.table(<span class="s">"prod.monitoring.shipments_drift_metrics"</span>)
+drift.filter(<span class="s">"js_divergence > 0.1"</span>).display()</pre>
+    <div class="ps"><div class="pt">UI Setup</div>
+    <ol class="st">
+      <li>Left sidebar → <strong>Catalog</strong> → select Delta table → <strong>Quality</strong> tab</li>
+      <li>Click <strong>Enable Monitor</strong></li>
+      <li>Choose type: TimeSeries, InferenceLog, or Snapshot</li>
+      <li>Set granularity: 1 hour, 1 day, 1 week</li>
+      <li>For InferenceLog: specify prediction_col, label_col, model_id_col</li>
+      <li>Set output schema for metrics Delta tables</li>
+      <li>Configure SQL Alert on drift metrics → webhook/Slack/PagerDuty</li>
+    </ol></div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-g"><strong>Retraining Signal Pattern</strong>SQL Alert: "js_divergence &gt; 0.15 for prediction_col in last 7 days" → webhook → Workflow retrains model → evaluates → promotes @challenger to @champion if improvement confirmed. This is the MLOps closed loop, entirely within Databricks.</div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>monitor_types</td><td>TimeSeries (windowed stats), InferenceLog (model quality), Snapshot (point-in-time)</td></tr>
+      <tr><td>drift_metrics</td><td>Jensen-Shannon divergence (numerical), PSI, Chi-square (categorical)</td></tr>
+      <tr><td>ml_metrics</td><td>Accuracy, F1, precision, recall (classification); RMSE, MAE (regression)</td></tr>
+      <tr><td>output</td><td>Two Delta tables: profile_metrics + drift_metrics</td></tr>
+      <tr><td>granularities</td><td>1 hour, 1 day, 1 week, 1 month — computed simultaneously</td></tr>
+      <tr><td>alerting</td><td>SQL Alert on drift Delta table → Databricks alerting → webhook/email</td></tr>
+      <tr><td>custom_metrics</td><td>Add custom SQL aggregations to the metrics tables</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Snapshot type for fast setup</li><li>Output: <span class="mono">dev.monitoring.*</span></li><li>No alerts configured</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>InferenceLog mirrors prod config</li><li>Validate alert thresholds</li><li>Test drift scenarios</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>TimeSeries + InferenceLog</li><li>Alerts → PagerDuty</li><li>Output: <span class="mono">prod.monitoring.*</span></li><li>Drift → retrain Workflow loop</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What is the difference between data drift and prediction drift?</div><div class="qa-a">Data drift: the distribution of input features changes (e.g. FedEx shipping patterns shift after a carrier partnership change — delivery times cluster differently). Prediction drift: the model's output distribution changes (more shipments flagged as OS&amp;D risk). You need both: data drift tells you WHY model behavior may change; prediction drift tells you the model IS changing. For pharma: prediction drift could mean real-world OS&amp;D rates are genuinely increasing OR the model is degrading — both require investigation.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do Lakehouse Monitoring metrics connect to model retraining?</div><div class="qa-a">Drift metrics land in prod.monitoring.shipments_drift_metrics (Delta table). A SQL Alert monitors it: when js_divergence exceeds threshold, it fires a webhook triggering a Workflow. The Workflow: (1) retrains on recent labeled data, (2) registers new MLflow version in prod.ml.* as @challenger, (3) evaluates vs @champion, (4) promotes @challenger to @champion if metrics improve. Serving endpoint reads @champion — no restart needed. This is the full MLOps loop, entirely within Databricks.</div></li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.svc').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.sb').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById('svc-' + id).classList.add('active');
+  document.querySelector('[data-svc="' + id + '"]').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function dim(svcId, idx) {
+  var svc = document.getElementById('svc-' + svcId);
+  var panels = svc.querySelectorAll('.dp');
+  var tabs = svc.querySelectorAll('.dt');
+  panels.forEach(function(el) { el.classList.remove('active'); });
+  tabs.forEach(function(el) { el.classList.remove('active'); });
+  panels[idx].classList.add('active');
+  tabs[idx].classList.add('active');
+}
+
+function toggleTheme() {
+  var root = document.documentElement;
+  var cur = root.getAttribute('data-theme');
+  root.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+}
+</script>

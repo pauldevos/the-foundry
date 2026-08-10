@@ -1,0 +1,723 @@
+<title>RAG Pipeline · Layer-by-Layer Reference</title>
+<style>
+:root {
+  --bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;
+  --t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;
+  --accent:#FF4D1C;--blue:#4D9EFF;--green:#3DBA6F;--amber:#F0A030;
+  --code:#0D1621;
+}
+@media(prefers-color-scheme:light){:root{
+  --bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;
+  --t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;
+}}
+:root[data-theme=light]{--bg:#F0F4F8;--surface:#fff;--s2:#E8EEF5;--border:#C8D4E0;--t1:#1A2540;--t2:#4A5A72;--t3:#8A9AB0;--code:#1A2540;}
+:root[data-theme=dark]{--bg:#0B0F14;--surface:#141A22;--s2:#1E2633;--border:#2A3444;--t1:#CDD6E4;--t2:#7A8BA0;--t3:#4A5A6E;--code:#0D1621;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:1rem;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.logo span{color:var(--t2);font-weight:400}
+.title{font-size:.8rem;color:var(--t2)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+.badge{font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(61,186,111,.15);color:var(--green);border:1px solid rgba(61,186,111,.3)}
+.tbtn{background:var(--s2);border:1px solid var(--border);color:var(--t2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem}
+.tbtn:hover{color:var(--t1)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1rem .75rem;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:52px;max-height:calc(100vh - 52px);overflow-y:auto}
+.sg{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);font-weight:700;padding:.75rem .5rem .2rem}
+.sb{display:flex;flex-direction:column;width:100%;text-align:left;background:none;border:none;border-radius:6px;padding:.4rem .6rem;cursor:pointer;color:var(--t2);font-size:.8rem;line-height:1.3;transition:background .12s,color .12s}
+.sb:hover{background:var(--s2);color:var(--t1)}
+.sb.active{background:rgba(255,77,28,.12);color:var(--accent);font-weight:600}
+.sb small{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.sb.active small{color:rgba(255,77,28,.6)}
+.main{flex:1;padding:1.5rem 2rem;min-width:0}
+.svc{display:none}
+.svc.active{display:block}
+.sh{margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sh-top{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.4rem}
+.sn{font-size:1.4rem;font-weight:700;color:var(--t1)}
+.sp{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.sd{font-size:.88rem;color:var(--t2);max-width:72ch}
+.dtabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto}
+.dt{padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;background:none;border:none;color:var(--t2);border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.dt:hover{color:var(--t1)}
+.dt.active{color:var(--accent);border-bottom-color:var(--accent)}
+.dp{display:none}
+.dp.active{display:block}
+.ps{margin-bottom:1.5rem}
+.pt{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--t3);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.pt::after{content:'';flex:1;height:1px;background:var(--border)}
+pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;font-size:.76rem;line-height:1.6;margin-bottom:.75rem;color:#A8C7FA;font-family:'Courier New',monospace}
+.cl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);font-weight:700;margin-bottom:.25rem;font-family:monospace}
+.k{color:#FF7B72}.s{color:#A5D6FF}.c{color:#5A6A80;font-style:italic}.fn{color:#79C0FF}.n{color:#FFA657}.kw{color:#FF7B72}
+table.ft{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:.75rem}
+table.ft th{text-align:left;padding:.4rem .75rem;background:var(--s2);color:var(--t2);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--border)}
+table.ft td{padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t1);vertical-align:top}
+table.ft tr:last-child td{border-bottom:none}
+table.ft td:first-child{color:var(--blue);font-family:monospace;font-size:.75rem;white-space:nowrap}
+table.ft tr:hover td{background:var(--s2)}
+.ca{border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:.83rem;line-height:1.55;border-left:3px solid}
+.ca strong{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.ca-r{background:rgba(255,77,28,.07);border-color:var(--accent)}.ca-r strong{color:var(--accent)}
+.ca-b{background:rgba(77,158,255,.07);border-color:var(--blue)}.ca-b strong{color:var(--blue)}
+.ca-g{background:rgba(61,186,111,.07);border-color:var(--green)}.ca-g strong{color:var(--green)}
+.ca-a{background:rgba(240,160,48,.08);border-color:var(--amber)}.ca-a strong{color:var(--amber)}
+ol.st{list-style:none;counter-reset:s;padding:0}
+ol.st li{counter-increment:s;display:flex;gap:.75rem;margin-bottom:.45rem;font-size:.83rem;line-height:1.5}
+ol.st li::before{content:counter(s);flex-shrink:0;width:1.4rem;height:1.4rem;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--t2);margin-top:.1rem}
+ul.bl{list-style:none;padding:0;margin-bottom:.75rem}
+ul.bl li{font-size:.83rem;color:var(--t2);padding:.15rem 0;line-height:1.5}
+ul.bl li::before{content:'▸ ';color:var(--accent)}
+.qa{list-style:none;padding:0}
+.qi{border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;overflow:hidden}
+.qq{padding:.6rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:flex-start;gap:.6rem;background:var(--s2);color:var(--t1)}
+.qq::before{content:'Q';flex-shrink:0;font-size:.62rem;font-weight:800;letter-spacing:.06em;padding:1px 5px;border-radius:3px;background:rgba(77,158,255,.2);color:var(--blue);margin-top:.05rem}
+.qa-a{padding:.6rem .9rem;font-size:.8rem;color:var(--t2);line-height:1.55;border-top:1px solid var(--border);display:none}
+.qi.open .qa-a{display:block}
+.mono{font-family:'Courier New',monospace;font-size:.85em;color:var(--blue);background:rgba(77,158,255,.08);padding:1px 4px;border-radius:3px}
+@media(max-width:700px){
+  .layout{flex-direction:column}
+  .sidebar{width:100%;max-height:none;position:static;flex-direction:row;flex-wrap:wrap;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
+  .sg{display:none}
+  .main{padding:1rem}
+}
+</style>
+
+<div class="topbar">
+  <div class="logo">RAG <span>Pipeline Reference</span></div>
+  <div class="title">RAG Pipeline · Layer-by-Layer Reference</div>
+  <div class="tr">
+    <span class="badge">2026</span>
+    <button class="tbtn" onclick="toggleTheme()">Toggle Theme</button>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="sg">Pipeline Layers</div>
+  <button class="sb active" data-svc="l0" onclick="show('l0')">L0 Ingestion<small>Source &amp; Parsing</small></button>
+  <button class="sb" data-svc="l1" onclick="show('l1')">L1 Chunking<small>Splitting Strategy</small></button>
+  <button class="sb" data-svc="l2" onclick="show('l2')">L2 Embedding<small>Dense Vectors</small></button>
+  <button class="sb" data-svc="l3" onclick="show('l3')">L3 Vector Store<small>Index &amp; Storage</small></button>
+  <button class="sb" data-svc="l4" onclick="show('l4')">L4 Retrieval<small>Search &amp; Reranking</small></button>
+  <button class="sb" data-svc="l5" onclick="show('l5')">L5 Generation<small>LLM &amp; Guardrails</small></button>
+  <div class="sg">Design</div>
+  <button class="sb" data-svc="sysdesign" onclick="show('sysdesign')">System Design<small>End-to-End</small></button>
+</nav>
+
+<main class="main">
+
+<!-- ═══ L0 SOURCE & INGESTION ═══ -->
+<div class="svc active" id="svc-l0">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">L0 — Source &amp; Ingestion</span><span class="sp">Parsing Layer</span></div>
+    <div class="sd">Extract clean text (and optionally tables, images) from raw documents before any splitting or embedding. Parser quality is the biggest RAG quality lever — garbage in, garbage out.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('l0',0)">Implementation</button>
+    <button class="dt" onclick="dim('l0',1)">Key Parameters</button>
+    <button class="dt" onclick="dim('l0',2)">Tool Selection</button>
+    <button class="dt" onclick="dim('l0',3)">Interview Q&amp;A</button>
+  </div>
+
+  <!-- Tab 0: Implementation -->
+  <div class="dp active">
+    <div class="ps"><div class="pt">Typical Ingestion Pipeline</div>
+    <ol class="st">
+      <li>Detect document type: PDF (text vs scanned), DOCX, HTML, CSV</li>
+      <li>Choose parser based on layout complexity (see Tool Selection tab)</li>
+      <li>Extract text; optionally extract tables as Markdown or structured objects</li>
+      <li>Detect and flag scanned pages — route to OCR pipeline if needed</li>
+      <li>Normalize whitespace, remove headers/footers, deduplicate boilerplate</li>
+      <li>Attach source metadata: filename, page number, section title, last_modified</li>
+      <li>Store parsed output in a staging store (UC Volume, S3) before chunking</li>
+    </ol></div>
+    <div class="cl">Python · PyMuPDF fast text extraction</div>
+<pre><span class="k">import</span> fitz  <span class="c"># PyMuPDF</span>
+
+doc = fitz.open(<span class="s">"drug_sop.pdf"</span>)
+pages = []
+<span class="k">for</span> i, page <span class="k">in</span> enumerate(doc):
+    text = page.get_text(<span class="s">"text"</span>)
+    <span class="k">if not</span> text.strip():  <span class="c"># scanned page — no text layer</span>
+        text = run_ocr(page)  <span class="c"># route to Tesseract / Azure DI</span>
+    pages.append({<span class="s">"page"</span>: i, <span class="s">"text"</span>: text, <span class="s">"source"</span>: <span class="s">"drug_sop.pdf"</span>})</pre>
+    <div class="cl">Python · Unstructured hi_res for complex layouts</div>
+<pre><span class="k">from</span> unstructured.partition.pdf <span class="k">import</span> partition_pdf
+
+elements = partition_pdf(
+    filename=<span class="s">"complex_report.pdf"</span>,
+    strategy=<span class="s">"hi_res"</span>,          <span class="c"># uses layout model for tables</span>
+    extract_images_in_pdf=<span class="n">False</span>,
+    infer_table_structure=<span class="n">True</span>,
+)
+<span class="c"># elements: list of Title, NarrativeText, Table, etc.</span></pre>
+  </div>
+
+  <!-- Tab 1: Key Parameters -->
+  <div class="dp">
+    <table class="ft"><tr><th>Parameter</th><th>Values / Notes</th></tr>
+      <tr><td>strategy</td><td>Unstructured: fast (text layer only), hi_res (layout model), ocr_only (scanned)</td></tr>
+      <tr><td>extract_images</td><td>bool — adds latency; only enable if images carry semantic content</td></tr>
+      <tr><td>ocr_languages</td><td>Tesseract lang codes; default eng; add spa, fra for multilingual docs</td></tr>
+      <tr><td>output_format</td><td>text (plain), markdown (preserves headers/bold), json (structured elements)</td></tr>
+      <tr><td>infer_table_structure</td><td>Unstructured: bool; converts tables to HTML/Markdown rows</td></tr>
+      <tr><td>pages_per_split</td><td>Batch large PDFs (e.g. 50 pages) to avoid OOM in parser</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>Gotcha — Silent Failure on Scanned PDFs</strong>PyMuPDF returns empty strings for pages with no text layer (image-only scans). Check <span class="mono">len(text.strip()) == 0</span> after extraction and route to OCR. If you don't, those pages simply disappear from your index with no error.</div>
+    <div class="ca ca-a"><strong>Metadata is as Important as Text</strong>Always store filename, page/section number, doc_type, and last_modified with each extracted chunk. Without this, citations are impossible and delta re-indexing requires full re-parse.</div>
+  </div>
+
+  <!-- Tab 2: Tool Selection -->
+  <div class="dp">
+    <table class="ft"><tr><th>Tool</th><th>Best For</th><th>Tradeoff</th></tr>
+      <tr><td>PyMuPDF</td><td>Fast text-layer PDFs, high throughput</td><td>Misses scanned pages silently; no table extraction</td></tr>
+      <tr><td>Unstructured</td><td>Mixed layouts, tables, headers, multi-format (PDF/DOCX/HTML)</td><td>hi_res strategy is slow (layout model); pip install is heavy</td></tr>
+      <tr><td>Azure Doc Intelligence</td><td>Forms, mixed text+tables, scanned PDFs — highest fidelity</td><td>Cloud API cost; latency vs local parsers</td></tr>
+      <tr><td>LlamaParse</td><td>LlamaIndex native, good for complex PDFs, multimodal</td><td>Paid API; not open-source</td></tr>
+      <tr><td>Docling (IBM)</td><td>Open-source, OCR + layout, Apache-2 license</td><td>Less mature ecosystem than Unstructured</td></tr>
+      <tr><td>pdfplumber</td><td>Table extraction from text-layer PDFs</td><td>PDF only; no OCR; no layout model</td></tr>
+    </table>
+    <div class="ca ca-g"><strong>Decision Rule</strong>Simple text PDFs → PyMuPDF. Tables + mixed content → Unstructured hi_res or pdfplumber. Forms / scanned / high-accuracy → Azure DI. Open-source requirement → Docling.</div>
+  </div>
+
+  <!-- Tab 3: Interview Q&A -->
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you handle PDFs with mixed text and tables?</div><div class="qa-a">Two options: (1) Unstructured with strategy="hi_res" — uses a layout detection model to identify table regions, then extracts them as Markdown rows. (2) Azure Document Intelligence — highest accuracy for forms and complex tables, worth the API cost for compliance docs. Avoid PyMuPDF alone; it serializes table cells in reading order which destroys table semantics.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's your OCR strategy for scanned documents?</div><div class="qa-a">Detect blank text pages post-extraction (len(text.strip()) == 0 after PyMuPDF). Route those pages to: Azure Document Intelligence for highest accuracy (handles mixed printed + handwritten), or Tesseract via Unstructured strategy="ocr_only" for open-source. Cache OCR output — it's expensive to re-run. Store OCR confidence score as metadata for quality filtering.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you handle document updates without full re-ingestion?</div><div class="qa-a">Delta ingestion: track last_modified timestamp per document. On scheduled runs, only re-parse docs where last_modified > last_indexed. Soft-delete old vectors by doc_id in the vector store, re-embed new chunks, insert fresh. This requires storing doc_id and chunk_index as vector metadata from the start.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ L1 CHUNKING ═══ -->
+<div class="svc" id="svc-l1">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">L1 — Chunking Strategy</span><span class="sp">Splitting Layer</span></div>
+    <div class="sd">Split parsed text into retrieval units. Chunk size controls the precision/context tradeoff — too small loses context, too large retrieves noise. Strategy choice affects both build time and retrieval quality.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('l1',0)">Implementation</button>
+    <button class="dt" onclick="dim('l1',1)">Key Parameters</button>
+    <button class="dt" onclick="dim('l1',2)">Tool Selection</button>
+    <button class="dt" onclick="dim('l1',3)">Interview Q&amp;A</button>
+  </div>
+
+  <!-- Tab 0: Implementation -->
+  <div class="dp active">
+    <div class="cl">Python · Recursive character splitter (LangChain default)</div>
+<pre><span class="k">from</span> langchain.text_splitter <span class="k">import</span> RecursiveCharacterTextSplitter
+
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=<span class="n">512</span>,
+    chunk_overlap=<span class="n">64</span>,   <span class="c"># ~12.5% overlap</span>
+    separators=[<span class="s">"\n\n"</span>, <span class="s">"\n"</span>, <span class="s">". "</span>, <span class="s">" "</span>, <span class="s">""</span>],
+)
+chunks = splitter.split_text(document_text)
+<span class="c"># Attaches source metadata per chunk manually:</span>
+docs = [
+    {<span class="s">"text"</span>: c, <span class="s">"source"</span>: filename, <span class="s">"chunk_id"</span>: i}
+    <span class="k">for</span> i, c <span class="k">in</span> enumerate(chunks)
+]</pre>
+    <div class="cl">Python · Hierarchical parent-doc retriever (best for tables)</div>
+<pre><span class="k">from</span> langchain.retrievers <span class="k">import</span> ParentDocumentRetriever
+<span class="k">from</span> langchain.storage <span class="k">import</span> InMemoryStore
+
+<span class="c"># Child chunks (small, what gets embedded)</span>
+child_splitter = RecursiveCharacterTextSplitter(chunk_size=<span class="n">256</span>)
+<span class="c"># Parent chunks (large, what gets returned to LLM)</span>
+parent_splitter = RecursiveCharacterTextSplitter(chunk_size=<span class="n">1024</span>)
+
+retriever = ParentDocumentRetriever(
+    vectorstore=vectorstore,
+    docstore=InMemoryStore(),
+    child_splitter=child_splitter,
+    parent_splitter=parent_splitter,
+)
+<span class="c"># Retrieves parent (full context) when child chunk matches</span></pre>
+  </div>
+
+  <!-- Tab 1: Key Parameters -->
+  <div class="dp">
+    <table class="ft"><tr><th>Parameter</th><th>Values / Notes</th></tr>
+      <tr><td>chunk_size</td><td>256 (precision), 512 (sweet spot default), 1024 (context-rich); measure with Hit Rate + MRR</td></tr>
+      <tr><td>chunk_overlap</td><td>10–20% of chunk_size; prevents boundary misses; 64 tokens for 512-token chunks</td></tr>
+      <tr><td>separators</td><td>Recursive: try \n\n → \n → ". " → " " → ""; respects document structure</td></tr>
+      <tr><td>length_function</td><td>len (characters) or tokenizer.encode (tokens); token-based aligns with embedding model limits</td></tr>
+      <tr><td>child_chunk_size</td><td>Hierarchical: 128–256 for child (embedded), 512–1024 for parent (returned)</td></tr>
+    </table>
+    <div class="ca ca-b"><strong>Chunk Size vs Retrieval Quality</strong>Smaller chunks = higher precision (exact match), lower recall (context truncated). Larger chunks = more context per result, but may retrieve irrelevant surrounding text. Always test at 256/512/1024 with your actual eval set using Hit Rate and MRR before committing.</div>
+    <div class="ca ca-a"><strong>Semantic Chunking Cost</strong>Semantic chunking (embedding-based boundary detection via sentence-transformers) adds 3–5x build time vs fixed-size. Only worth it for documents where paragraph breaks are meaningful (research papers, SOPs). Not for tabular data or forms.</div>
+  </div>
+
+  <!-- Tab 2: Tool Selection -->
+  <div class="dp">
+    <table class="ft"><tr><th>Strategy</th><th>How It Works</th><th>When to Use</th></tr>
+      <tr><td>Fixed-size</td><td>Split at N characters regardless of structure</td><td>Baseline, fast, fine for uniform prose</td></tr>
+      <tr><td>Recursive character</td><td>Try separator hierarchy (\n\n → \n → .)</td><td>Default — respects paragraph/sentence boundaries</td></tr>
+      <tr><td>Semantic</td><td>Embed sentences, split on cosine distance drops</td><td>Research papers, docs with meaningful section shifts; 3–5x slower</td></tr>
+      <tr><td>Hierarchical / Parent-Doc</td><td>Embed small child chunks; retrieve parent for context</td><td>Tables, structured docs — best precision + context</td></tr>
+      <tr><td>Token-based</td><td>Split on token count (tiktoken)</td><td>When embedding model has strict token limits</td></tr>
+      <tr><td>Markdown header</td><td>Split on # ## ### headers</td><td>Docs with clear heading structure (wikis, READMEs)</td></tr>
+    </table>
+  </div>
+
+  <!-- Tab 3: Interview Q&A -->
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you choose chunk size?</div><div class="qa-a">Empirically: build three indexes at chunk_size 256, 512, and 1024. Evaluate each with a test question set using Hit Rate (is the answer in top-k?) and MRR (mean reciprocal rank). The chunk size with the best tradeoff on your corpus wins. As a starting point: 512 with 64-token overlap is the most common default for mixed prose/technical content.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's the best chunking strategy for documents with tables?</div><div class="qa-a">Hierarchical parent-document retriever. Index small child chunks (256 tokens) for precise matching, but return the full parent chunk (1024 tokens) to the LLM so table context is preserved. Alternatively, extract tables separately as their own document units with structured Markdown formatting, embedding each table as a single chunk regardless of size.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Why does chunk overlap matter?</div><div class="qa-a">Without overlap, a sentence split across a chunk boundary loses meaning in both chunks. Overlap of 10–20% ensures that boundary-spanning content appears in at least one chunk fully. The cost is ~20% more vectors in your index. The benefit is significantly fewer retrieval misses on boundary-sensitive queries (dates, names, numerical facts that span sentences).</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ L2 EMBEDDING ═══ -->
+<div class="svc" id="svc-l2">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">L2 — Embedding</span><span class="sp">Dense Vector Layer</span></div>
+    <div class="sd">Convert text chunks into fixed-dimension dense vectors. Model choice affects both retrieval quality and operational cost. Embeddings must be regenerated if the model changes — version them carefully.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('l2',0)">Implementation</button>
+    <button class="dt" onclick="dim('l2',1)">Key Parameters</button>
+    <button class="dt" onclick="dim('l2',2)">Tool Selection</button>
+    <button class="dt" onclick="dim('l2',3)">Interview Q&amp;A</button>
+  </div>
+
+  <!-- Tab 0: Implementation -->
+  <div class="dp active">
+    <div class="cl">Python · OpenAI embedding with batching</div>
+<pre><span class="k">from</span> openai <span class="k">import</span> OpenAI
+<span class="k">import</span> numpy <span class="k">as</span> np
+
+client = OpenAI()
+
+<span class="k">def</span> <span class="fn">embed_batch</span>(texts: list[str], model=<span class="s">"text-embedding-3-small"</span>):
+    resp = client.embeddings.create(input=texts, model=model)
+    vecs = [r.embedding <span class="k">for</span> r <span class="k">in</span> resp.data]
+    <span class="c"># L2-normalize for cosine similarity</span>
+    arr = np.array(vecs)
+    <span class="k">return</span> arr / np.linalg.norm(arr, axis=<span class="n">1</span>, keepdims=<span class="n">True</span>)
+
+<span class="c"># Batch in chunks of 512 to stay within API limits</span>
+all_vecs = []
+<span class="k">for</span> i <span class="k">in</span> range(<span class="n">0</span>, len(texts), <span class="n">512</span>):
+    all_vecs.extend(embed_batch(texts[i:i+<span class="n">512</span>]))</pre>
+    <div class="cl">Python · Local BGE model (open-source, no API call)</div>
+<pre><span class="k">from</span> sentence_transformers <span class="k">import</span> SentenceTransformer
+
+model = SentenceTransformer(<span class="s">"BAAI/bge-m3"</span>)  <span class="c"># multilingual, 1024d</span>
+embeddings = model.encode(
+    texts,
+    batch_size=<span class="n">64</span>,
+    normalize_embeddings=<span class="n">True</span>,  <span class="c"># cosine-ready</span>
+    show_progress_bar=<span class="n">True</span>,
+)</pre>
+  </div>
+
+  <!-- Tab 1: Key Parameters -->
+  <div class="dp">
+    <table class="ft"><tr><th>Parameter</th><th>Values / Notes</th></tr>
+      <tr><td>dimensions</td><td>OpenAI v3 supports truncation (e.g. 256, 512, 1536); smaller = faster search, lower quality</td></tr>
+      <tr><td>normalize_embeddings</td><td>True for cosine similarity; many libraries do this automatically but always verify</td></tr>
+      <tr><td>batch_size</td><td>512 for OpenAI API; 32–128 for local GPU; balance throughput vs OOM</td></tr>
+      <tr><td>max_tokens</td><td>text-embedding-3: 8192 tokens; BGE: 512 tokens. Chunks exceeding limit are truncated</td></tr>
+      <tr><td>model_version</td><td>Pin the model version; any change requires full re-embedding of the index</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>Critical: Cosine Similarity Requires Normalized Vectors</strong>If you use cosine distance in your vector store but skip normalization at embedding time, similarity scores are wrong. OpenAI embeddings are normalized by default. sentence-transformers: set normalize_embeddings=True. Qdrant and others can normalize on ingest — check your store's behavior.</div>
+    <div class="ca ca-a"><strong>Embedding Drift</strong>If your embedding model is updated (e.g. OpenAI deprecates a version), all vectors in the index become stale — newer queries embed differently. Use versioned namespaces or separate indexes per model version, and migrate incrementally.</div>
+  </div>
+
+  <!-- Tab 2: Tool Selection -->
+  <div class="dp">
+    <table class="ft"><tr><th>Model</th><th>Dims</th><th>Best For</th><th>Note</th></tr>
+      <tr><td>text-embedding-3-small</td><td>1536</td><td>Cost-efficient English, good quality</td><td>OpenAI; ~5x cheaper than large</td></tr>
+      <tr><td>text-embedding-3-large</td><td>3072</td><td>Highest OpenAI quality, MTEB top tier</td><td>OpenAI; supports dim truncation</td></tr>
+      <tr><td>bge-m3</td><td>1024</td><td>Multilingual, local deployment</td><td>BAAI; Apache-2; dense+sparse+colbert</td></tr>
+      <tr><td>nomic-embed-text</td><td>768</td><td>Local, long context (8192 tokens)</td><td>Apache-2; strong MTEB score</td></tr>
+      <tr><td>Cohere embed-v3</td><td>1024</td><td>Multilingual, strong retrieval</td><td>API; input_type param for query vs doc</td></tr>
+      <tr><td>databricks-bge-large-en</td><td>1024</td><td>Databricks AI Search native</td><td>Hosted on Databricks Foundation Models</td></tr>
+    </table>
+  </div>
+
+  <!-- Tab 3: Interview Q&A -->
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you keep embeddings fresh when documents change?</div><div class="qa-a">Delta indexing: track doc_id + last_modified. On update: (1) soft-delete old vectors by doc_id (most stores support filter-based delete), (2) re-parse the changed doc, (3) re-chunk and re-embed, (4) insert new vectors with updated metadata. For continuous pipelines, hook into document change events (S3 notifications, SharePoint webhooks) to trigger re-embedding. Never full re-index unless forced — it's expensive and causes downtime.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Should I use asymmetric embedding (separate query/doc models)?</div><div class="qa-a">Yes for production. Cohere and BGE support input_type="search_query" vs "search_document" — the model produces different embeddings optimized for each role. Query embeddings are shorter and intent-focused; document embeddings are content-rich. Using the same embedding for both is fine for prototyping but leaves performance on the table. Always use the query-type embedding at retrieval time.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Local embedding model vs API — when do you choose local?</div><div class="qa-a">Local (BGE, nomic): no API cost at inference, data never leaves your network (critical for regulated industries), consistent latency without API quota limits. API (OpenAI, Cohere): state-of-the-art quality, no infra to maintain, versioned by provider. For high-volume ingestion (millions of docs), local GPU embedding is 10-100x cheaper. For compliance-sensitive data (PHI, trade secrets), local is often mandatory.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ L3 VECTOR STORE ═══ -->
+<div class="svc" id="svc-l3">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">L3 — Vector Store</span><span class="sp">Index &amp; Storage Layer</span></div>
+    <div class="sd">Store and index dense vectors for approximate nearest-neighbor search. Index algorithm, metadata filtering strategy, and sync mechanism are the key architectural decisions at this layer.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('l3',0)">Implementation</button>
+    <button class="dt" onclick="dim('l3',1)">Key Parameters</button>
+    <button class="dt" onclick="dim('l3',2)">Tool Selection</button>
+    <button class="dt" onclick="dim('l3',3)">Interview Q&amp;A</button>
+  </div>
+
+  <!-- Tab 0: Implementation -->
+  <div class="dp active">
+    <div class="cl">Python · Qdrant (local or cloud) — upsert + search</div>
+<pre><span class="k">from</span> qdrant_client <span class="k">import</span> QdrantClient
+<span class="k">from</span> qdrant_client.models <span class="k">import</span> Distance, VectorParams, PointStruct
+
+client = QdrantClient(<span class="s">"localhost"</span>, port=<span class="n">6333</span>)
+
+client.create_collection(
+    collection_name=<span class="s">"sop_docs"</span>,
+    vectors_config=VectorParams(size=<span class="n">1536</span>, distance=Distance.COSINE),
+)
+
+<span class="c"># Upsert with metadata payload</span>
+client.upsert(collection_name=<span class="s">"sop_docs"</span>, points=[
+    PointStruct(id=<span class="n">1</span>, vector=vec, payload={
+        <span class="s">"source"</span>: <span class="s">"drug_sop.pdf"</span>, <span class="s">"page"</span>: <span class="n">3</span>, <span class="s">"doc_type"</span>: <span class="s">"SOP"</span>
+    })
+])
+
+<span class="c"># Search with metadata pre-filter</span>
+results = client.search(
+    collection_name=<span class="s">"sop_docs"</span>,
+    query_vector=query_vec,
+    query_filter={<span class="s">"must"</span>: [{<span class="s">"key"</span>: <span class="s">"doc_type"</span>, <span class="s">"match"</span>: {<span class="s">"value"</span>: <span class="s">"SOP"</span>}}]},
+    limit=<span class="n">20</span>,
+)</pre>
+  </div>
+
+  <!-- Tab 1: Key Parameters -->
+  <div class="dp">
+    <table class="ft"><tr><th>Parameter</th><th>Values / Notes</th></tr>
+      <tr><td>index_type</td><td>HNSW (&lt;50M vecs, high recall, RAM-heavy) | IVF (&gt;50M vecs, disk-friendly)</td></tr>
+      <tr><td>HNSW M</td><td>16–64 connections per node; higher = better recall, more RAM</td></tr>
+      <tr><td>HNSW ef_construction</td><td>100–200; build-time beam search width; higher = better index quality, slower build</td></tr>
+      <tr><td>HNSW ef (search)</td><td>50–200; search-time beam; increase for higher recall at cost of latency</td></tr>
+      <tr><td>IVF nprobe</td><td>Number of clusters to search; higher = better recall, slower; tune for recall target</td></tr>
+      <tr><td>distance_metric</td><td>Cosine (normalized vecs), Dot (unnormalized), Euclidean (L2)</td></tr>
+      <tr><td>filter_mode</td><td>Pre-filter: apply before ANN (reduces candidates, faster); Post-filter: after ANN (full recall)</td></tr>
+    </table>
+    <div class="ca ca-b"><strong>Pre-filter vs Post-filter</strong>Pre-filter narrows the candidate set before ANN search — faster, uses metadata index. Post-filter retrieves k+extra from ANN then applies filter — better recall when filter removes many candidates. Qdrant pre-filters by default; Pinecone post-filters. Match your strategy to selectivity: high-selectivity filters (e.g. doc_type=SOP is 10% of index) do better with pre-filter.</div>
+  </div>
+
+  <!-- Tab 2: Tool Selection -->
+  <div class="dp">
+    <table class="ft"><tr><th>Store</th><th>Best For</th><th>Key Tradeoff</th></tr>
+      <tr><td>Pinecone</td><td>Managed, fast setup, production-ready</td><td>Closed-source; cost scales with vectors; no local dev</td></tr>
+      <tr><td>Qdrant</td><td>Open-source, fast, rich payload filtering, Rust-based</td><td>Self-host ops burden; cloud option available</td></tr>
+      <tr><td>Weaviate</td><td>GraphQL API, built-in hybrid (BM25+ANN), schema-first</td><td>Complex setup; heavier than Qdrant for pure vector use</td></tr>
+      <tr><td>ChromaDB</td><td>Local dev, quick prototyping, embedded mode</td><td>Not production-ready at scale; no distributed mode</td></tr>
+      <tr><td>pgvector</td><td>Already on Postgres, &lt;5M vectors, simple ops</td><td>HNSW recall degrades at scale; no native BM25</td></tr>
+      <tr><td>Databricks AI Search</td><td>Databricks ecosystem, Delta Sync, managed hybrid (RRF)</td><td>Databricks-only; TRIGGERED vs CONTINUOUS sync distinction</td></tr>
+    </table>
+  </div>
+
+  <!-- Tab 3: Interview Q&A -->
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">HNSW vs IVF — when do you use each?</div><div class="qa-a">HNSW (Hierarchical Navigable Small World): best recall for under ~50M vectors, graph-based traversal, RAM-heavy (full graph must fit in memory), slower inserts but fast queries. IVF (Inverted File): clusters vectors into Voronoi cells, searches only nprobe clusters — disk-friendly, scales to hundreds of millions of vectors, but recall depends heavily on nprobe tuning. Rule of thumb: HNSW for typical enterprise RAG (thousands to low millions of chunks); IVF for massive corpora.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you handle multi-tenancy in a vector store?</div><div class="qa-a">Three patterns: (1) Namespace/collection per tenant — full isolation, higher resource cost; (2) Metadata-filtered single collection — tenant_id as payload field, filter on every query — simpler ops but weaker isolation; (3) Separate indexes per tier (admin, user, read-only) — hybrid approach. For regulated data (PHI, customer PII): namespace-per-tenant is safest; the small performance cost is worth the isolation guarantee. Add tenant_id to every metadata payload from day one even if starting with a single tenant.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ L4 RETRIEVAL ═══ -->
+<div class="svc" id="svc-l4">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">L4 — Retrieval</span><span class="sp">Search &amp; Reranking Layer</span></div>
+    <div class="sd">Convert a user query into a ranked list of relevant chunks. Hybrid search (dense + sparse) outperforms either alone. Reranking adds a cross-encoder pass to boost precision before generation.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('l4',0)">Implementation</button>
+    <button class="dt" onclick="dim('l4',1)">Key Parameters</button>
+    <button class="dt" onclick="dim('l4',2)">Tool Selection</button>
+    <button class="dt" onclick="dim('l4',3)">Interview Q&amp;A</button>
+  </div>
+
+  <!-- Tab 0: Implementation -->
+  <div class="dp active">
+    <div class="cl">Python · Hybrid search + RRF fusion + Cohere reranking</div>
+<pre><span class="k">import</span> cohere
+<span class="k">from</span> rank_bm25 <span class="k">import</span> BM25Okapi
+
+co = cohere.Client(<span class="s">"COHERE_API_KEY"</span>)
+
+<span class="c"># 1. Dense retrieval (ANN from vector store)</span>
+dense_results = vectorstore.search(query_vec, k=<span class="n">20</span>)
+
+<span class="c"># 2. Sparse retrieval (BM25 keyword)</span>
+bm25 = BM25Okapi(tokenized_corpus)
+sparse_results = bm25.get_top_n(query.split(), corpus, n=<span class="n">20</span>)
+
+<span class="c"># 3. RRF fusion: score = Σ 1/(k + rank_i), k=60</span>
+<span class="k">def</span> <span class="fn">rrf</span>(results_lists, k=<span class="n">60</span>):
+    scores = {}
+    <span class="k">for</span> results <span class="k">in</span> results_lists:
+        <span class="k">for</span> rank, doc <span class="k">in</span> enumerate(results):
+            scores[doc.id] = scores.get(doc.id, <span class="n">0</span>) + <span class="n">1</span> / (k + rank + <span class="n">1</span>)
+    <span class="k">return</span> sorted(scores, key=scores.get, reverse=<span class="n">True</span>)
+
+fused = rrf([dense_results, sparse_results])[:20]
+
+<span class="c"># 4. Rerank top-20 to top-4 with cross-encoder</span>
+reranked = co.rerank(
+    model=<span class="s">"rerank-english-v3.0"</span>,
+    query=query,
+    documents=[d.text <span class="k">for</span> d <span class="k">in</span> fused],
+    top_n=<span class="n">4</span>,
+)</pre>
+  </div>
+
+  <!-- Tab 1: Key Parameters -->
+  <div class="dp">
+    <table class="ft"><tr><th>Parameter</th><th>Values / Notes</th></tr>
+      <tr><td>k (RRF constant)</td><td>60 — the default; interviewers love asking this. Higher k smooths rank differences</td></tr>
+      <tr><td>top_k (retrieval)</td><td>20–50 candidates from vector store before reranking</td></tr>
+      <tr><td>top_n (rerank)</td><td>3–5 final chunks passed to LLM; balance context vs noise</td></tr>
+      <tr><td>alpha (hybrid weight)</td><td>Some stores expose α: 0=pure BM25, 1=pure dense; 0.7 dense + 0.3 sparse is a common start</td></tr>
+      <tr><td>score_threshold</td><td>Filter results below min relevance score (0.3–0.5); triggers "I don't know" fallback</td></tr>
+      <tr><td>MMR lambda</td><td>Maximal Marginal Relevance: 0=max diversity, 1=max relevance; 0.5–0.7 typical</td></tr>
+    </table>
+    <div class="ca ca-g"><strong>Reranking ROI</strong>Retrieve k=20 → rerank to k=4 with Cohere Rerank or a cross-encoder. Adds 100–300ms latency but improves precision 15–25% on benchmarks. The reranker reads query + document together (cross-encoder), not independently — it's a fundamentally better relevance signal than bi-encoder similarity.</div>
+  </div>
+
+  <!-- Tab 2: Tool Selection -->
+  <div class="dp">
+    <table class="ft"><tr><th>Approach</th><th>What It Does</th><th>When to Use</th></tr>
+      <tr><td>Dense-only (ANN)</td><td>Semantic similarity via embeddings</td><td>Conceptual queries; baseline; fast</td></tr>
+      <tr><td>Sparse (BM25)</td><td>Exact keyword matching; tf-idf family</td><td>Product codes, drug names, IDs; fast</td></tr>
+      <tr><td>Hybrid (RRF)</td><td>Merge dense + sparse ranked lists</td><td>Default for production; best of both</td></tr>
+      <tr><td>Cohere Rerank</td><td>Cross-encoder re-scores top-k</td><td>Precision-critical use cases; adds latency</td></tr>
+      <tr><td>cross-encoder local</td><td>HuggingFace ms-marco models</td><td>No API cost; self-host; slower than Cohere</td></tr>
+      <tr><td>MMR</td><td>Diversity-aware selection</td><td>Avoid near-duplicate chunks from same doc</td></tr>
+      <tr><td>HyDE</td><td>LLM generates hypothetical doc, embed that</td><td>Abstract queries with few direct matches; adds LLM latency</td></tr>
+    </table>
+  </div>
+
+  <!-- Tab 3: Interview Q&A -->
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What is Reciprocal Rank Fusion and why does k=60?</div><div class="qa-a">RRF merges multiple ranked lists using score = Σ 1/(k + rank_i) for each list. A document appearing at rank 1 in both lists scores highest. k=60 is the default constant that smooths differences between high-ranked results — empirically found to work well across many datasets in the original RRF paper. It's rank-based (not score-based), so it doesn't require calibrating similarity scales between BM25 and cosine scores.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When would you use dense-only retrieval vs hybrid?</div><div class="qa-a">Dense-only: purely conceptual queries over uniform prose (e.g. "what does this policy say about…"). Hybrid is better almost universally in production because real user queries mix concepts with exact terms (drug names, order IDs, product codes). If your corpus contains any identifiers, codes, or proper nouns, hybrid will outperform dense-only. The cost of adding BM25 is low; the precision gain is consistent.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What's your reranking strategy?</div><div class="qa-a">Retrieve top-20 candidates from the vector store (hybrid). Pass to Cohere Rerank v3 or a local ms-marco cross-encoder. Return top-4 to the LLM. Apply a score threshold (0.3–0.5 depending on the task) — if top result is below threshold, don't generate; return a fallback ("I couldn't find relevant information"). Reranking adds 100–300ms; acceptable for most use cases, not for sub-100ms latency SLAs.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ L5 GENERATION & GUARDRAILS ═══ -->
+<div class="svc" id="svc-l5">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">L5 — Generation &amp; Guardrails</span><span class="sp">LLM Output Layer</span></div>
+    <div class="sd">Generate a grounded answer from retrieved context using an LLM. Prompt structure, temperature, and faithfulness checks determine whether the output is trustworthy or hallucinatory.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('l5',0)">Implementation</button>
+    <button class="dt" onclick="dim('l5',1)">Key Parameters</button>
+    <button class="dt" onclick="dim('l5',2)">Tool Selection</button>
+    <button class="dt" onclick="dim('l5',3)">Interview Q&amp;A</button>
+  </div>
+
+  <!-- Tab 0: Implementation -->
+  <div class="dp active">
+    <div class="cl">Python · Minimal RAG generation prompt</div>
+<pre><span class="k">from</span> openai <span class="k">import</span> OpenAI
+
+client = OpenAI()
+
+SYSTEM = <span class="s">"""You are a document assistant. Answer ONLY from the provided context.
+If the context does not contain the answer, say: 'I don't have that information.'
+Always cite the source document name and page number inline, e.g. [drug_sop.pdf p.4]."""</span>
+
+<span class="k">def</span> <span class="fn">generate</span>(query: str, chunks: list[dict]) -&gt; str:
+    context = <span class="s">"\n\n"</span>.join(
+        f<span class="s">"[{c['source']} p.{c['page']}]\n{c['text']}"</span>
+        <span class="k">for</span> c <span class="k">in</span> chunks
+    )
+    resp = client.chat.completions.create(
+        model=<span class="s">"gpt-4o"</span>,
+        temperature=<span class="n">0</span>,        <span class="c"># factual; no creativity</span>
+        max_tokens=<span class="n">512</span>,
+        messages=[
+            {<span class="s">"role"</span>: <span class="s">"system"</span>, <span class="s">"content"</span>: SYSTEM},
+            {<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: f<span class="s">"Context:\n{context}\n\nQuestion: {query}"</span>}
+        ]
+    )
+    <span class="k">return</span> resp.choices[<span class="n">0</span>].message.content</pre>
+    <div class="cl">Python · RAGAS faithfulness check</div>
+<pre><span class="k">from</span> ragas <span class="k">import</span> evaluate
+<span class="k">from</span> ragas.metrics <span class="k">import</span> faithfulness, answer_relevancy, context_recall
+
+result = evaluate(
+    dataset=eval_dataset,  <span class="c"># question, contexts, answer, ground_truth</span>
+    metrics=[faithfulness, answer_relevancy, context_recall],
+)
+<span class="c"># faithfulness: is every claim in answer supported by context?
+# answer_relevancy: does answer address the question?
+# context_recall: was all ground-truth info in retrieved context?</span></pre>
+  </div>
+
+  <!-- Tab 1: Key Parameters -->
+  <div class="dp">
+    <table class="ft"><tr><th>Parameter</th><th>Values / Notes</th></tr>
+      <tr><td>temperature</td><td>0 for citation-heavy factual RAG; 0.3–0.5 for synthesis; never &gt;0.7 for RAG</td></tr>
+      <tr><td>max_tokens</td><td>Set based on expected answer length; context window = context chunks + generation budget</td></tr>
+      <tr><td>context_window</td><td>Budget: retrieval context should take 60–70% of window; generation 20–30%; system prompt 10%</td></tr>
+      <tr><td>score_threshold</td><td>If top retrieval score &lt; 0.3–0.5, don't generate — return "I don't know"</td></tr>
+      <tr><td>faithfulness target</td><td>RAGAS faithfulness &gt; 0.85 for production; below triggers prompt or retrieval tuning</td></tr>
+      <tr><td>answer_relevancy target</td><td>RAGAS &gt; 0.80; measures if answer is on-topic</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>Hallucination Prevention Stack</strong>Layer all four: (1) system prompt with "answer only from context" instruction; (2) source citation format in prompt; (3) retrieval score threshold fallback; (4) offline RAGAS faithfulness eval on test set. No single layer is sufficient.</div>
+  </div>
+
+  <!-- Tab 2: Tool Selection -->
+  <div class="dp">
+    <table class="ft"><tr><th>Tool / LLM</th><th>Best For</th><th>Note</th></tr>
+      <tr><td>GPT-4o</td><td>High accuracy, long context (128k), function calling</td><td>OpenAI; cost-effective vs GPT-4 Turbo</td></tr>
+      <tr><td>Claude 3.5 Sonnet</td><td>Long context (200k), strong instruction following, low hallucination</td><td>Anthropic; excellent for citation tasks</td></tr>
+      <tr><td>Llama 3.1 70B</td><td>Open-weight, self-hosted, no data-sharing</td><td>Meta; via Ollama, vLLM, or Databricks serving</td></tr>
+      <tr><td>RAGAS</td><td>RAG evaluation framework (offline)</td><td>faithfulness, answer_relevancy, context_recall, context_precision</td></tr>
+      <tr><td>TruLens</td><td>LLM app evaluation + tracing</td><td>Snowflake; integrates with LangChain/LlamaIndex</td></tr>
+      <tr><td>Guardrails AI</td><td>Output schema validation, PII redaction, rail specs</td><td>Open-source; adds latency; useful for structured output</td></tr>
+      <tr><td>LlamaIndex / LangChain</td><td>RAG chain orchestration</td><td>Abstracts prompt management, retrieval, memory</td></tr>
+    </table>
+  </div>
+
+  <!-- Tab 3: Interview Q&A -->
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you prevent hallucinations in a RAG system?</div><div class="qa-a">Four layers: (1) System prompt: "Answer ONLY from the provided context. If not present, say 'I don't have that information.'" (2) Retrieval score threshold: if max similarity &lt; 0.4, skip generation entirely. (3) Citation format: require inline citations [source p.N] — forces the model to stay grounded. (4) Offline eval: RAGAS faithfulness metric on a test set catches prompt regressions. No single mechanism is sufficient; the full stack is necessary for production.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What RAGAS metrics matter most and why?</div><div class="qa-a">Faithfulness: are all answer claims supported by retrieved context? (prevents hallucination — most critical). Context Recall: was all relevant ground-truth info in the retrieved context? (retrieval quality signal). Answer Relevancy: does the answer address the question? (prompt quality signal). Context Precision: are retrieved docs actually relevant? (retrieval noise signal). Run all four; faithfulness and context recall together tell you whether the problem is retrieval or generation.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you structure the prompt for RAG?</div><div class="qa-a">System message = (1) role/persona, (2) grounding instruction ("answer only from context"), (3) citation format instruction, (4) fallback instruction ("say I don't know if absent"). User message = formatted context chunks with source labels + the question. Never put the grounding instruction only in the user message — system prompt has stronger instruction weight. Temperature = 0 for factual retrieval tasks. Set max_tokens based on expected answer length, not the model max.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ SYSTEM DESIGN ═══ -->
+<div class="svc" id="svc-sysdesign">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">System Design</span><span class="sp">End-to-End RAG</span></div>
+    <div class="sd">How the layers connect, how to evaluate the full pipeline, when NOT to use RAG, and how to monitor in production. The interview expects you to reason across all layers simultaneously.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('sysdesign',0)">Implementation</button>
+    <button class="dt" onclick="dim('sysdesign',1)">Key Parameters</button>
+    <button class="dt" onclick="dim('sysdesign',2)">Tool Selection</button>
+    <button class="dt" onclick="dim('sysdesign',3)">Interview Q&amp;A</button>
+  </div>
+
+  <!-- Tab 0: Implementation -->
+  <div class="dp active">
+    <div class="ps"><div class="pt">End-to-End Pipeline Flow</div>
+    <ol class="st">
+      <li><strong>Ingest:</strong> Parse documents (PyMuPDF / Unstructured / Azure DI) → normalize text → attach metadata</li>
+      <li><strong>Chunk:</strong> Recursive character splitter (512 tokens, 64 overlap) or hierarchical for structured docs</li>
+      <li><strong>Embed:</strong> Batch embed with text-embedding-3-small or bge-m3; L2-normalize; store model version</li>
+      <li><strong>Index:</strong> Upsert to vector store (Qdrant/Pinecone/AI Search) with metadata payload</li>
+      <li><strong>Retrieve:</strong> Hybrid search (dense + BM25) → RRF fusion → retrieve top-20</li>
+      <li><strong>Rerank:</strong> Cohere Rerank or cross-encoder → top-4 chunks; apply score threshold</li>
+      <li><strong>Generate:</strong> Grounded system prompt → LLM (GPT-4o / Claude) at temperature=0 → response with citations</li>
+      <li><strong>Eval:</strong> RAGAS offline + user feedback online → tune retrieval or prompt based on failing metric</li>
+    </ol></div>
+    <div class="ca ca-b"><strong>Eval-Driven Iteration Loop</strong>Run RAGAS on a test set after every change. Low faithfulness → fix prompt or retrieval threshold. Low context_recall → fix chunking or retrieval k. Low answer_relevancy → fix prompt. Low context_precision → add metadata filtering. Never tune blindly — always trace the failing metric to the responsible layer.</div>
+    <div class="ps"><div class="pt">Monitoring in Production</div>
+    <ul class="bl">
+      <li>Track latency per stage: ingestion, embedding, retrieval, rerank, generation</li>
+      <li>Log retrieval score distribution — degradation signals embedding drift or index staleness</li>
+      <li>Collect thumbs-up/down signals for online eval; correlate with RAGAS offline metrics</li>
+      <li>Alert on faithfulness drops (&lt;0.8) and retrieval score floor drops (&gt;20% below threshold)</li>
+    </ul></div>
+  </div>
+
+  <!-- Tab 1: Key Parameters -->
+  <div class="dp">
+    <div class="ps"><div class="pt">RAGAS Metric Reference</div>
+    <table class="ft"><tr><th>Metric</th><th>What It Measures</th><th>Failing Means</th></tr>
+      <tr><td>faithfulness</td><td>Answer claims supported by context</td><td>Hallucination — fix prompt grounding</td></tr>
+      <tr><td>context_recall</td><td>Ground truth info present in retrieved chunks</td><td>Retrieval missing relevant docs — fix chunking or k</td></tr>
+      <tr><td>answer_relevancy</td><td>Answer addresses the question</td><td>Off-topic generation — fix prompt</td></tr>
+      <tr><td>context_precision</td><td>Retrieved chunks are actually relevant</td><td>Retrieval noise — add metadata filters or reranking</td></tr>
+    </table></div>
+    <div class="ps"><div class="pt">When NOT to Use RAG</div>
+    <ul class="bl">
+      <li><strong>Pure retrieval:</strong> User just wants docs returned — no LLM generation needed</li>
+      <li><strong>Real-time data:</strong> RAG is batch-indexed; use structured DB or streaming query instead</li>
+      <li><strong>Closed-domain with stable knowledge:</strong> Fine-tuned model may outperform RAG if facts are static and &lt;512 tokens total</li>
+      <li><strong>Sub-50ms latency SLA:</strong> Reranking + LLM generation adds 500ms–2s; use search-only for latency-critical paths</li>
+    </ul></div>
+  </div>
+
+  <!-- Tab 2: Tool Selection -->
+  <div class="dp">
+    <div class="ps"><div class="pt">RAG vs Fine-tuning Decision Matrix</div>
+    <table class="ft"><tr><th>Situation</th><th>RAG</th><th>Fine-tune</th></tr>
+      <tr><td>Knowledge changes frequently</td><td>Yes — update index, no retraining</td><td>No — retraining is expensive</td></tr>
+      <tr><td>Knowledge &gt;512 tokens total</td><td>Yes — retrieve as needed</td><td>No — can't fit all in weights</td></tr>
+      <tr><td>Need source citations</td><td>Yes — native with retrieval</td><td>No — model doesn't know source</td></tr>
+      <tr><td>Custom output style/format</td><td>Partial — prompt engineering</td><td>Yes — style baked into weights</td></tr>
+      <tr><td>Very high query volume</td><td>Costs scale with retrieval + LLM</td><td>Cheaper at massive scale</td></tr>
+      <tr><td>Domain jargon fluency</td><td>Partial — depends on base model</td><td>Yes — supervised on domain text</td></tr>
+    </table></div>
+    <div class="ps"><div class="pt">Framework Stack Options</div>
+    <table class="ft"><tr><th>Stack</th><th>When to Choose</th></tr>
+      <tr><td>LangChain + Qdrant + OpenAI</td><td>Python-native, maximum ecosystem, custom pipelines</td></tr>
+      <tr><td>LlamaIndex + Pinecone + OpenAI</td><td>Document-heavy RAG, strong index abstractions</td></tr>
+      <tr><td>Databricks AI Search + Knowledge Assistant</td><td>Databricks shop, managed, governed, no-code option</td></tr>
+      <tr><td>Haystack</td><td>Production pipelines, strong evaluation, modular</td></tr>
+    </table></div>
+    <div class="ps"><div class="pt">Observability &amp; Tracing Tools</div>
+    <p style="font-size:0.82em;color:var(--muted);margin-bottom:8px">Traces = structured logs of every LLM call, tool invocation, and retrieval step (latency, tokens, inputs/outputs). Evals run on top of traces. Both are required for production AI.</p>
+    <table class="ft"><tr><th>Tool</th><th>Best For</th><th>Key Feature</th></tr>
+      <tr><td><strong>LangSmith</strong></td><td>LangChain / LangGraph shops</td><td>Auto-instruments with 2 env vars; built-in eval datasets, prompt versioning, human annotation UI. LANGCHAIN_TRACING_V2=true</td></tr>
+      <tr><td><strong>Arize Phoenix</strong></td><td>Open-source, any framework</td><td>OpenInference tracing + RAGAS evals in one tool; works with LangChain, LlamaIndex, raw OpenAI; runs local or managed</td></tr>
+      <tr><td><strong>MLflow Traces</strong></td><td>Databricks shops</td><td>@mlflow.trace decorator; traces stored in system.agent_traces Delta table; governed by Unity Catalog; autolog with mlflow.langchain.autolog()</td></tr>
+      <tr><td><strong>Weights &amp; Biases Weave</strong></td><td>ML-heavy teams already using W&amp;B</td><td>Experiment tracking + LLM call traces + dataset versioning in one place</td></tr>
+      <tr><td><strong>OpenTelemetry</strong></td><td>Vendor-neutral instrumentation</td><td>Open standard (spans, OTLP protocol) underneath all tools; lets you switch backends without re-instrumenting</td></tr>
+    </table></div>
+  </div>
+
+  <!-- Tab 3: Interview Q&A -->
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">RAG vs fine-tuning — how do you decide?</div><div class="qa-a">RAG when: (1) the knowledge base changes frequently — you just re-index, no retraining; (2) the knowledge volume is large — can't fit everything into model weights; (3) source citations are required for compliance or auditability; (4) you need the model to reason over documents it wasn't trained on. Fine-tune when: (1) you need a specific output style or format the base model doesn't have; (2) the knowledge is small, static, and fits in the fine-tuning dataset; (3) you're optimizing for query latency and cost at massive scale. In most enterprise RAG scenarios, both are used: RAG for dynamic knowledge retrieval, fine-tuning for output format/style.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Walk me through how you'd debug a RAG system with low answer quality.</div><div class="qa-a">Start with RAGAS to diagnose which layer is failing. (1) Low context_recall → retrieval is missing relevant docs: check chunk size (too small?), retrieval k (too low?), embedding model fit, metadata filtering too restrictive. (2) Low faithfulness → LLM is hallucinating: tighten system prompt grounding instruction, lower temperature to 0, add score threshold fallback. (3) Low context_precision → too much noise in retrieved chunks: add metadata filters, lower k, add reranking. (4) Low answer_relevancy → generation is off-topic: improve system prompt specificity, check query understanding. Always isolate retrieval from generation — test retrieval quality independently with Hit Rate before touching the LLM.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do you scale a RAG pipeline from prototype to production?</div><div class="qa-a">Five shifts: (1) Ingestion: from sync to async batch pipeline with delta re-indexing, not full re-index on every update. (2) Embedding: from single API calls to batched async requests or local GPU inference for cost. (3) Vector store: from ChromaDB/local to managed Qdrant/Pinecone/AI Search with HA. (4) Retrieval: add reranking, hybrid search, metadata filtering — prototype with dense-only is fine. (5) Eval: move from manual inspection to RAGAS on a curated test set in CI; add online feedback loop (thumbs up/down). Also: pin embedding model versions, add monitoring on retrieval score distributions, implement circuit breakers for LLM timeouts.</div></li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.svc').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.sb').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById('svc-' + id).classList.add('active');
+  document.querySelector('[data-svc="' + id + '"]').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function dim(svcId, idx) {
+  var svc = document.getElementById('svc-' + svcId);
+  var panels = svc.querySelectorAll('.dp');
+  var tabs = svc.querySelectorAll('.dt');
+  panels.forEach(function(el) { el.classList.remove('active'); });
+  tabs.forEach(function(el) { el.classList.remove('active'); });
+  panels[idx].classList.add('active');
+  tabs[idx].classList.add('active');
+}
+
+function toggleTheme() {
+  var root = document.documentElement;
+  var cur = root.getAttribute('data-theme');
+  root.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+}
+</script>

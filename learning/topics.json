@@ -1,0 +1,60 @@
+{
+  "topics": [
+    {
+      "slug": "rag",
+      "label": "RAG",
+      "description": "Retrieval-Augmented Generation — pipelines, chunking, embeddings, retrieval, vector stores",
+      "domains": ["rag-pipeline"],
+      "keywords": ["rag", "vector", "retrieval", "embedding", "chunking", "ocr-text", "jerry-liu"]
+    },
+    {
+      "slug": "evals",
+      "label": "Evals",
+      "description": "LLM evaluation frameworks, metrics, and processes",
+      "domains": [],
+      "keywords": ["eval", "evals", "evaluation", "arize", "inspect", "cme295-l8", "github-copilot", "observability", "tracing", "langsmith", "phoenix"]
+    },
+    {
+      "slug": "agentic-ai",
+      "label": "Agentic AI",
+      "description": "Multi-agent systems, orchestration frameworks, and agent patterns",
+      "domains": [],
+      "keywords": ["agent", "agentic", "multi-agent", "tools-agents", "cme295-l7"]
+    },
+    {
+      "slug": "llm-core",
+      "label": "LLM Core",
+      "description": "LLM architecture, prompting, fine-tuning, and reasoning",
+      "domains": [],
+      "keywords": ["llm", "architecture", "prompt", "reasoning", "fine-tuning", "rapid-recall", "terminology", "cme295-l1", "cme295-l6", "claude-openai"]
+    },
+    {
+      "slug": "production",
+      "label": "Production",
+      "description": "MLOps, LLMOps, deployment, monitoring, and serving",
+      "domains": [],
+      "keywords": ["production", "mlops", "llmops", "deployment", "monitoring", "observability", "tracing", "langsmith"]
+    },
+    {
+      "slug": "governance",
+      "label": "Governance",
+      "description": "AI governance, MCP, A2A protocols, safety, and compliance",
+      "domains": [],
+      "keywords": ["governance", "mcp", "a2a", "safety", "compliance"]
+    },
+    {
+      "slug": "strategy",
+      "label": "Strategy",
+      "description": "AI roadmap, stakeholder communication, and decision frameworks",
+      "domains": [],
+      "keywords": ["strategy", "roadmap", "decision-matrix", "ai-engineering-decision"]
+    },
+    {
+      "slug": "platforms",
+      "label": "Platforms",
+      "description": "Tools and platforms: Databricks, LlamaIndex, LangGraph, APIs",
+      "domains": [],
+      "keywords": ["databricks", "llamaindex", "langgraph", "copilot", "github-copilot", "claude-openai-apis"]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "topic": "LLM Observability & Tracing",
+  "tier": "Tier 1 · ~85% of Director-level AI interviews",
+  "note": "Covers tracing, LangSmith, Arize Phoenix, MLflow Traces, and the tracing-vs-evals distinction. Production monitoring question comes up in almost every Director/Staff AI interview.",
+  "sources": [
+    { "name": "LangSmith Docs", "url": "https://docs.smith.langchain.com" },
+    { "name": "Arize Phoenix Docs", "url": "https://docs.arize.com/phoenix" },
+    { "name": "MLflow Tracing Docs", "url": "https://mlflow.org/docs/latest/llms/tracing/index.html" },
+    { "name": "OpenInference Spec", "url": "https://github.com/Arize-ai/openinference" }
+  ],
+  "cards": [
+    {
+      "type": "Why",
+      "starred": true,
+      "front": "What is the difference between LLM tracing and LLM evals? Why do you need both?",
+      "back": "Tracing is observability — it captures every step of a pipeline (LLM call, tool call, retrieval, rerank) as a timestamped tree of spans with inputs, outputs, latency, and token counts. Evals are measurement — they score quality (faithfulness, relevancy, hallucination rate) against those logged traces. You need tracing first: evals run on top of captured trace data. Without traces you're flying blind; without evals you don't know if what you're logging is good or bad."
+    },
+    {
+      "type": "Concept",
+      "starred": true,
+      "front": "What is a trace span in LLM observability?",
+      "back": "A span is the atomic unit of work in a trace: it records a start time, end time, inputs, outputs, metadata, and a parent span ID. A full pipeline run is a tree of spans — e.g., root span (full chain) → child spans (LLM call, retrieval, reranker, tool call). LangSmith, Arize Phoenix, and MLflow all use this model. The open standard is OpenInference (from Arize) or OpenTelemetry's semantic conventions for LLMs."
+    },
+    {
+      "type": "Recall",
+      "starred": true,
+      "front": "What does LangSmith do, specifically? What are its four core capabilities?",
+      "back": "1. Trace store — captures every LangChain/LangGraph run as a searchable span tree (inputs, outputs, latency, token cost, errors). Auto-instruments with LANGCHAIN_TRACING_V2=true + LANGCHAIN_API_KEY. 2. Eval datasets — build golden datasets from production traces, run evals (LLM-as-judge, RAGAS, custom) against them. 3. Prompt Hub — version, share, and A/B test prompts across environments. 4. Human annotation — flag traces for review, thumbs-up/down, label feedback loops."
+    },
+    {
+      "type": "Application",
+      "starred": true,
+      "front": "How do you instrument a LangGraph app with LangSmith tracing?",
+      "back": "Two environment variables — no code changes needed for auto-instrumentation:\n\nexport LANGCHAIN_TRACING_V2=true\nexport LANGCHAIN_API_KEY=lsv2_...\nexport LANGCHAIN_PROJECT='my-agent'\n\nEvery graph.invoke() and graph.astream() call is automatically traced with full span trees. For custom spans, use @traceable decorator or with langsmith.trace() context manager. For non-LangChain code: use the RunTree API to manually create and end spans."
+    },
+    {
+      "type": "Concept",
+      "starred": true,
+      "front": "LangSmith vs Arize Phoenix vs MLflow Traces — when do you reach for each?",
+      "back": "LangSmith: first choice for LangGraph/LangChain pipelines. Hosted, tight framework integration, best eval workflow for LangChain shops. Cost: hosted SaaS, usage-based.\n\nArize Phoenix: open-source, works with any framework (LangChain, LlamaIndex, raw OpenAI, even custom). Best when you need RAGAS evals + traces in one tool, or in regulated environments (data stays local). Also supports OpenAI, Anthropic, Gemini natively.\n\nMLflow Traces: native to Databricks. @mlflow.trace decorator stores traces to system.agent_traces (Delta table). Best for Databricks shops — unified with model registry, experiments, and UC governance. No extra infra."
+    },
+    {
+      "type": "Recall",
+      "starred": false,
+      "front": "How does MLflow tracing work in Databricks? Where do traces land?",
+      "back": "MLflow 3+ traces use the @mlflow.trace decorator or mlflow.start_span() context manager. Auto-logging enabled by mlflow.langchain.autolog(). Traces are stored in the system.agent_traces Delta table in Unity Catalog — queryable with SQL, shareable across teams, governed like any UC table. This is the FFF/Srihari answer: 'We use MLflow trace autologging; traces land in system.agent_traces, and we alert on latency outliers and low-confidence spans.'"
+    },
+    {
+      "type": "Why",
+      "starred": true,
+      "front": "Why does a Director of AI need to care about tracing? What business question does it answer?",
+      "back": "Three business answers: 1. Debugging — when an agent gives a wrong answer, traces tell you exactly which step failed (wrong retrieval? hallucinating LLM? bad tool call?). Without traces, debugging is guesswork. 2. Cost — token counts per span let you identify the most expensive steps and optimize them (shorter prompts, cheaper model for simple steps). 3. Regression detection — if faithfulness drops from 0.9 to 0.7 after a prompt change, traces show you which calls changed. Tracing is the audit trail that makes AI systems trustworthy enough to put in production."
+    },
+    {
+      "type": "Application",
+      "starred": false,
+      "front": "What metrics should you monitor from traces in a production RAG pipeline?",
+      "back": "Per-stage latency: ingestion, embedding, retrieval, reranking, generation — isolate which stage is slow. Token counts + cost per query — track spend drift. Retrieval score distribution — a downward shift signals embedding drift or index staleness. LLM error rate + retry rate — model API instability. Faithfulness score (from RAGAS on sampled traces) — alert below 0.8. User feedback signal (thumbs-up/down click-through) correlated with faithfulness — validates offline metrics."
+    },
+    {
+      "type": "Concept",
+      "starred": false,
+      "front": "What is OpenTelemetry's role in LLM observability?",
+      "back": "OpenTelemetry (OTel) is the open standard for distributed tracing — defines spans, trace context propagation, and the OTLP wire protocol. LLM observability tools are converging on OTel: Arize Phoenix uses OpenInference (OTel-compatible semantic conventions for LLMs), Traceloop/OpenLIT export to any OTel collector. Benefit: vendor-neutral — you can switch from LangSmith to Phoenix without re-instrumenting. The LLM semantic conventions define standard span attributes: llm.model_name, llm.token_count.prompt, llm.token_count.completion, gen_ai.system."
+    },
+    {
+      "type": "Application",
+      "starred": true,
+      "front": "Interview: 'How do you monitor AI systems in production?' — Director-level answer",
+      "back": "Three-layer answer: 1. Infrastructure — trace every pipeline run (LangSmith or Arize Phoenix or MLflow). Capture latency per step, token cost, error rate. Alert on P95 latency spikes and LLM error rate > 2%. 2. Quality — run RAGAS faithfulness + context_recall on a sample of traces weekly (or in CI on every prompt change). Alert when faithfulness drops below threshold. 3. Business — correlate user feedback (thumbs-up/down, task completion) with trace quality metrics. This closes the loop: when faithfulness drops AND user satisfaction drops, you have a real regression to fix."
+    }
+  ]
+}
