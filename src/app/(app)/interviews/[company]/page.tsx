@@ -158,12 +158,12 @@ export default async function CompanyInterviewPage({
   if (!data) {
     return (
       <div>
-        <Link href="/interviews" className="mb-6 inline-block text-sm text-stone-500 hover:text-amber-700">
+        <Link href="/interviews" className="mb-6 inline-block text-sm text-slate-500 hover:text-amber-400">
           ← Interviews
         </Link>
-        <div className="rounded-lg border border-stone-300 bg-stone-100 p-8 text-center">
-          <p className="font-serif text-xl text-stone-900">Prep coming soon</p>
-          <p className="mt-2 text-sm text-stone-600">
+        <div className="rounded-lg border border-slate-700 bg-slate-900 p-8 text-center">
+          <p className="font-serif text-xl text-slate-200">Prep coming soon</p>
+          <p className="mt-2 text-sm text-slate-400">
             Company-specific content will be built as the interview progresses.
           </p>
         </div>
@@ -173,7 +173,7 @@ export default async function CompanyInterviewPage({
 
   return (
     <div>
-      <Link href="/interviews" className="mb-4 inline-block text-sm text-stone-500 hover:text-amber-700">
+      <Link href="/interviews" className="mb-4 inline-block text-sm text-slate-500 hover:text-amber-400">
         ← Interviews
       </Link>
 
@@ -181,35 +181,35 @@ export default async function CompanyInterviewPage({
       <div className="mb-8">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="font-serif text-2xl text-stone-900">{data.name}</h1>
-            <p className="mt-1 text-sm text-stone-600">
+            <h1 className="font-serif text-2xl text-slate-200">{data.name}</h1>
+            <p className="mt-1 text-sm text-slate-400">
               {data.vertical} · {data.role}
             </p>
-            <p className="mt-1 font-mono text-xs text-stone-500">{data.contact}</p>
+            <p className="mt-1 font-mono text-xs text-slate-500">{data.contact}</p>
           </div>
           <span className="shrink-0 rounded-full border border-emerald-800 px-3 py-1 text-xs font-medium text-emerald-400">
             {data.status}
           </span>
         </div>
-        <p className="mt-4 text-sm leading-relaxed text-stone-700">{data.overview}</p>
+        <p className="mt-4 text-sm leading-relaxed text-slate-300">{data.overview}</p>
       </div>
 
       {/* Architecture */}
       <section className="mb-8">
-        <h2 className="mb-1 font-mono text-xs uppercase tracking-wide text-amber-700">
+        <h2 className="mb-1 font-mono text-xs uppercase tracking-wide text-amber-400">
           {data.architecture.title}
         </h2>
-        <p className="mb-4 text-sm text-stone-600">{data.architecture.problem}</p>
+        <p className="mb-4 text-sm text-slate-400">{data.architecture.problem}</p>
         <div className="space-y-2">
           {data.architecture.flow.map((item) => (
             <div
               key={item.step}
-              className="flex gap-3 rounded-lg border border-stone-300 bg-stone-100 p-3"
+              className="flex gap-3 rounded-lg border border-slate-700 bg-slate-900 p-3"
             >
               <span className="shrink-0 font-mono text-xs text-amber-600 mt-0.5">{item.step}</span>
               <div>
-                <p className="text-sm font-medium text-stone-900">{item.label}</p>
-                <p className="mt-0.5 text-xs text-stone-600">{item.detail}</p>
+                <p className="text-sm font-medium text-slate-200">{item.label}</p>
+                <p className="mt-0.5 text-xs text-slate-400">{item.detail}</p>
               </div>
             </div>
           ))}
@@ -218,24 +218,24 @@ export default async function CompanyInterviewPage({
 
       {/* Databricks Services */}
       <section className="mb-8">
-        <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-700">
+        <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-400">
           Databricks Services in Use
         </h2>
         <div className="space-y-2">
           {data.databricksServices.map((svc) => (
             <div
               key={svc.name}
-              className="rounded-lg border border-stone-300 bg-stone-100 p-3"
+              className="rounded-lg border border-slate-700 bg-slate-900 p-3"
             >
-              <p className="text-sm font-medium text-stone-900">{svc.name}</p>
-              <p className="mt-0.5 text-xs text-stone-700">{svc.role}</p>
-              <p className="mt-0.5 text-xs text-stone-500">{svc.link}</p>
+              <p className="text-sm font-medium text-slate-200">{svc.name}</p>
+              <p className="mt-0.5 text-xs text-slate-300">{svc.role}</p>
+              <p className="mt-0.5 text-xs text-slate-500">{svc.link}</p>
             </div>
           ))}
         </div>
         <Link
           href="/databricks-5dim.html"
-          className="mt-3 inline-block text-xs text-amber-700 hover:underline"
+          className="mt-3 inline-block text-xs text-amber-400 hover:underline"
         >
           Open Databricks 5-Dim Reference Guide →
         </Link>
@@ -243,16 +243,16 @@ export default async function CompanyInterviewPage({
 
       {/* Interview Angles */}
       <section className="mb-8">
-        <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-700">
+        <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-400">
           Likely SA Questions + Angles
         </h2>
         <div className="space-y-3">
           {data.interviewAngles.map((qa, i) => (
-            <details key={i} className="rounded-lg border border-stone-300 bg-stone-100">
-              <summary className="cursor-pointer p-4 text-sm text-stone-200 hover:text-amber-700">
+            <details key={i} className="rounded-lg border border-slate-700 bg-slate-900">
+              <summary className="cursor-pointer p-4 text-sm text-stone-200 hover:text-amber-400">
                 {qa.question}
               </summary>
-              <p className="border-t border-stone-300 px-4 pb-4 pt-3 text-sm leading-relaxed text-stone-700">
+              <p className="border-t border-slate-700 px-4 pb-4 pt-3 text-sm leading-relaxed text-slate-300">
                 {qa.angle}
               </p>
             </details>
@@ -262,7 +262,7 @@ export default async function CompanyInterviewPage({
 
       {/* Study Materials */}
       <section>
-        <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-700">
+        <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-400">
           Prep Materials
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -270,20 +270,20 @@ export default async function CompanyInterviewPage({
             <Link
               key={m.label}
               href={m.href}
-              className="rounded-lg border border-stone-700 bg-stone-100 px-3 py-2 text-sm text-stone-700 hover:border-amber-600 hover:text-amber-700"
+              className="rounded-lg border border-stone-700 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:border-amber-500 hover:text-amber-400"
             >
               {m.label}
             </Link>
           ))}
           <Link
             href="/topics/platforms"
-            className="rounded-lg border border-stone-700 bg-stone-100 px-3 py-2 text-sm text-stone-700 hover:border-amber-600 hover:text-amber-700"
+            className="rounded-lg border border-stone-700 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:border-amber-500 hover:text-amber-400"
           >
             Platforms Topic →
           </Link>
           <Link
             href="/topics/agentic-ai"
-            className="rounded-lg border border-stone-700 bg-stone-100 px-3 py-2 text-sm text-stone-700 hover:border-amber-600 hover:text-amber-700"
+            className="rounded-lg border border-stone-700 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:border-amber-500 hover:text-amber-400"
           >
             Agentic AI Topic →
           </Link>

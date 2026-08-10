@@ -41,31 +41,31 @@ export default function TalkTrackActions({
   if (editing) {
     return (
       <div className="mt-3 space-y-2">
-        <label className="block text-xs text-amber-700">Director framing</label>
+        <label className="block text-xs text-amber-400">Director framing</label>
         <textarea
           value={d}
           onChange={(e) => setD(e.target.value)}
           rows={3}
-          className="w-full rounded border border-stone-700 bg-stone-50 p-2 text-sm text-stone-200"
+          className="w-full rounded border border-stone-700 bg-[#0B0F14] p-2 text-sm text-stone-200"
         />
-        <label className="block text-xs text-amber-700">Principal/Staff framing</label>
+        <label className="block text-xs text-amber-400">Principal/Staff framing</label>
         <textarea
           value={s}
           onChange={(e) => setS(e.target.value)}
           rows={4}
-          className="w-full rounded border border-stone-700 bg-stone-50 p-2 text-sm text-stone-200"
+          className="w-full rounded border border-stone-700 bg-[#0B0F14] p-2 text-sm text-stone-200"
         />
         <div className="flex gap-2">
           <button
             onClick={save}
             disabled={saving}
-            className="rounded-lg bg-amber-600 px-3 py-1 text-xs text-stone-950 disabled:opacity-50"
+            className="rounded-lg bg-amber-500 px-3 py-1 text-xs text-stone-950 disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save"}
           </button>
           <button
             onClick={() => setEditing(false)}
-            className="rounded-lg border border-stone-700 px-3 py-1 text-xs text-stone-700"
+            className="rounded-lg border border-stone-700 px-3 py-1 text-xs text-slate-300"
           >
             Cancel
           </button>
@@ -75,8 +75,8 @@ export default function TalkTrackActions({
   }
 
   return (
-    <div className="mt-2 flex gap-3 text-xs text-stone-600">
-      <button onClick={() => setEditing(true)} className="hover:text-stone-700">
+    <div className="mt-2 flex gap-3 text-xs text-slate-400">
+      <button onClick={() => setEditing(true)} className="hover:text-slate-300">
         Edit
       </button>
       <button onClick={del} className="hover:text-red-400">

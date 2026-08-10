@@ -32,19 +32,19 @@ export default function NavTopicsDropdown() {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="true"
-        className="flex items-center gap-1 whitespace-nowrap text-stone-600 hover:text-amber-700"
+        className="flex items-center gap-1 whitespace-nowrap text-slate-400 hover:text-amber-400"
       >
         Topics
         <span className="text-[10px] leading-none">{open ? "▴" : "▾"}</span>
       </button>
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-1.5 min-w-[11rem] rounded-lg border border-stone-300 bg-stone-50 py-1 shadow-xl">
+        <div className="absolute left-0 top-full z-50 mt-1.5 min-w-[11rem] rounded-lg border border-slate-700 bg-[#0B0F14] py-1 shadow-xl">
           {TOPICS.map((t) => (
             <Link
               key={t.slug}
               href={`/topics/${t.slug}`}
               onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-200 hover:text-amber-700"
+              className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-amber-400"
             >
               {t.label}
             </Link>

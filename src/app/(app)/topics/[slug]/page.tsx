@@ -42,30 +42,30 @@ export default async function TopicPage({ params }: PageProps<"/topics/[slug]">)
   return (
     <div>
       <div className="mb-6">
-        <h1 className="font-serif text-2xl text-stone-900">{topic.label}</h1>
-        <p className="mt-1 text-sm text-stone-600">{topic.description}</p>
+        <h1 className="font-serif text-2xl text-slate-200">{topic.label}</h1>
+        <p className="mt-1 text-sm text-slate-400">{topic.description}</p>
       </div>
 
       <Link
         href={`/study-cards?topic=${topic.slug}`}
-        className="mb-8 inline-flex items-center gap-2 rounded-lg border border-amber-600 bg-amber-600/10 px-4 py-2 text-sm font-medium text-amber-700 hover:bg-amber-600/20"
+        className="mb-8 inline-flex items-center gap-2 rounded-lg border border-amber-500 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-400 hover:bg-amber-500/20"
       >
         Study Cards →
       </Link>
 
       {decks.length > 0 && (
         <section className="mb-8">
-          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-700">
+          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-400">
             Card Decks
           </h2>
           <div className="space-y-2">
             {decks.map((d) => (
               <div
                 key={d.sourcePath}
-                className="rounded-lg border border-stone-300 bg-stone-100 p-4"
+                className="rounded-lg border border-slate-700 bg-slate-900 p-4"
               >
-                <p className="font-serif text-stone-900">{d.topic}</p>
-                <p className="mt-1 font-mono text-xs text-stone-500">
+                <p className="font-serif text-slate-200">{d.topic}</p>
+                <p className="mt-1 font-mono text-xs text-slate-500">
                   {d.cardCount} cards · {d.starredCount} starred
                   {d.tier && ` · ${d.tier}`}
                 </p>
@@ -77,7 +77,7 @@ export default async function TopicPage({ params }: PageProps<"/topics/[slug]">)
 
       {notes.length > 0 && (
         <section className="mb-8">
-          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-700">
+          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-400">
             Notes
           </h2>
           <div className="space-y-2">
@@ -87,13 +87,13 @@ export default async function TopicPage({ params }: PageProps<"/topics/[slug]">)
                 <Link
                   key={n.key}
                   href={`/notes/${encodeKey(n.key)}`}
-                  className="block rounded-lg border border-stone-300 bg-stone-100 p-4 hover:border-amber-600"
+                  className="block rounded-lg border border-slate-700 bg-slate-900 p-4 hover:border-amber-500"
                 >
-                  <p className="font-serif text-stone-900">{title}</p>
-                  <p className="mt-1 font-mono text-xs text-stone-500">
+                  <p className="font-serif text-slate-200">{title}</p>
+                  <p className="mt-1 font-mono text-xs text-slate-500">
                     {n.topicSlug}
                     {n.createdAt && (
-                      <span className="ml-2 text-stone-600">
+                      <span className="ml-2 text-slate-400">
                         {new Date(n.createdAt).toLocaleDateString()}
                       </span>
                     )}
@@ -107,7 +107,7 @@ export default async function TopicPage({ params }: PageProps<"/topics/[slug]">)
 
       {talkTrackFiles.length > 0 && (
         <section className="mb-8">
-          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-700">
+          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-400">
             Talk Tracks
           </h2>
           <div className="space-y-2">
@@ -115,10 +115,10 @@ export default async function TopicPage({ params }: PageProps<"/topics/[slug]">)
               <Link
                 key={s.sourcePath}
                 href={`/talk-tracks/${s.topicSlug}`}
-                className="block rounded-lg border border-stone-300 bg-stone-100 p-4 hover:border-amber-600"
+                className="block rounded-lg border border-slate-700 bg-slate-900 p-4 hover:border-amber-500"
               >
-                <p className="font-serif text-stone-900">{s.topicSlug}</p>
-                <p className="mt-1 font-mono text-xs text-stone-500">{s.sourcePath}</p>
+                <p className="font-serif text-slate-200">{s.topicSlug}</p>
+                <p className="mt-1 font-mono text-xs text-slate-500">{s.sourcePath}</p>
               </Link>
             ))}
           </div>
@@ -126,9 +126,9 @@ export default async function TopicPage({ params }: PageProps<"/topics/[slug]">)
       )}
 
       {decks.length === 0 && notes.length === 0 && talkTrackFiles.length === 0 && (
-        <div className="rounded-lg border border-stone-300 bg-stone-100 p-6 text-center">
-          <p className="text-stone-600">No content yet for this topic.</p>
-          <p className="mt-1 text-xs text-stone-600">
+        <div className="rounded-lg border border-slate-700 bg-slate-900 p-6 text-center">
+          <p className="text-slate-400">No content yet for this topic.</p>
+          <p className="mt-1 text-xs text-slate-400">
             Content will appear here once decks, notes, or talk tracks are added under this topic.
           </p>
         </div>

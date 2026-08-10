@@ -29,7 +29,7 @@ export default async function ReviewPage() {
 
   return (
     <div>
-      <h1 className="mb-4 font-serif text-2xl text-stone-900">Review</h1>
+      <h1 className="mb-4 font-serif text-2xl text-slate-200">Review</h1>
       <ReviewClient initialCards={cards} />
     </div>
   );

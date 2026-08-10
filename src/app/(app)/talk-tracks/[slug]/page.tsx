@@ -24,8 +24,8 @@ export default async function TalkTrackDomainPage({
 
   return (
     <div>
-      <h1 className="mb-1 font-serif text-2xl text-stone-900">{slug}</h1>
-      <p className="mb-6 text-sm text-stone-500">{sections.length} talking points</p>
+      <h1 className="mb-1 font-serif text-2xl text-slate-200">{slug}</h1>
+      <p className="mb-6 text-sm text-slate-500">{sections.length} talking points</p>
 
       <div className="space-y-6">
         {sections.map(({ s, state }) => {
@@ -33,29 +33,29 @@ export default async function TalkTrackDomainPage({
           const staff = state.local_override?.staff_framing ?? s.staff;
 
           return (
-            <div key={s.key} className="rounded-lg border border-stone-300 bg-stone-100 p-4">
-              <h3 className="mb-2 font-serif text-lg text-stone-900">{s.heading}</h3>
+            <div key={s.key} className="rounded-lg border border-slate-700 bg-slate-900 p-4">
+              <h3 className="mb-2 font-serif text-lg text-slate-200">{s.heading}</h3>
               {director || staff ? (
                 <>
                   {director && (
                     <div className="mb-3">
-                      <p className="mb-1 font-mono text-xs uppercase tracking-wide text-amber-700">
+                      <p className="mb-1 font-mono text-xs uppercase tracking-wide text-amber-400">
                         Director
                       </p>
-                      <p className="text-sm leading-relaxed text-stone-700">{director}</p>
+                      <p className="text-sm leading-relaxed text-slate-300">{director}</p>
                     </div>
                   )}
                   {staff && (
                     <div>
-                      <p className="mb-1 font-mono text-xs uppercase tracking-wide text-amber-700">
+                      <p className="mb-1 font-mono text-xs uppercase tracking-wide text-amber-400">
                         Principal / Staff
                       </p>
-                      <p className="text-sm leading-relaxed text-stone-700">{staff}</p>
+                      <p className="text-sm leading-relaxed text-slate-300">{staff}</p>
                     </div>
                   )}
                 </>
               ) : (
-                <p className="text-sm leading-relaxed text-stone-700">{s.unified}</p>
+                <p className="text-sm leading-relaxed text-slate-300">{s.unified}</p>
               )}
               <TalkTrackActions
                 id={encodeKey(s.key)}
@@ -69,17 +69,17 @@ export default async function TalkTrackDomainPage({
       </div>
 
       {(related.decks.length > 0 || related.notes.length > 0) && (
-        <aside className="mt-8 rounded-lg border border-stone-300 bg-stone-100 p-4">
-          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-700">
+        <aside className="mt-8 rounded-lg border border-slate-700 bg-slate-900 p-4">
+          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-400">
             Related
           </h2>
           {related.decks.length > 0 && (
-            <p className="text-sm text-stone-700">
+            <p className="text-sm text-slate-300">
               Cards: {related.decks.map((d) => d.topic).join(", ")}
             </p>
           )}
           {related.notes.length > 0 && (
-            <p className="mt-1 text-sm text-stone-700">
+            <p className="mt-1 text-sm text-slate-300">
               Notes: {related.notes.map((n) => n.title).join(", ")}
             </p>
           )}
