@@ -36,15 +36,15 @@ export default async function NoteDetailPage({
       )}
 
       {(related.decks.length > 0 || related.talkTracks.length > 0) && (
-        <aside className="mt-8 rounded-lg border border-stone-800 bg-stone-900 p-4">
-          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-500">
+        <aside className="mt-8 rounded-lg border border-stone-300 bg-stone-100 p-4">
+          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-700">
             Related
           </h2>
           {related.decks.length > 0 && (
             <div className="mb-2">
               <span className="text-xs text-stone-500">Cards: </span>
               {related.decks.map((d) => (
-                <span key={d.id} className="text-sm text-stone-300">
+                <span key={d.id} className="text-sm text-stone-700">
                   {d.topic}
                 </span>
               ))}
@@ -55,7 +55,7 @@ export default async function NoteDetailPage({
               <span className="text-xs text-stone-500">Talk track: </span>
               <Link
                 href={`/talk-tracks/${note.topicSlug}`}
-                className="text-sm text-amber-500 hover:underline"
+                className="text-sm text-amber-700 hover:underline"
               >
                 {note.topicSlug}
               </Link>

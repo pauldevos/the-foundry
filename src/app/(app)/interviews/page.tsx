@@ -52,14 +52,14 @@ const COMPANIES = [
 
 const statusColor: Record<string, string> = {
   Active: "border-emerald-800 text-emerald-400",
-  "Prep Phase": "border-amber-800 text-amber-500",
+  "Prep Phase": "border-amber-800 text-amber-700",
 };
 
 export default function InterviewsPage() {
   return (
     <div>
-      <h1 className="mb-2 font-serif text-2xl text-stone-100">Interviews</h1>
-      <p className="mb-6 text-sm text-stone-400">
+      <h1 className="mb-2 font-serif text-2xl text-stone-900">Interviews</h1>
+      <p className="mb-6 text-sm text-stone-600">
         Company-specific prep — architecture context, likely questions, and study material links.
       </p>
 
@@ -68,20 +68,20 @@ export default function InterviewsPage() {
           <Link
             key={co.slug}
             href={`/interviews/${co.slug}`}
-            className="block rounded-lg border border-stone-800 bg-stone-900 p-4 hover:border-amber-700"
+            className="block rounded-lg border border-stone-300 bg-stone-100 p-4 hover:border-amber-600"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <p className="font-serif text-stone-100">{co.name}</p>
-                <p className="mt-0.5 text-xs text-stone-400">
+                <p className="font-serif text-stone-900">{co.name}</p>
+                <p className="mt-0.5 text-xs text-stone-600">
                   {co.vertical} · {co.role}
                 </p>
-                <p className="mt-2 text-sm text-stone-300">{co.context}</p>
+                <p className="mt-2 text-sm text-stone-700">{co.context}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {co.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full border border-stone-700 px-2 py-0.5 font-mono text-xs text-stone-400"
+                      className="rounded-full border border-stone-700 px-2 py-0.5 font-mono text-xs text-stone-600"
                     >
                       {tag}
                     </span>
@@ -89,7 +89,7 @@ export default function InterviewsPage() {
                 </div>
               </div>
               <span
-                className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${statusColor[co.status] ?? "border-stone-700 text-stone-400"}`}
+                className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${statusColor[co.status] ?? "border-stone-700 text-stone-600"}`}
               >
                 {co.status}
               </span>

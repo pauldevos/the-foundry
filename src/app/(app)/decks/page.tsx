@@ -30,15 +30,15 @@ export default async function DecksListPage({
 
   return (
     <div>
-      <h1 className="mb-4 font-serif text-2xl text-stone-100">Decks</h1>
+      <h1 className="mb-4 font-serif text-2xl text-stone-900">Decks</h1>
 
       <div className="mb-6 flex flex-wrap gap-2">
         <Link
           href="/decks"
           className={`rounded-full border px-3 py-1 text-xs font-medium ${
             !activeDomain
-              ? "border-amber-600 bg-amber-700 text-stone-950"
-              : "border-stone-700 text-stone-300 hover:border-amber-700"
+              ? "border-amber-600 bg-amber-600 text-stone-950"
+              : "border-stone-700 text-stone-700 hover:border-amber-600"
           }`}
         >
           All ({allDecks.length})
@@ -49,8 +49,8 @@ export default async function DecksListPage({
             href={`/decks?domain=${encodeURIComponent(domain)}`}
             className={`rounded-full border px-3 py-1 text-xs font-medium ${
               activeDomain === domain
-                ? "border-amber-600 bg-amber-700 text-stone-950"
-                : "border-stone-700 text-stone-300 hover:border-amber-700"
+                ? "border-amber-600 bg-amber-600 text-stone-950"
+                : "border-stone-700 text-stone-700 hover:border-amber-600"
             }`}
           >
             {domain} ({count})
@@ -62,10 +62,10 @@ export default async function DecksListPage({
         {decks.map((d) => (
           <div
             key={d.sourcePath}
-            className="rounded-lg border border-stone-800 bg-stone-900 p-4"
+            className="rounded-lg border border-stone-300 bg-stone-100 p-4"
           >
-            <p className="font-serif text-stone-100">{d.topic}</p>
-            {d.tier && <p className="mt-1 text-xs text-stone-400">{d.tier}</p>}
+            <p className="font-serif text-stone-900">{d.topic}</p>
+            {d.tier && <p className="mt-1 text-xs text-stone-600">{d.tier}</p>}
             <p className="mt-1 font-mono text-xs text-stone-500">
               {d.cardCount} cards ({d.starredCount} starred) · {d.topicSlug}
               {d.createdAt && (

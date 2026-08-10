@@ -72,18 +72,18 @@ export default function ReviewClient({ initialCards }: { initialCards: Card[] })
 
   if (cards.length === 0) {
     return (
-      <div className="rounded-xl border border-stone-800 bg-stone-900 p-8 text-center">
-        <p className="font-serif text-xl text-stone-100">Nothing due right now.</p>
-        <p className="mt-2 text-sm text-stone-400">Come back later, or browse Notes / Talk Tracks.</p>
+      <div className="rounded-xl border border-stone-300 bg-stone-100 p-8 text-center">
+        <p className="font-serif text-xl text-stone-900">Nothing due right now.</p>
+        <p className="mt-2 text-sm text-stone-600">Come back later, or browse Notes / Talk Tracks.</p>
       </div>
     );
   }
 
   if (i >= cards.length) {
     return (
-      <div className="rounded-xl border border-stone-800 bg-stone-900 p-8 text-center">
-        <p className="font-serif text-xl text-stone-100">Session complete.</p>
-        <p className="mt-2 text-sm text-stone-400">
+      <div className="rounded-xl border border-stone-300 bg-stone-100 p-8 text-center">
+        <p className="font-serif text-xl text-stone-900">Session complete.</p>
+        <p className="mt-2 text-sm text-stone-600">
           {passCount} recalled / {failCount} missed
         </p>
       </div>
@@ -103,10 +103,10 @@ export default function ReviewClient({ initialCards }: { initialCards: Card[] })
 
       <div
         onClick={() => !editing && setFlipped((f) => !f)}
-        className="min-h-[220px] cursor-pointer rounded-xl border border-stone-800 bg-stone-900 p-6 shadow-lg"
+        className="min-h-[220px] cursor-pointer rounded-xl border border-stone-300 bg-stone-100 p-6 shadow-lg"
       >
         <div className="mb-3 flex items-center justify-between">
-          <span className="font-mono text-xs uppercase tracking-wide text-amber-500">
+          <span className="font-mono text-xs uppercase tracking-wide text-amber-700">
             {card.starred ? "⭐ " : ""}
             {card.type}
           </span>
@@ -117,17 +117,17 @@ export default function ReviewClient({ initialCards }: { initialCards: Card[] })
 
         {!editing ? (
           <>
-            <p className="font-serif text-lg leading-snug text-stone-100">{card.front}</p>
+            <p className="font-serif text-lg leading-snug text-stone-900">{card.front}</p>
             {flipped && (
-              <div className="mt-4 border-t border-stone-800 pt-4">
-                <p className="text-sm leading-relaxed text-stone-300">{card.back}</p>
+              <div className="mt-4 border-t border-stone-300 pt-4">
+                <p className="text-sm leading-relaxed text-stone-700">{card.back}</p>
                 {card.clipVideoId && card.clipSeconds != null && (
                   <a
                     href={`https://www.youtube.com/watch?v=${card.clipVideoId}&t=${card.clipSeconds}s`}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="mt-3 inline-block text-xs text-amber-500 hover:underline"
+                    className="mt-3 inline-block text-xs text-amber-700 hover:underline"
                   >
                     ▶ watch this moment
                   </a>
@@ -141,25 +141,25 @@ export default function ReviewClient({ initialCards }: { initialCards: Card[] })
             <textarea
               value={editFront}
               onChange={(e) => setEditFront(e.target.value)}
-              className="w-full rounded-lg border border-stone-700 bg-stone-950 p-2 text-sm text-stone-100"
+              className="w-full rounded-lg border border-stone-700 bg-stone-50 p-2 text-sm text-stone-900"
               rows={2}
             />
             <textarea
               value={editBack}
               onChange={(e) => setEditBack(e.target.value)}
-              className="w-full rounded-lg border border-stone-700 bg-stone-950 p-2 text-sm text-stone-100"
+              className="w-full rounded-lg border border-stone-700 bg-stone-50 p-2 text-sm text-stone-900"
               rows={4}
             />
             <div className="flex gap-2">
               <button
                 onClick={saveEdit}
-                className="rounded-lg bg-amber-700 px-3 py-1.5 text-sm text-stone-950"
+                className="rounded-lg bg-amber-600 px-3 py-1.5 text-sm text-stone-950"
               >
                 Save
               </button>
               <button
                 onClick={() => setEditing(false)}
-                className="rounded-lg border border-stone-700 px-3 py-1.5 text-sm text-stone-300"
+                className="rounded-lg border border-stone-700 px-3 py-1.5 text-sm text-stone-700"
               >
                 Cancel
               </button>
@@ -180,7 +180,7 @@ export default function ReviewClient({ initialCards }: { initialCards: Card[] })
               </button>
               <button
                 onClick={notUseful}
-                className="rounded-lg border border-stone-700 py-2.5 text-sm font-medium text-stone-400 hover:bg-stone-800"
+                className="rounded-lg border border-stone-700 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-200"
               >
                 Not useful
               </button>
@@ -193,10 +193,10 @@ export default function ReviewClient({ initialCards }: { initialCards: Card[] })
             </div>
           )}
           <div className="mt-3 flex justify-between text-xs">
-            <button onClick={startEdit} className="text-stone-500 hover:text-stone-300">
+            <button onClick={startEdit} className="text-stone-500 hover:text-stone-700">
               Edit
             </button>
-            <button onClick={advance} className="text-stone-500 hover:text-stone-300">
+            <button onClick={advance} className="text-stone-500 hover:text-stone-700">
               skip →
             </button>
           </div>

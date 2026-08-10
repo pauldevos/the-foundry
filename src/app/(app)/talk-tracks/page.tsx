@@ -27,15 +27,15 @@ export default async function TalkTracksListPage() {
 
   return (
     <div>
-      <h1 className="mb-4 font-serif text-2xl text-stone-100">Talk Tracks</h1>
+      <h1 className="mb-4 font-serif text-2xl text-stone-900">Talk Tracks</h1>
       <div className="space-y-2">
         {entries.map(([slug, { count, createdAt }]) => (
           <Link
             key={slug}
             href={`/talk-tracks/${slug}`}
-            className="block rounded-lg border border-stone-800 bg-stone-900 p-4 hover:border-amber-700"
+            className="block rounded-lg border border-stone-300 bg-stone-100 p-4 hover:border-amber-600"
           >
-            <p className="font-serif text-stone-100">{slug}</p>
+            <p className="font-serif text-stone-900">{slug}</p>
             <p className="mt-1 font-mono text-xs text-stone-500">
               {count} talking points
               {createdAt && (

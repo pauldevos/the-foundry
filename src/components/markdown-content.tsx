@@ -30,10 +30,10 @@ function ResponsiveTable({ node }: { node?: MdastNode }) {
   return (
     <div className="my-4">
       {/* Desktop / tablet: real table, horizontally scrollable if still wide */}
-      <div className="hidden overflow-x-auto rounded-lg border border-stone-800 md:block">
+      <div className="hidden overflow-x-auto rounded-lg border border-stone-300 md:block">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-stone-800 bg-stone-900">
+            <tr className="border-b border-stone-300 bg-stone-100">
               {headers.map((h, i) => (
                 <th key={i} className="px-4 py-2.5 text-left font-semibold text-stone-200">
                   {h}
@@ -45,7 +45,7 @@ function ResponsiveTable({ node }: { node?: MdastNode }) {
             {bodyRows.map((row, ri) => (
               <tr key={ri} className="border-b border-stone-900 last:border-0">
                 {(row.children ?? []).map((cell, ci) => (
-                  <td key={ci} className="px-4 py-2.5 align-top text-stone-300">
+                  <td key={ci} className="px-4 py-2.5 align-top text-stone-700">
                     {textOf(cell)}
                   </td>
                 ))}
@@ -58,10 +58,10 @@ function ResponsiveTable({ node }: { node?: MdastNode }) {
       {/* Mobile: one card per row, label: value stacked */}
       <div className="grid gap-3 md:hidden">
         {bodyRows.map((row, ri) => (
-          <div key={ri} className="rounded-lg border border-stone-800 bg-stone-900 p-4">
+          <div key={ri} className="rounded-lg border border-stone-300 bg-stone-100 p-4">
             {(row.children ?? []).map((cell, ci) => (
               <div key={ci} className="mb-2 last:mb-0">
-                <div className="text-xs font-medium uppercase tracking-wide text-amber-500">
+                <div className="text-xs font-medium uppercase tracking-wide text-amber-700">
                   {headers[ci]}
                 </div>
                 <div className="text-sm text-stone-200">{textOf(cell)}</div>
@@ -76,18 +76,18 @@ function ResponsiveTable({ node }: { node?: MdastNode }) {
 
 const components: Components = {
   table: ResponsiveTable as unknown as Components["table"],
-  h1: (props) => <h1 className="mb-4 mt-8 font-serif text-3xl text-stone-100" {...props} />,
-  h2: (props) => <h2 className="mb-3 mt-8 font-serif text-2xl text-stone-100" {...props} />,
-  h3: (props) => <h3 className="mb-2 mt-6 font-serif text-xl text-stone-100" {...props} />,
-  p: (props) => <p className="mb-4 leading-relaxed text-stone-300" {...props} />,
-  ul: (props) => <ul className="mb-4 list-disc space-y-1.5 pl-6 text-stone-300" {...props} />,
-  ol: (props) => <ol className="mb-4 list-decimal space-y-1.5 pl-6 text-stone-300" {...props} />,
-  a: (props) => <a className="text-amber-500 underline underline-offset-2 hover:text-amber-400" {...props} />,
+  h1: (props) => <h1 className="mb-4 mt-8 font-serif text-3xl text-stone-900" {...props} />,
+  h2: (props) => <h2 className="mb-3 mt-8 font-serif text-2xl text-stone-900" {...props} />,
+  h3: (props) => <h3 className="mb-2 mt-6 font-serif text-xl text-stone-900" {...props} />,
+  p: (props) => <p className="mb-4 leading-relaxed text-stone-700" {...props} />,
+  ul: (props) => <ul className="mb-4 list-disc space-y-1.5 pl-6 text-stone-700" {...props} />,
+  ol: (props) => <ol className="mb-4 list-decimal space-y-1.5 pl-6 text-stone-700" {...props} />,
+  a: (props) => <a className="text-amber-700 underline underline-offset-2 hover:text-amber-700" {...props} />,
   code: (props) => (
-    <code className="rounded bg-stone-800 px-1.5 py-0.5 font-mono text-[0.85em] text-amber-300" {...props} />
+    <code className="rounded bg-stone-200 px-1.5 py-0.5 font-mono text-[0.85em] text-amber-300" {...props} />
   ),
   blockquote: (props) => (
-    <blockquote className="my-4 border-l-2 border-amber-700 pl-4 italic text-stone-400" {...props} />
+    <blockquote className="my-4 border-l-2 border-amber-600 pl-4 italic text-stone-600" {...props} />
   ),
 };
 

@@ -25,7 +25,7 @@ export default function HideNoteButton({ id }: { id: string }) {
       onClick={hide}
       disabled={hiding}
       title="Hide from this list (stays in the repo)"
-      className="shrink-0 rounded-lg border border-stone-800 px-2 py-1 text-xs text-stone-500 hover:border-red-800 hover:text-red-400 disabled:opacity-50"
+      className="shrink-0 rounded-lg border border-stone-300 px-2 py-1 text-xs text-stone-500 hover:border-red-800 hover:text-red-400 disabled:opacity-50"
     >
       {hiding ? "..." : "Hide"}
     </button>

@@ -55,15 +55,15 @@ export default async function StudyCardsPage({
 
   return (
     <div>
-      <h1 className="mb-4 font-serif text-2xl text-stone-100">Study Cards</h1>
+      <h1 className="mb-4 font-serif text-2xl text-stone-900">Study Cards</h1>
 
       <div className="mb-6 flex flex-wrap gap-2">
         <Link
           href="/study-cards"
           className={`rounded-full border px-3 py-1 text-xs font-medium ${
             !activeTopicSlug
-              ? "border-amber-600 bg-amber-700 text-stone-950"
-              : "border-stone-700 text-stone-300 hover:border-amber-700"
+              ? "border-amber-600 bg-amber-600 text-stone-950"
+              : "border-stone-700 text-stone-700 hover:border-amber-600"
           }`}
         >
           All ({totalDue})
@@ -77,8 +77,8 @@ export default async function StudyCardsPage({
               href={`/study-cards?topic=${t.slug}`}
               className={`rounded-full border px-3 py-1 text-xs font-medium ${
                 activeTopicSlug === t.slug
-                  ? "border-amber-600 bg-amber-700 text-stone-950"
-                  : "border-stone-700 text-stone-300 hover:border-amber-700"
+                  ? "border-amber-600 bg-amber-600 text-stone-950"
+                  : "border-stone-700 text-stone-700 hover:border-amber-600"
               }`}
             >
               {t.label} ({count})

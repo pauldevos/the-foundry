@@ -36,15 +36,15 @@ export default async function NotesListPage({
 
   return (
     <div>
-      <h1 className="mb-4 font-serif text-2xl text-stone-100">Notes</h1>
+      <h1 className="mb-4 font-serif text-2xl text-stone-900">Notes</h1>
 
       <div className="mb-6 flex flex-wrap gap-2">
         <Link
           href="/notes"
           className={`rounded-full border px-3 py-1 text-xs font-medium ${
             !activeDomain
-              ? "border-amber-600 bg-amber-700 text-stone-950"
-              : "border-stone-700 text-stone-300 hover:border-amber-700"
+              ? "border-amber-600 bg-amber-600 text-stone-950"
+              : "border-stone-700 text-stone-700 hover:border-amber-600"
           }`}
         >
           All ({allNotes.length})
@@ -55,8 +55,8 @@ export default async function NotesListPage({
             href={`/notes?domain=${encodeURIComponent(domain)}`}
             className={`rounded-full border px-3 py-1 text-xs font-medium ${
               activeDomain === domain
-                ? "border-amber-600 bg-amber-700 text-stone-950"
-                : "border-stone-700 text-stone-300 hover:border-amber-700"
+                ? "border-amber-600 bg-amber-600 text-stone-950"
+                : "border-stone-700 text-stone-700 hover:border-amber-600"
             }`}
           >
             {domain} ({count})
@@ -71,10 +71,10 @@ export default async function NotesListPage({
           return (
             <div
               key={n.key}
-              className="flex items-center gap-2 rounded-lg border border-stone-800 bg-stone-900 p-4 hover:border-amber-700"
+              className="flex items-center gap-2 rounded-lg border border-stone-300 bg-stone-100 p-4 hover:border-amber-600"
             >
               <Link href={`/notes/${id}`} className="min-w-0 flex-1">
-                <p className="truncate font-serif text-stone-100">{title}</p>
+                <p className="truncate font-serif text-stone-900">{title}</p>
                 <p className="mt-1 font-mono text-xs text-stone-500">
                   {n.topicSlug}
                   {n.createdAt && (
