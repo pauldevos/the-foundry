@@ -105,6 +105,7 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
   <button class="sb" data-svc="genie" onclick="show('genie')">Genie Agents<small>NL-to-SQL</small></button>
   <button class="sb" data-svc="ka" onclick="show('ka')">Knowledge Assistant<small>Managed RAG</small></button>
   <button class="sb" data-svc="ucfunc" onclick="show('ucfunc')">UC Function Tools<small>System Integration</small></button>
+  <button class="sb" data-svc="apps" onclick="show('apps')">Databricks Apps<small>SSO / React / Embed</small></button>
   <div class="sg">ML & Serving</div>
   <button class="sb" data-svc="mlflow" onclick="show('mlflow')">MLflow<small>ML Lifecycle</small></button>
   <button class="sb" data-svc="serving" onclick="show('serving')">Model Serving<small>Inference Endpoints</small></button>
@@ -120,6 +121,7 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
   <button class="sb" data-svc="dabs" onclick="show('dabs')">Decl. Auto. Bundles<small>CI/CD</small></button>
   <button class="sb" data-svc="workflows" onclick="show('workflows')">Workflows<small>Orchestration</small></button>
   <button class="sb" data-svc="monitoring" onclick="show('monitoring')">Lakehouse Monitoring<small>Drift & Quality</small></button>
+  <button class="sb" data-svc="perf" onclick="show('perf')">Perf &amp; Cost<small>Top 10 Culprits</small></button>
 </nav>
 
 <main class="main">
@@ -1088,6 +1090,289 @@ drift.filter(<span class="s">"js_divergence > 0.1"</span>).display()</pre>
   </div>
 </div>
 
+
+<!-- ═══ DATABRICKS APPS ═══ -->
+<div class="svc" id="svc-apps">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Databricks Apps</span><span class="sp">Managed App Hosting</span><span class="badge">GA</span></div>
+    <div class="sd">Serverless hosting for Dash, Streamlit, Gradio, React, and Node.js apps inside the Databricks workspace. Built-in workspace SSO via OBO token forwarding, Unity Catalog row-filter enforcement, and zero external infrastructure. AppKit TypeScript SDK for React builds.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('apps',0)">Implementation</button>
+    <button class="dt" onclick="dim('apps',1)">Auth &amp; SSO</button>
+    <button class="dt" onclick="dim('apps',2)">Business Users</button>
+    <button class="dt" onclick="dim('apps',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="ps"><div class="pt">UI — Create an App</div>
+    <ol class="st">
+      <li>Left sidebar → <strong>Compute → Apps</strong></li>
+      <li>Click <strong>Create app</strong> → choose template: Dash, Streamlit, Gradio, or Custom (React/Node.js)</li>
+      <li>Link a Git repo or upload source; set entry point and environment variables</li>
+      <li>App deploys to a managed serverless URL within your workspace domain (no cluster config)</li>
+      <li>Users access the URL → authenticate via workspace SSO (same Okta / Entra ID flow as the workspace itself)</li>
+    </ol></div>
+    <div class="ps"><div class="pt">Python Backend — FastAPI + OBO Token (UC enforced per user)</div>
+    <div class="cl">Python · FastAPI backend querying Databricks SQL as the signed-in user</div>
+<pre><span class="k">from</span> fastapi <span class="k">import</span> FastAPI, Request
+<span class="k">from</span> databricks <span class="k">import</span> sql <span class="k">as</span> dbsql
+
+app = FastAPI()
+
+@app.get(<span class="s">"/api/shipments"</span>)
+<span class="k">async def</span> get_shipments(request: Request):
+    <span class="c"># OBO: Databricks forwards the signed-in user's JWT here
+    # Queries execute AS that user — UC row filters apply automatically</span>
+    user_token = request.headers.get(<span class="s">"x-forwarded-access-token"</span>)
+
+    conn = dbsql.connect(
+        server_hostname=<span class="s">"workspace.azuredatabricks.net"</span>,
+        http_path=<span class="s">"/sql/1.0/warehouses/abc123"</span>,
+        access_token=user_token         <span class="c"># user token, NOT a service principal</span>
+    )
+    cursor = conn.cursor()
+    cursor.execute(<span class="s">"SELECT * FROM prod.supply_chain.shipments LIMIT 500"</span>)
+    <span class="c"># UC row filter silently restricts to user's authorized rows
+    # No application-layer RBAC needed — Unity Catalog handles it</span>
+    <span class="k">return</span> {<span class="s">"rows"</span>: cursor.fetchall()}</pre></div>
+    <div class="ps"><div class="pt">React / Node.js via AppKit</div>
+    <div class="cl">YAML + TypeScript · app.yaml config + React fetch pattern</div>
+<pre><span class="c"># app.yaml — entry point for a Node.js / React app</span>
+command: [<span class="s">"npm"</span>, <span class="s">"run"</span>, <span class="s">"start"</span>]
+env:
+  - name: DATABRICKS_WAREHOUSE_ID
+    value: your-warehouse-id
+
+<span class="c">// React: call the FastAPI backend — OBO token handled server-side</span>
+<span class="k">const</span> ShipmentsView = () => {
+  <span class="k">const</span> [rows, setRows] = useState([]);
+  useEffect(() => {
+    fetch(<span class="s">"/api/shipments"</span>)     <span class="c">// backend adds user token automatically</span>
+      .then(r => r.json())
+      .then(d => setRows(d.rows));
+  }, []);
+  <span class="k">return</span> &lt;DataGrid rows={rows} /&gt;;
+};</pre></div>
+    <div class="ca ca-r"><strong>War Story — Energy Transfer InfoSec Rejection</strong>Built a real-time React dashboard as a Databricks App POC — live shipment tracking, far better than the Power BI dashboard refreshing every 15 minutes on batch Delta data. InfoSec rejected it: "Databricks Apps hasn't been through our SSO approval process." The correct pushback in hindsight: <em>"Databricks Apps uses the exact same Okta SSO you already approved for the workspace — users can't log in without the same MFA flow."</em> The second mistake: treating all users the same. Power BI viewers don't have Databricks accounts — they should have been served via AI/BI Dashboard Embedding (no workspace account needed), while engineers used the App. Splitting the two populations into two patterns would have cleared both InfoSec gates.</div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-g"><strong>SSO Is Built-In — Same IdP Already Approved</strong>Databricks Apps inherits the workspace SSO configuration. If the workspace uses Okta, Entra ID, or ADFS, the App uses the exact same IdP login page. The InfoSec argument: <em>"This is not a new tool or a new authentication system. It is a UI feature of the Databricks workspace. Users authenticate via the same Okta MFA flow you approved when you approved the workspace."</em></div>
+    <div class="ps"><div class="pt">OBO Token Flow — How UC Enforcement Works End-to-End</div>
+<pre><span class="c">Browser → Databricks App URL
+    │  [workspace SSO: same Okta/Entra ID as the workspace]
+    ▼
+Databricks App Runtime (React + FastAPI)
+    │  x-forwarded-access-token: &lt;signed user JWT&gt;
+    ▼
+FastAPI backend → Databricks SQL (token = user JWT, not SP)
+    │
+    ▼
+Unity Catalog: row filters + column masks applied as if user ran the query directly
+    │  user sees ONLY their authorized data — no app-layer RBAC needed
+    ▼
+Response → Browser</span></pre></div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>sso</td><td>Inherits workspace SSO: SAML 2.0 or OIDC (Okta, Entra ID, ADFS, Google Workspace)</td></tr>
+      <tr><td>obo_header</td><td>x-forwarded-access-token: signed user JWT forwarded to app runtime by Databricks</td></tr>
+      <tr><td>uc_enforcement</td><td>Queries run AS the user — row filters, column masks, grants all apply automatically</td></tr>
+      <tr><td>frameworks_python</td><td>Dash, Streamlit, Gradio, FastAPI, Flask</td></tr>
+      <tr><td>frameworks_js</td><td>React, Angular, Svelte, Express, Node.js via AppKit (TypeScript SDK)</td></tr>
+      <tr><td>compute</td><td>Serverless managed — no cluster to configure; billed only while app is running</td></tr>
+      <tr><td>workspace_account</td><td>Required — users must be workspace members. No account = no access to the App.</td></tr>
+    </table>
+    <div class="ca ca-a"><strong>The One Hard Limit — Workspace Account Required</strong>Databricks Apps requires every user to have a Databricks workspace account. Power BI read-only viewers who authenticate via Okta for Power BI but have never touched Databricks do NOT have workspace accounts. They cannot use a Databricks App without being provisioned as workspace users. For those users: see the Business Users tab.</div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-b"><strong>AI/BI Dashboard Embedding — External Users, Zero Databricks Accounts</strong>For users without workspace accounts: embed dashboards in any existing web app via iframe + short-lived scoped tokens. User authenticates via your existing company SSO (your portal handles this); your server requests a scoped token from a service principal; token is passed to the embedded dashboard with an <span class="mono">external_value</span> filter applied per user. Tokens expire in 1 hour. <a href="https://docs.databricks.com/aws/en/dashboards/embedding/external-embed" target="_blank">Docs: Embedding for external users</a></div>
+    <div class="ps"><div class="pt">Two Populations — Two Patterns</div>
+<pre><span class="c">─── ENGINEERING USERS (have Databricks workspace accounts) ───────
+
+  Browser → Databricks App URL
+          → [workspace SSO: Okta / Entra ID]
+          → React + FastAPI → OBO token → Databricks SQL
+          → UC row filters enforced per user
+          → Full interactive app, real-time queries
+
+─── BUSINESS VIEWERS (no Databricks account — e.g. Power BI users) ──
+
+  Browser → Existing company portal (already InfoSec-approved)
+          → [company Okta — same SSO they've always used for the portal]
+          → Your app server → scoped SP token + external_value = user.region
+          → Embedded AI/BI Dashboard iframe
+          → Data filtered to user's region/plant/scope — read-only view
+          → No Databricks account, no new SSO approval needed</span></pre></div>
+    <div class="ps"><div class="pt">Scoped Token — Per-User Row Filtering for Embedded Dashboard</div>
+    <div class="cl">Python · App server issues short-lived token with per-user data scope</div>
+<pre>import requests
+
+<span class="k">def</span> get_embed_token(user_region: str) -> dict:
+    <span class="c"># Your app server authenticates as service principal
+    # Issues a 1-hour read-only token scoped to this user's filter</span>
+    resp = requests.post(
+        <span class="s">"https://workspace.azuredatabricks.net/api/2.0/token/create"</span>,
+        headers={<span class="s">"Authorization"</span>: f<span class="s">"Bearer {SP_TOKEN}"</span>},
+        json={<span class="s">"comment"</span>: f<span class="s">"embed-{user_region}"</span>,
+              <span class="s">"lifetime_seconds"</span>: <span class="n">3600</span>}
+    )
+    <span class="k">return</span> {
+        <span class="s">"token"</span>: resp.json()[<span class="s">"token_value"</span>],
+        <span class="s">"external_value"</span>: user_region   <span class="c"># injected as SQL variable in dashboard</span>
+    }
+<span class="c"># Dashboard SQL: WHERE region = '{{external_value}}'
+# User in SOUTHWEST sees only Southwest data — enforced at query time, not app layer</span></pre></div>
+    <table class="ft"><tr><th>User Type</th><th>Pattern</th><th>Auth</th><th>Databricks Account?</th></tr>
+      <tr><td>Engineers / analysts</td><td>Databricks App (React)</td><td>Workspace SSO + OBO</td><td>Yes — required</td></tr>
+      <tr><td>BI viewers (read-only)</td><td>AI/BI Dashboard Embed</td><td>Company SSO → SP token</td><td>No — not required</td></tr>
+      <tr><td>Executives / ops</td><td>Power BI (existing approval)</td><td>Entra ID SSO</td><td>No — SQL connector</td></tr>
+    </table>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">A client's InfoSec rejected Databricks Apps because "it hasn't been through our SSO approval." How do you respond?</div><div class="qa-a">Reframe: Databricks Apps doesn't have its own authentication system. It inherits the workspace SSO you've already configured — Okta, Entra ID, ADFS. The App URL is within your workspace domain; users authenticate via the same IdP login page as the workspace itself. The argument: "This is not a new tool. It is a UI hosting feature of the Databricks workspace you already approved, using the same SSO flow you already reviewed." If they still need a separate review, offer to scope it as an extension of the existing workspace approval rather than a net-new product review.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Power BI read-only viewers don't have Databricks accounts. Can they use a Databricks App?</div><div class="qa-a">Not directly — Databricks Apps requires workspace accounts. For those users, the right pattern is AI/BI Dashboard Embedding: your existing company portal (already InfoSec-approved) serves an iframe containing the embedded dashboard. Users authenticate via your existing SSO — they never navigate to a Databricks URL. Your app server requests a short-lived (1-hour) scoped token from a service principal and passes an external_value parameter to filter data per user. This exactly mirrors how Power BI read-only works — the user sees a familiar portal; Databricks auth is invisible to them.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How does Unity Catalog enforcement work inside a Databricks App — does the app need to implement RBAC?</div><div class="qa-a">No application-layer RBAC needed for data access control. When the user opens the App, their signed-in JWT is forwarded by Databricks to the app runtime via x-forwarded-access-token. The FastAPI backend passes this token to Databricks SQL — queries execute as the user, not as a service principal. UC row filters and column masks defined on the tables apply transparently. A warehouse manager who opens the app gets their region's data; an exec gets all regions — with zero conditional logic in the application code. The app's job is UI; UC's job is access control.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Databricks App vs standalone React app hosted on company infrastructure — when do you choose each?</div><div class="qa-a">Databricks App: zero ops overhead, built-in OBO auth, UC integration, serverless compute — right when users are internal workspace members and you want the fastest path to production. Standalone React app (company-hosted): when InfoSec requires apps on company infrastructure, when the user population is larger than workspace accounts, or when you need complex frontend pipelines (CDN, custom domains, A/B testing). The standalone app authenticates via OAuth 2.0 PKCE flow to get a user token, then queries Databricks SQL via REST API. Both give full UC enforcement if you use user tokens (OBO) rather than service principals.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ PERF & COST ═══ -->
+<div class="svc" id="svc-perf">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Perf &amp; Cost Tuning</span><span class="sp">Top 10 Culprits</span><span class="badge">Must Know</span></div>
+    <div class="sd">The 10 most common performance and cost problems that Databricks doesn't automatically fix — with why each happens, how to detect it, and the specific fix. The war-story interview question ("your query was slow in prod — what did you do?") lives here.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('perf',0)">Top 10 Culprits</button>
+    <button class="dt" onclick="dim('perf',1)">Code &amp; Fixes</button>
+    <button class="dt" onclick="dim('perf',2)">Monitoring</button>
+    <button class="dt" onclick="dim('perf',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <table class="ft">
+      <tr><th style="width:20%">Culprit</th><th style="width:25%">Why it Happens</th><th style="width:20%">How to Detect</th><th>Fix</th></tr>
+      <tr><td>1. All-purpose clusters left running</td><td>Auto-termination disabled or set to 2hrs; devs close laptops without stopping clusters</td><td>system.billing.usage — high DBU on interactive clusters with no active queries</td><td>10–15 min auto-termination. Job Compute for all scheduled work (terminates on completion)</td></tr>
+      <tr><td>2. Small files in Delta tables</td><td>High-freq streaming writes produce thousands of &lt;1MB Parquet files; each requires a metadata read at query time</td><td>DESCRIBE DETAIL table → numFiles very high relative to data size</td><td>OPTIMIZE nightly. Liquid Clustering (auto-managed). Predictive Optimization (Enterprise, now default for UC tables)</td></tr>
+      <tr><td>3. SQL warehouse over-provisioned + no auto-stop</td><td>Sized at XL "just in case"; auto-stop set to 60min; BI queries run for 5min then it idles</td><td>system.billing.usage — warehouse DBU high but query_count low per hour</td><td>Start at S. Enable cluster autoscaling. Auto-stop at 5 min for BI workloads. Serverless SQL for bursty traffic</td></tr>
+      <tr><td>4. Data skew in joins</td><td>One key value (NULL, top customer, default category) has 50× more rows; one task runs for hours while others finish in seconds</td><td>Spark UI → Stages → one task duration 10× median; check for skewed keys with COUNT GROUP BY</td><td>AQE handles dynamically (DBR 8+). For severe cases: broadcast the small side, filter NULLs before join, salt skewed key</td></tr>
+      <tr><td>5. Shuffle partitions wrong for data volume</td><td>Default 200 partitions — too many for small data (overhead), too few for large data (spill to disk)</td><td>Spark UI → Tasks with Spill (Memory) or Spill (Disk) column non-zero</td><td>AQE autoOptimizeShuffle (AOS) handles batch automatically. Structured Streaming: manually set spark.sql.shuffle.partitions = 2–4× cores</td></tr>
+      <tr><td>6. Python UDFs instead of built-ins</td><td>Row-by-row JVM↔Python serialization. Photon engine does NOT accelerate Python UDFs at all</td><td>Query profile — UDF stage shows low Photon utilization; stage takes 10× longer than expected</td><td>Replace with pyspark.sql.functions.*. If custom logic needed: Pandas UDF (Arrow-vectorized, batches not rows)</td></tr>
+      <tr><td>7. Missing broadcast on small dimension tables</td><td>Spark defaults to sort-merge join (shuffles both sides). AQE auto-converts if small side &lt;10MB, but many dim tables are larger</td><td>Spark UI → join stage has large shuffle read on both sides</td><td>broadcast(df_small) or SQL hint: SELECT /*+ BROADCAST(dim) */. AQE will skip the shuffle entirely</td></tr>
+      <tr><td>8. Full table scan — no partition pruning</td><td>Filter on non-partition column, or filter after a UDF/expression Catalyst can't push down to file layer</td><td>Query profile → Files Pruned = 0 or very low vs Files Read = total files</td><td>Filter on partition columns in WHERE. Liquid Clustering on high-cardinality filter cols. Z-ORDER for file-level data skipping</td></tr>
+      <tr><td>9. No VACUUM — bloated storage bill</td><td>Delta keeps old file versions for 7 days by default. Write-heavy tables accumulate 5–20× their actual data size in stale files</td><td>Storage cost rising faster than data volume. DESCRIBE DETAIL → sizeInBytes vs actual row count ratio</td><td>VACUUM table RETAIN 168 HOURS weekly via Workflow. Predictive Optimization automates this for UC tables (Enterprise)</td></tr>
+      <tr><td>10. Explode / cross join before filter</td><td>Array explosion or cross join multiplies rows 10–1000× before a WHERE clause reduces them; explosion happens in a large stage</td><td>Spark UI → stage output rows >> input rows before the filter stage</td><td>Always filter FIRST, then explode. PySpark: .filter(...).select(explode(...)). SQL: filter in CTE before the LATERAL VIEW</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>War Story — $2,400 Idle Cluster Over a Long Weekend</strong>Friday afternoon a data engineer spun up an r5.4xlarge all-purpose cluster (64GB RAM, 16 cores) to debug a join performance issue. Fixed it, closed the laptop, flew home. Auto-termination was set to 120 minutes — cluster terminated Saturday afternoon. But a second cluster was still up: a colleague had connected to it for "just a quick look" Thursday and the termination timer reset. By Monday it had run 72 hours. $2,400 in DBU charges for a cluster running zero queries. Fix: set auto-termination to 15 minutes org-wide via cluster policy; require Job Compute for any workload expected to run >30 minutes.</div>
+  </div>
+  <div class="dp">
+    <div class="ps"><div class="pt">Delta Maintenance — OPTIMIZE, VACUUM, Liquid Clustering</div>
+    <div class="cl">SQL · Schedule via Databricks Workflow nightly</div>
+<pre><span class="c">-- OPTIMIZE: compact small Parquet files into 1GB target files</span>
+<span class="kw">OPTIMIZE</span> prod.supply_chain.shipments;
+
+<span class="c">-- VACUUM: purge stale file versions (min 168h = 7 days; below this errors)</span>
+<span class="kw">VACUUM</span> prod.supply_chain.shipments <span class="kw">RETAIN</span> <span class="n">168</span> <span class="kw">HOURS</span>;
+
+<span class="c">-- Liquid Clustering (preferred over Z-ORDER for new tables)
+-- Set on CREATE; change columns any time without full rewrite</span>
+<span class="kw">CREATE TABLE</span> prod.supply_chain.shipments
+<span class="kw">CLUSTER BY</span> (carrier_id, event_date);
+
+<span class="c">-- Legacy Z-ORDER (for existing tables or older runtimes)</span>
+<span class="kw">OPTIMIZE</span> prod.supply_chain.shipments
+  <span class="kw">ZORDER BY</span> (carrier_id, event_date);
+
+<span class="c">-- Enable Predictive Optimization (Enterprise — automates all of the above)</span>
+<span class="kw">ALTER TABLE</span> prod.supply_chain.shipments
+  <span class="kw">SET TBLPROPERTIES</span> (<span class="s">'delta.autoOptimize.optimizeWrite'</span> = <span class="s">'true'</span>,
+                     <span class="s">'delta.autoOptimize.autoCompact'</span> = <span class="s">'true'</span>);</pre></div>
+    <div class="ps"><div class="pt">Broadcast Hint + AQE Config</div>
+    <div class="cl">Python · Force broadcast on known-small dimension table</div>
+<pre><span class="k">from</span> pyspark.sql.functions <span class="k">import</span> broadcast
+
+<span class="c"># Explicit broadcast — skips shuffle entirely for df_dim
+# AQE auto-broadcasts if df_dim < autoBroadcastJoinThreshold (10MB default)
+# Use hint for known-small tables > 10MB to override the threshold</span>
+result = df_large.join(
+    broadcast(df_dim),
+    on=<span class="s">"carrier_id"</span>,
+    how=<span class="s">"left"</span>
+)
+
+<span class="c"># AQE settings (all enabled by default in DBR 8+ — verify they're on)</span>
+spark.conf.set(<span class="s">"spark.sql.adaptive.enabled"</span>, <span class="s">"true"</span>)
+spark.conf.set(<span class="s">"spark.sql.adaptive.coalescePartitions.enabled"</span>, <span class="s">"true"</span>)
+spark.conf.set(<span class="s">"spark.sql.adaptive.skewJoin.enabled"</span>, <span class="s">"true"</span>)
+spark.conf.set(<span class="s">"spark.sql.adaptive.autoOptimizeShuffle.enabled"</span>, <span class="s">"true"</span>)</pre></div>
+    <div class="ps"><div class="pt">Pandas UDF vs Python UDF — Performance Difference</div>
+    <div class="cl">Python · Vectorized (Pandas UDF) replaces row-by-row Python UDF</div>
+<pre><span class="k">from</span> pyspark.sql.functions <span class="k">import</span> pandas_udf
+<span class="k">import</span> pandas <span class="k">as</span> pd
+
+<span class="c"># BAD: Python UDF — row-by-row JVM→Python→JVM serialization
+# Photon does NOT accelerate this; 10–100× slower than built-ins</span>
+<span class="k">from</span> pyspark.sql.functions <span class="k">import</span> udf
+slow_udf = udf(<span class="k">lambda</span> x: x.strip().upper() <span class="k">if</span> x <span class="k">else</span> <span class="n">None</span>)
+
+<span class="c"># GOOD option 1: built-in Spark function (fastest, Photon-accelerated)</span>
+<span class="k">from</span> pyspark.sql.functions <span class="k">import</span> upper, trim
+df = df.withColumn(<span class="s">"status_clean"</span>, upper(trim(df[<span class="s">"status"</span>])))
+
+<span class="c"># GOOD option 2: Pandas UDF — Arrow-vectorized batches, not row-by-row</span>
+@pandas_udf(<span class="s">"string"</span>)
+<span class="k">def</span> normalize_code(series: pd.Series) -> pd.Series:
+    <span class="k">return</span> series.str.strip().str.upper().fillna(<span class="s">""</span>)
+
+df = df.withColumn(<span class="s">"status_clean"</span>, normalize_code(df[<span class="s">"status"</span>]))</pre></div>
+  </div>
+  <div class="dp">
+    <div class="ps"><div class="pt">system.billing.usage — Find the Biggest DBU Wasters</div>
+    <div class="cl">SQL · Query system tables to identify cost culprits by cluster and job</div>
+<pre><span class="c">-- Top 10 clusters by DBU spend in last 30 days</span>
+<span class="kw">SELECT</span>
+    cluster_id,
+    cluster_name,
+    <span class="fn">SUM</span>(usage_quantity) <span class="kw">AS</span> total_dbu,
+    <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> DATE(usage_date)) <span class="kw">AS</span> active_days,
+    <span class="fn">MAX</span>(usage_date) <span class="kw">AS</span> last_active
+<span class="kw">FROM</span> system.billing.usage
+<span class="kw">WHERE</span> usage_date >= CURRENT_DATE - <span class="n">30</span>
+  <span class="kw">AND</span> billing_origin_product = <span class="s">'INTERACTIVE'</span>  <span class="c">-- all-purpose clusters</span>
+<span class="kw">GROUP BY</span> <span class="n">1</span>, <span class="n">2</span>
+<span class="kw">ORDER BY</span> total_dbu <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="n">10</span>;
+
+<span class="c">-- Jobs spending the most DBU</span>
+<span class="kw">SELECT</span>
+    job_id,
+    <span class="fn">SUM</span>(usage_quantity) <span class="kw">AS</span> total_dbu,
+    <span class="fn">AVG</span>(usage_quantity) <span class="kw">AS</span> avg_dbu_per_run,
+    <span class="fn">COUNT</span>(*) <span class="kw">AS</span> runs
+<span class="kw">FROM</span> system.billing.usage
+<span class="kw">WHERE</span> usage_date >= CURRENT_DATE - <span class="n">30</span>
+  <span class="kw">AND</span> billing_origin_product = <span class="s">'JOBS'</span>
+<span class="kw">GROUP BY</span> <span class="n">1</span>
+<span class="kw">ORDER BY</span> total_dbu <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="n">10</span>;</pre></div>
+    <div class="ps"><div class="pt">Spark UI — Where to Look for Each Culprit</div>
+    <table class="ft"><tr><th>Culprit</th><th>Where in Spark UI</th><th>Signal</th></tr>
+      <tr><td>Data skew</td><td>Stages → Tasks → Duration column</td><td>One task 10× longer than median</td></tr>
+      <tr><td>Shuffle spill</td><td>Stages → Tasks → Spill (Memory) / Spill (Disk)</td><td>Any non-zero value → shuffle partitions too few</td></tr>
+      <tr><td>Missing partition pruning</td><td>SQL → Details → Files Pruned vs Files Read</td><td>Files Pruned near zero → full scan</td></tr>
+      <tr><td>Sort-merge join (missing broadcast)</td><td>SQL → DAG → join node type</td><td>"SortMergeJoin" → should be "BroadcastHashJoin"</td></tr>
+      <tr><td>Small files</td><td>SQL → Details → number of tasks in scan stage</td><td>10,000 tasks to read 1TB → too many small files</td></tr>
+    </table>
+    <div class="ca ca-b"><strong>📖 Docs</strong><a href="https://docs.databricks.com/aws/en/lakehouse-architecture/performance-efficiency/best-practices" target="_blank">Performance efficiency best practices</a> · <a href="https://docs.databricks.com/aws/en/lakehouse-architecture/cost-optimization/best-practices" target="_blank">Cost optimization best practices</a> · <a href="https://docs.databricks.com/aws/en/optimizations/" target="_blank">Optimization recommendations</a> · <a href="https://docs.databricks.com/aws/en/optimizations/aqe" target="_blank">Adaptive Query Execution</a></div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">A production job that took 20 minutes now takes 4 hours. Walk me through your diagnosis.</div><div class="qa-a">First: check if the data volume changed — DESCRIBE HISTORY to see if recent writes added 10× more rows than usual. Second: Spark UI → Stages → look for a stage with one task taking most of the time (data skew) or tasks with Spill columns non-zero (shuffle spill). Third: check if a new join was added recently — SortMergeJoin on a large table where BroadcastHashJoin was expected. Fourth: check for small files in source tables — DESCRIBE DETAIL to see numFiles vs previous runs. Fifth: check if AQE is enabled (spark.sql.adaptive.enabled). In practice, data skew and shuffle spill are the most common causes of sudden dramatic slowdowns on existing pipelines — they often hide until data volume crosses a threshold.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Why does Photon not accelerate Python UDFs, and what's the right migration path?</div><div class="qa-a">Photon is a C++ vectorized query engine that operates on columnar data in JVM memory. Python UDFs require serializing each row from JVM to Python (via Py4J), running the Python function, and deserializing the result back to JVM — a row-by-row serialization loop that bypasses Photon's columnar execution entirely. Migration path: (1) check if a pyspark.sql.functions built-in covers the logic — it usually does (regex_extract, transform, array_contains, date_diff, etc.); (2) if not, write a Pandas UDF — Arrow serializes whole column batches rather than row-by-row, compatible with Photon pipelines; (3) only fall back to Python UDF for truly one-off transformations where performance isn't critical.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What is the minimum VACUUM retention period and why can't you go below it?</div><div class="qa-a">168 hours (7 days). Going below this causes an error by default — Databricks explicitly blocks it. The reason: Delta time travel queries that reference versions within the last 7 days would return incorrect results if the underlying files were deleted. If you need shorter retention (e.g., GDPR right-to-erasure scenarios where you want old data gone faster), you must explicitly set spark.databricks.delta.retentionDurationCheck.enabled = false — which is a deliberate unsafe override, not a default. Exam: 168 hours is a commonly tested exact number.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When does AQE handle data skew automatically, and when does it not?</div><div class="qa-a">AQE handles skew automatically for: sort-merge joins and shuffle hash joins in batch queries. It does NOT handle: streaming queries (AQE/AOS is not applied to stateful streaming), skew in the build side of a broadcast join (the broadcast happens before AQE can observe the skew), or skew in aggregation groups (only joins). For cases AQE can't handle: filter or pre-aggregate the skewed key before the join, broadcast the small side, or salt the skewed key (append a random bucket number 0–N, cross-join the small side to replicate it N times).</div></li>
+    </ul>
+  </div>
+</div>
 
 <!-- ═══ LAKEFLOW DECLARATIVE PIPELINES (was DLT) ═══ -->
 <div class="svc" id="svc-lakeflow">
