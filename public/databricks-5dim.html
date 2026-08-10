@@ -79,6 +79,7 @@ ol.st li::before{content:counter(s);flex-shrink:0;width:1.4rem;height:1.4rem;bor
 .qa-a{padding:.6rem .9rem;font-size:.8rem;color:var(--t2);line-height:1.55;border-top:1px solid var(--border);display:none}
 .qi.open .qa-a{display:block}
 .mono{font-family:'Courier New',monospace;font-size:.85em;color:var(--blue);background:rgba(77,158,255,.08);padding:1px 4px;border-radius:3px}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
 @media(max-width:700px){
   .layout{flex-direction:column}
   .sidebar{width:100%;max-height:none;position:static;flex-direction:row;flex-wrap:wrap;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
@@ -107,12 +108,15 @@ ol.st li::before{content:counter(s);flex-shrink:0;width:1.4rem;height:1.4rem;bor
   <div class="sg">ML & Serving</div>
   <button class="sb" data-svc="mlflow" onclick="show('mlflow')">MLflow<small>ML Lifecycle</small></button>
   <button class="sb" data-svc="serving" onclick="show('serving')">Model Serving<small>Inference Endpoints</small></button>
+  <button class="sb" data-svc="feateng" onclick="show('feateng')">Feature Engineering<small>Feature Store / Online</small></button>
   <div class="sg">Governance</div>
   <button class="sb" data-svc="uc" onclick="show('uc')">Unity Catalog<small>Data Governance</small></button>
   <div class="sg">Storage & Search</div>
   <button class="sb" data-svc="delta" onclick="show('delta')">Delta Lake<small>Table Format</small></button>
   <button class="sb" data-svc="aisearch" onclick="show('aisearch')">Databricks AI Search<small>Vector + Hybrid</small></button>
+  <button class="sb" data-svc="autoloader" onclick="show('autoloader')">Auto Loader<small>cloudFiles Ingestion</small></button>
   <div class="sg">DevOps & Ops</div>
+  <button class="sb" data-svc="lakeflow" onclick="show('lakeflow')">Lakeflow Pipelines<small>was Delta Live Tables</small></button>
   <button class="sb" data-svc="dabs" onclick="show('dabs')">Decl. Auto. Bundles<small>CI/CD</small></button>
   <button class="sb" data-svc="workflows" onclick="show('workflows')">Workflows<small>Orchestration</small></button>
   <button class="sb" data-svc="monitoring" onclick="show('monitoring')">Lakehouse Monitoring<small>Drift & Quality</small></button>
@@ -186,6 +190,13 @@ traces = mlflow.search_traces(
       <tr><td>availability</td><td>Enterprise tier required — NOT in Free Edition</td></tr>
     </table>
     <div class="ca ca-a"><strong>Renamed — Know Current Terminology</strong>AgentBricks is the product umbrella. Genie Spaces → Genie Agents (2025). Vector Search → AI Search (2025). DABs → Declarative Automation Bundles.</div>
+    <div class="ca ca-b"><strong>▶ Watch Today — AgentBricks Videos</strong>
+      <a href="https://www.youtube.com/watch?v=aWVZ8YnvLoI" target="_blank">Agent Bricks Explained: Pros, Cons, and Use Cases (2026)</a> — cuts through marketing, shows what it actually is<br>
+      <a href="https://www.youtube.com/watch?v=Oztjcvrzs4A" target="_blank">Agent Building Options on Databricks (2026)</a> — which agentic pattern fits which use case<br>
+      <a href="https://www.youtube.com/watch?v=nvlK2gLy3lA" target="_blank">Agent Bricks Demo — Data+AI Summit 2025</a> — live demo of Supervisor + sub-agents<br>
+      <a href="https://www.youtube.com/playlist?list=PL7S7dD8r4QdVj9P_boNjRbhy_udOx-IVB" target="_blank">Full AgentBricks Course Playlist</a> — build production agents end-to-end<br>
+      Official demo: <a href="https://www.databricks.com/resources/demos/videos/agent-bricks-overview" target="_blank">databricks.com Agent Bricks Overview video</a>
+    </div>
   </div>
   <div class="dp">
     <div class="ca ca-b"><strong>Catalog = Environment Boundary</strong>Supervisor Agent registered in <span class="mono">dev.agents.*</span> for dev, <span class="mono">prod.agents.*</span> for prod. Tools point to the same-catalog UC functions. OBO uses the appropriate service principal per environment.</div>
@@ -1073,6 +1084,341 @@ drift.filter(<span class="s">"js_divergence > 0.1"</span>).display()</pre>
     <ul class="qa">
       <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What is the difference between data drift and prediction drift?</div><div class="qa-a">Data drift: the distribution of input features changes (e.g. FedEx shipping patterns shift after a carrier partnership change — delivery times cluster differently). Prediction drift: the model's output distribution changes (more shipments flagged as OS&amp;D risk). You need both: data drift tells you WHY model behavior may change; prediction drift tells you the model IS changing. For pharma: prediction drift could mean real-world OS&amp;D rates are genuinely increasing OR the model is degrading — both require investigation.</div></li>
       <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How do Lakehouse Monitoring metrics connect to model retraining?</div><div class="qa-a">Drift metrics land in prod.monitoring.shipments_drift_metrics (Delta table). A SQL Alert monitors it: when js_divergence exceeds threshold, it fires a webhook triggering a Workflow. The Workflow: (1) retrains on recent labeled data, (2) registers new MLflow version in prod.ml.* as @challenger, (3) evaluates vs @champion, (4) promotes @challenger to @champion if metrics improve. Serving endpoint reads @champion — no restart needed. This is the full MLOps loop, entirely within Databricks.</div></li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ═══ LAKEFLOW DECLARATIVE PIPELINES (was DLT) ═══ -->
+<div class="svc" id="svc-lakeflow">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Lakeflow Declarative Pipelines</span><span class="sp">was Delta Live Tables</span><span class="badge">GA</span></div>
+    <div class="sd">Declarative streaming + batch pipeline framework for medallion architecture. Define tables and views; Databricks manages orchestration, dependency resolution, data quality, and retry. Renamed from Delta Live Tables in 2025. <span class="mono">import dlt</span> → <span class="mono">from pyspark import pipelines as dp</span>.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('lakeflow',0)">Implementation</button>
+    <button class="dt" onclick="dim('lakeflow',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('lakeflow',2)">Environments</button>
+    <button class="dt" onclick="dim('lakeflow',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="ca ca-a"><strong>Renamed — Critical for Interviews &amp; Nov 2025 Exam</strong>Delta Live Tables (DLT) → <strong>Lakeflow Declarative Pipelines</strong>. Python: <span class="mono">from pyspark import pipelines as dp</span> replaces <span class="mono">import dlt</span>. Old <span class="mono">dlt</span> still works (backward compatible). Databricks cert exam (Nov 2025 update) uses Lakeflow terminology throughout. Docs: <a href="https://docs.databricks.com/aws/en/ldp/where-is-dlt" target="_blank">What happened to DLT?</a></div>
+    <div class="ps"><div class="pt">UI — Create a Pipeline</div>
+    <ol class="st">
+      <li>Left sidebar → <strong>Workflows → Delta Live Tables</strong> (UI still shows "DLT" in nav)</li>
+      <li>Click <strong>Create pipeline</strong></li>
+      <li>Name the pipeline; set Source code (notebook path or Repos file)</li>
+      <li>Destination: Unity Catalog catalog + schema (all tables registered in UC)</li>
+      <li>Pipeline mode: <strong>Triggered</strong> (run-to-completion, then stop) or <strong>Continuous</strong> (perpetual streaming)</li>
+      <li>Compute: Serverless (recommended) or Classic cluster</li>
+      <li>Click <strong>Start</strong> — Databricks parses decorators, builds dependency DAG, runs in order</li>
+    </ol></div>
+    <div class="ps"><div class="pt">Python — Streaming Tables, Materialized Views, Expectations</div>
+    <div class="cl">Python · pyspark.pipelines — Bronze/Silver/Gold medallion pattern</div>
+<pre><span class="k">from</span> pyspark <span class="k">import</span> pipelines <span class="k">as</span> dp
+
+<span class="c"># STREAMING TABLE — incremental; processes only NEW records each run
+# Use for: Bronze ingestion, Silver row-level transforms</span>
+@dp.table(name=<span class="s">"bronze_hr_docs"</span>,
+          comment=<span class="s">"Raw HR documents — benefits PDFs, 401K, PTO policies"</span>)
+def bronze_hr_docs():
+    <span class="k">return</span> (spark.readStream.format(<span class="s">"cloudFiles"</span>)
+        .option(<span class="s">"cloudFiles.format"</span>, <span class="s">"json"</span>)
+        .option(<span class="s">"cloudFiles.schemaLocation"</span>, <span class="s">"/Volumes/prod/hr/schema"</span>)
+        .load(<span class="s">"/Volumes/prod/hr/landing/"</span>))
+
+<span class="c"># Expectations — three enforcement modes stacked on same table</span>
+@dp.table
+@dp.expect_or_drop(<span class="s">"non_null_doc_id"</span>, <span class="s">"doc_id IS NOT NULL"</span>)      <span class="c"># DROP bad row</span>
+@dp.expect(<span class="s">"has_content"</span>, <span class="s">"LENGTH(content) > 50"</span>)              <span class="c"># WARN, keep row</span>
+def silver_hr_docs():
+    <span class="k">return</span> spark.readStream.table(<span class="s">"LIVE.bronze_hr_docs"</span>)
+
+<span class="c"># MATERIALIZED VIEW — full RECOMPUTE each run; for aggregations
+# Use for: Gold reporting. WRONG mode = stale aggregations.</span>
+@dp.materialized_view(name=<span class="s">"gold_doc_coverage"</span>)
+def gold_doc_coverage():
+    <span class="k">return</span> spark.sql(<span class="s">"""
+        SELECT doc_category,
+               COUNT(*) AS doc_count,
+               MAX(ingested_at) AS last_updated
+        FROM LIVE.silver_hr_docs GROUP BY doc_category
+    """</span>)</pre></div>
+    <div class="ps"><div class="pt">APPLY CHANGES — CDC / SCD Type 1 &amp; 2</div>
+    <div class="cl">Python · Purpose-built CDC upsert — handles out-of-order events, deletes, SCD2</div>
+<pre><span class="c"># For SAP/Salesforce change feeds — DO NOT use manual MERGE for CDC</span>
+dp.apply_changes(
+    target=<span class="s">"silver_employees"</span>,
+    source=<span class="s">"LIVE.bronze_employee_cdc"</span>,
+    keys=[<span class="s">"employee_id"</span>],
+    sequence_by=<span class="s">"event_timestamp"</span>,        <span class="c"># latest-wins dedup</span>
+    apply_as_deletes=dp.expr(<span class="s">"op = 'DELETE'"</span>),
+    except_column_list=[<span class="s">"op"</span>, <span class="s">"_rescued_data"</span>],
+    stored_as_scd_type=<span class="n">1</span>                    <span class="c"># 2 = keep full history</span>
+)
+<span class="c"># Creates the target table automatically — no separate CREATE TABLE</span></pre></div>
+    <div class="ca ca-r"><strong>War Story — expect_or_drop Silently Losing 3,000 Records</strong>Benefits pipeline had <span class="mono">expect_or_drop("non_null_plan_code", "plan_code IS NOT NULL")</span> in Silver. A vendor batch sent blank strings (not NULL) — expectations passed, but plan lookups in Gold returned empty rows. Downstream benefit cost report was off by 4%. Fix: added <span class="mono">AND LENGTH(TRIM(plan_code)) &gt; 0</span> to the condition. Added SQL Alert on the pipeline_metrics Delta table: when any expectation drop rate exceeds 1%, fire a PagerDuty webhook. Expectations should never be silent in production.</div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-a"><strong>▶ Watch + Read</strong>
+      YouTube: <a href="https://www.youtube.com/results?search_query=delta+live+tables+medallion+databricks" target="_blank">Search "Delta Live Tables medallion Databricks"</a> — official Databricks channel has multiple pipeline walkthroughs. Also: search "Lakeflow pipelines Databricks 2026".<br>
+      Docs: <a href="https://docs.databricks.com/aws/en/ldp/" target="_blank">Lakeflow overview</a> · <a href="https://docs.databricks.com/aws/en/ldp/developer/python-ref" target="_blank">Python API reference</a> · <a href="https://docs.databricks.com/en/delta-live-tables/expectation-patterns.html" target="_blank">Expectation patterns (advanced patterns)</a><br>
+      <strong>Hands-on:</strong> Databricks Academy has a free "Delta Live Tables" lab — do the medallion Bronze/Silver/Gold exercise; it covers all 3 expectation modes with real data.
+    </div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>module</td><td>pyspark.pipelines (current); import dlt (legacy, backward compatible)</td></tr>
+      <tr><td>streaming_table</td><td>@dp.table — incremental; appends micro-batches; maintains checkpoint state</td></tr>
+      <tr><td>materialized_view</td><td>@dp.materialized_view — full recompute each run; correct for GROUP BY aggregations</td></tr>
+      <tr><td>expect_warn</td><td>@dp.expect — keep bad record, log drop_count to pipeline_metrics table</td></tr>
+      <tr><td>expect_drop</td><td>@dp.expect_or_drop — remove invalid record, log count; does NOT stop pipeline</td></tr>
+      <tr><td>expect_fail</td><td>@dp.expect_or_fail — halt pipeline on first violation; for critical invariants</td></tr>
+      <tr><td>apply_changes</td><td>CDC: SCD Type 1 or 2, sequence dedup, delete support, auto-creates target table</td></tr>
+      <tr><td>dag</td><td>Automatic — reads LIVE.tablename references to build dependency order</td></tr>
+      <tr><td>pipeline_mode</td><td>Triggered (one-shot, then stop) or Continuous (streaming, sub-second latency)</td></tr>
+      <tr><td>metrics_table</td><td>pipeline_metrics Delta table: rows_written, rows_dropped_per_expectation per run</td></tr>
+      <tr><td>uc_integration</td><td>All tables registered in Unity Catalog — governed, queryable, lineage tracked</td></tr>
+    </table>
+    <div class="ca ca-b"><strong>Exam Trap — @dp.table on a GROUP BY = Wrong Results</strong>Using a Streaming Table for an aggregation processes ONLY new records each run — the GROUP BY result is a partial aggregate, not the true total. Use <span class="mono">@dp.materialized_view</span> for any aggregation that reads historical data. This is the #1 DLT exam trap and a real production bug people hit.</div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-b"><strong>Separate Pipeline per Environment — Same Notebook</strong>Use Declarative Automation Bundles to deploy the same pipeline notebook to dev/staging/prod with different UC destination catalogs. Never let a dev pipeline write to prod tables.</div>
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Destination: <span class="mono">dev.hr.*</span></li><li>Mode: Triggered (manual)</li><li>Serverless, fast iteration</li><li>Test all 3 expectation modes</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Destination: <span class="mono">staging.hr.*</span></li><li>Promoted via DABs target</li><li>Prod-like data volume</li><li>Validate pipeline_metrics alerts</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Destination: <span class="mono">prod.hr.*</span></li><li>Mode: Continuous (streaming)</li><li>Serverless, auto-scale</li><li>SQL Alert on drop rate &gt; 1%</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Streaming Table vs Materialized View — what's the difference and when does the wrong choice break things?</div><div class="qa-a">Streaming Table (@dp.table): processes only new records since the last checkpoint — incremental. State maintained across runs. Correct for Bronze ingestion and row-level Silver transforms. Materialized View (@dp.materialized_view): fully recomputed from scratch on every pipeline run. No incremental state. Correct for Gold aggregations (SUM, COUNT, GROUP BY across all history). Common production bug: @dp.table for a GROUP BY — aggregates only the new micro-batch, so the output is always a partial aggregate, not the true historical total. Symptoms: Gold number keeps resetting rather than accumulating.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What are the three expectation enforcement modes and what happens to the record AND the pipeline in each?</div><div class="qa-a">@dp.expect (warn): bad record KEPT, logged to pipeline_metrics, pipeline continues. @dp.expect_or_drop: bad record DROPPED, count logged to pipeline_metrics, pipeline continues. @dp.expect_or_fail: pipeline STOPS immediately on any violation — the bad record is not processed. The most important thing interviewers test: the drop and fail modes both log to pipeline_metrics, but only fail stops the pipeline. Monitor pipeline_metrics in production — expect_or_drop failures are silent to downstream consumers.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When do you use APPLY CHANGES vs a MERGE inside a table function?</div><div class="qa-a">APPLY CHANGES is purpose-built for CDC: handles out-of-order events via sequence_by deduplication, deletes via apply_as_deletes, SCD Type 2 history automatically. A manual MERGE inside @dp.table requires custom dedup logic and doesn't handle late-arriving events (two events for the same key arriving in wrong order both get applied — the earlier one overwrites the later). For SAP or Salesforce change feeds: always APPLY CHANGES. Also creates the target table automatically.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Lakeflow Pipelines vs Databricks Workflows — when do you choose each?</div><div class="qa-a">Lakeflow: declarative data transformation — define WHAT tables look like; Databricks handles dependency ordering, retry, data quality enforcement. Best for Bronze-Silver-Gold pipelines. Workflows: imperative task orchestration — you define the explicit task DAG (DLT pipeline + training job + model registration + serving endpoint update + Slack notification). In practice: Workflows often CALL a Lakeflow pipeline as one task inside a larger ML pipeline. You need both.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ AUTO LOADER ═══ -->
+<div class="svc" id="svc-autoloader">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Auto Loader</span><span class="sp">cloudFiles · Incremental Ingestion</span><span class="badge">GA</span></div>
+    <div class="sd">Structured Streaming source for incremental file ingestion from cloud object storage (S3, ADLS, GCS). Exactly-once semantics via RocksDB checkpoint. Schema inference and auto-evolution. Standard Bronze layer pattern — use inside Lakeflow Pipelines or as a standalone Structured Streaming job.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('autoloader',0)">Implementation</button>
+    <button class="dt" onclick="dim('autoloader',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('autoloader',2)">Environments</button>
+    <button class="dt" onclick="dim('autoloader',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="ps"><div class="pt">Standalone Bronze Ingestion Job</div>
+    <div class="cl">Python · Production Auto Loader — schema inference, evolution, checkpoint</div>
+<pre><span class="c"># Production pattern: schema inferred on first run, evolved on new columns</span>
+df = (spark.readStream
+    .format(<span class="s">"cloudFiles"</span>)
+    .option(<span class="s">"cloudFiles.format"</span>, <span class="s">"json"</span>)          <span class="c"># json|csv|parquet|avro|xml</span>
+    .option(<span class="s">"cloudFiles.schemaLocation"</span>,
+            <span class="s">"/Volumes/prod/rx/schema/claims"</span>)       <span class="c"># enables inference + evolution</span>
+    .option(<span class="s">"cloudFiles.inferColumnTypes"</span>, <span class="s">"true"</span>)  <span class="c"># int, not string</span>
+    .load(<span class="s">"/Volumes/prod/rx/landing/claims/"</span>))
+
+(df.writeStream
+    .format(<span class="s">"delta"</span>)
+    .option(<span class="s">"checkpointLocation"</span>, <span class="s">"/Volumes/prod/rx/ckpt/claims"</span>)
+    .option(<span class="s">"mergeSchema"</span>, <span class="s">"true"</span>)
+    .trigger(availableNow=<span class="n">True</span>)            <span class="c"># process all pending files, then stop</span>
+    .table(<span class="s">"prod.rx.bronze_claims"</span>))</pre></div>
+    <div class="ps"><div class="pt">Inside a Lakeflow Pipeline (Recommended)</div>
+    <div class="cl">Python · Auto Loader within @dp.table — DLT handles checkpointing automatically</div>
+<pre><span class="k">from</span> pyspark <span class="k">import</span> pipelines <span class="k">as</span> dp
+
+@dp.table(name=<span class="s">"bronze_rx_claims"</span>,
+          comment=<span class="s">"Raw Rx pharmacy claims — JSON from vendor landing zone"</span>)
+def bronze_rx_claims():
+    <span class="k">return</span> (spark.readStream.format(<span class="s">"cloudFiles"</span>)
+        .option(<span class="s">"cloudFiles.format"</span>, <span class="s">"json"</span>)
+        .option(<span class="s">"cloudFiles.schemaLocation"</span>,
+                <span class="s">"/Volumes/prod/rx/schema/claims"</span>)
+        .load(<span class="s">"/Volumes/prod/rx/landing/claims/"</span>))
+<span class="c"># DLT manages the checkpoint — no writeStream config needed</span></pre></div>
+    <div class="ps"><div class="pt">Schema Evolution — Handle New Columns from Source Systems</div>
+    <div class="cl">Python · Three schema evolution modes</div>
+<pre><span class="c"># Mode: addNewColumns (default when no schema provided)
+# Stream stops with UnknownFieldException on new column
+# Auto Loader merges new column into schemaLocation → restart resumes</span>
+df = spark.readStream.format(<span class="s">"cloudFiles"</span>)...
+
+<span class="c"># Mode: addNewColumnsWithTypeWidening (best for production)
+# Handles new columns AND compatible type promotions (int→long, float→double)
+# Does NOT handle incompatible changes (string→int) — those still fail</span>
+df = (spark.readStream.format(<span class="s">"cloudFiles"</span>)
+    .option(<span class="s">"cloudFiles.schemaLocation"</span>, <span class="s">"/Volumes/prod/rx/schema/claims"</span>)
+    .option(<span class="s">"cloudFiles.schemaEvolutionMode"</span>, <span class="s">"addNewColumnsWithTypeWidening"</span>)
+    .load(<span class="s">"/Volumes/prod/rx/landing/claims/"</span>))
+
+<span class="c"># Mode: none — you own the schema; unknown fields go to _rescued_data column</span>
+df = (spark.readStream.format(<span class="s">"cloudFiles"</span>)
+    .schema(predefined_schema)
+    .option(<span class="s">"cloudFiles.schemaEvolutionMode"</span>, <span class="s">"none"</span>)
+    .load(<span class="s">"/Volumes/prod/rx/landing/claims/"</span>))</pre></div>
+    <div class="ca ca-r"><strong>War Story — Schema Evolution Catching a Source Bug</strong>Rx drug claims pipeline was ingesting JSON. Auto Loader inferred <span class="mono">drug_code</span> as STRING. Three weeks in, the pharmacy vendor "fixed" their system and started emitting <span class="mono">drug_code</span> as an integer. Stream stopped with UnknownFieldException — which looked like an outage but was actually correct behavior. The integer drug_code was wrong: leading zeros were stripped ("0041" → 41). Caught a vendor data quality bug in Bronze before it corrupted Silver drug lookups. Filed the vendor ticket. Added <span class="mono">@dp.expect_or_fail("drug_code_is_string", "drug_code RLIKE '^[0-9]{4}$'")</span> in Silver.</div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-a"><strong>📖 Docs to Read — Exam-Weighted Topic</strong>
+      Auto Loader schema inference/evolution is explicitly tested on the Data Engineer Professional exam (Nov 2025 guide). Know all 3 modes and what happens to the record/stream in each.<br>
+      <a href="https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/" target="_blank">What is Auto Loader?</a> · <a href="https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema" target="_blank">Schema inference and evolution</a> · <a href="https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/production" target="_blank">Configure for production</a>
+    </div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>format</td><td>format("cloudFiles") — Spark Structured Streaming source</td></tr>
+      <tr><td>file_formats</td><td>json, csv, parquet, avro, orc, binaryFile, xml, text</td></tr>
+      <tr><td>exactly_once</td><td>RocksDB checkpoint tracks every processed file — no reprocessing on restart</td></tr>
+      <tr><td>discovery_directory</td><td>Default: list cloud storage directory for new files (works on all 3 clouds)</td></tr>
+      <tr><td>discovery_notifications</td><td>Event-based: SNS/SQS (AWS), Event Grid (Azure), Pub/Sub (GCP) — lower latency</td></tr>
+      <tr><td>schema_location</td><td>cloudFiles.schemaLocation: enables inference; Auto Loader samples files on first run</td></tr>
+      <tr><td>evolution_addNew</td><td>Default: stop on new column, merge schema, resume on restart</td></tr>
+      <tr><td>evolution_widen</td><td>addNewColumnsWithTypeWidening: also handles compatible type promotions</td></tr>
+      <tr><td>evolution_none</td><td>You provide schema; unknown fields go to _rescued_data column (never lost)</td></tr>
+      <tr><td>rescued_data</td><td>_rescued_data: fields not in schema are JSON-encoded here; queryable for backfill</td></tr>
+      <tr><td>trigger_available_now</td><td>trigger(availableNow=True): process all pending files then stop — for batch mode</td></tr>
+      <tr><td>clean_source</td><td>cloudFiles.cleanSource: MOVE (to archive) or DELETE after processing</td></tr>
+    </table>
+    <div class="ca ca-r"><strong>Exam Trap — Checkpoint Location Lifecycle Policy</strong>Databricks docs explicitly state: do NOT place a cloud lifecycle policy (e.g., S3 delete after 30 days) on the checkpoint location. Auto Loader stores RocksDB state there indefinitely. Lifecycle deletion corrupts the checkpoint → exactly-once guarantee breaks → duplicate or missed records on restart. Separate checkpoints from landing zones; never share lifecycle policies between them.</div>
+  </div>
+  <div class="dp">
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Source: <span class="mono">dev</span> Volume landing/</li><li>Schema: <span class="mono">dev/schema/</span></li><li>Checkpoint: <span class="mono">dev/ckpt/</span></li><li><span class="mono">trigger(availableNow=True)</span></li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Mirror prod file structure</li><li>Inject new column → test evolution</li><li>Verify _rescued_data handling</li><li>Test restart from checkpoint</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Source: <span class="mono">prod</span> Volume landing/</li><li>No lifecycle policy on checkpoint</li><li>Notifications mode for &lt;30s latency</li><li>Inside Lakeflow Pipeline or Workflow</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">How does Auto Loader guarantee exactly-once ingestion?</div><div class="qa-a">RocksDB checkpoint tracks every file that has been discovered and processed. On restart, Auto Loader reads the checkpoint and skips already-processed files. Combined with Delta Lake's ACID semantics (atomic writes), this gives exactly-once end-to-end. If you delete the checkpoint, Auto Loader reprocesses all files from scratch — this is the recovery mechanism, not a bug. Always back up checkpoint locations; never apply lifecycle policies to them.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What happens when Auto Loader hits a new column in addNewColumns mode?</div><div class="qa-a">Stream stops with UnknownFieldException. Auto Loader then: (1) infers schema from the latest micro-batch, (2) merges new column to end of schema in schemaLocation. On restart (automatic in a Databricks Job), stream resumes with updated schema. Records that triggered the stop are NOT lost — they're reprocessed with the new schema. addNewColumnsWithTypeWidening additionally handles compatible type promotions (int→long) without stopping the stream at all.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">Auto Loader standalone vs inside a Lakeflow Pipeline — which do you choose?</div><div class="qa-a">Inside Lakeflow (@dp.table): preferred for new pipelines — DLT manages checkpointing automatically, expectations add data quality enforcement, UC registration is automatic, lineage is tracked. Standalone: when you need full control over streaming config (custom trigger intervals, complex multi-source fan-in, sink is not a UC Delta table) or when the rest of the pipeline isn't DLT. In practice: if you're building medallion architecture, use Lakeflow + Auto Loader together.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What is _rescued_data and why does it matter for production pipelines?</div><div class="qa-a">When schemaEvolutionMode=none and Auto Loader receives a field not in the schema, that field is captured as a JSON string in a special _rescued_data column — never silently dropped. This is critical for auditability: even if today's schema doesn't have a new vendor field, you can query _rescued_data later and backfill when you're ready to handle it. SA recommendation: always monitor _rescued_data volume in production — a sudden increase signals source schema drift that needs investigation before it corrupts downstream tables.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ FEATURE ENGINEERING ═══ -->
+<div class="svc" id="svc-feateng">
+  <div class="sh">
+    <div class="sh-top"><span class="sn">Feature Engineering</span><span class="sp">Feature Store · Online Serving</span><span class="badge">GA</span></div>
+    <div class="sd">Central registry for ML features in Unity Catalog. Create feature tables, write features, build point-in-time training sets, log models with feature lineage, and publish to Online Store (Lakebase Autoscaling) for low-latency inference. Pre-installed in Databricks Runtime 13.3 LTS ML+.</div>
+  </div>
+  <div class="dtabs">
+    <button class="dt active" onclick="dim('feateng',0)">Implementation</button>
+    <button class="dt" onclick="dim('feateng',1)">Features &amp; Limits</button>
+    <button class="dt" onclick="dim('feateng',2)">Environments</button>
+    <button class="dt" onclick="dim('feateng',3)">SA / Exam</button>
+  </div>
+  <div class="dp active">
+    <div class="ps"><div class="pt">UI — Browse Feature Tables</div>
+    <ol class="st">
+      <li>Left sidebar → <strong>Machine Learning → Feature Store</strong></li>
+      <li>Browse by catalog/schema; search by feature name or owner</li>
+      <li>Select a table: see primary keys, feature list, last_updated freshness, and lineage (which models use this table)</li>
+      <li>Click <strong>Create feature table</strong> for UI-based creation (or use Python API below)</li>
+      <li>Online Store tab: published tables and per-endpoint latency stats</li>
+    </ol></div>
+    <div class="ps"><div class="pt">Python — Feature Table Lifecycle</div>
+    <div class="cl">Python · FeatureEngineeringClient — create, write, training set, log model</div>
+<pre><span class="k">from</span> databricks.feature_engineering <span class="k">import</span> FeatureEngineeringClient, FeatureLookup
+<span class="k">import</span> mlflow
+
+fe = FeatureEngineeringClient()
+
+<span class="c"># 1. Create feature table (UC Delta table + primary key constraint)</span>
+fe.create_table(
+    name=<span class="s">"prod.ml.employee_benefits_features"</span>,
+    primary_keys=[<span class="s">"employee_id"</span>],
+    description=<span class="s">"Per-employee benefits features for HR RAG chatbot"</span>
+)
+
+<span class="c"># 2. Compute and write features — mode="merge" upserts on primary key</span>
+fe.write_table(
+    name=<span class="s">"prod.ml.employee_benefits_features"</span>,
+    df=compute_benefits_features(raw_df),
+    mode=<span class="s">"merge"</span>
+)
+
+<span class="c"># 3. Create training set — point-in-time join at label timestamp
+# Prevents data leakage: features joined as-of when label was observed</span>
+training_set = fe.create_training_set(
+    df=label_df,           <span class="c"># must have: employee_id, label, label_timestamp</span>
+    feature_lookups=[
+        FeatureLookup(
+            table_name=<span class="s">"prod.ml.employee_benefits_features"</span>,
+            feature_names=[<span class="s">"plan_tier"</span>, <span class="s">"401k_pct"</span>, <span class="s">"pto_days_remaining"</span>],
+            lookup_key=<span class="s">"employee_id"</span>,
+            timestamp_lookup_key=<span class="s">"label_timestamp"</span>    <span class="c"># point-in-time join</span>
+        )
+    ],
+    label=<span class="s">"opted_out_open_enrollment"</span>
+)
+
+<span class="c"># 4. Train + log model WITH feature lineage (UC knows which tables it uses)</span>
+<span class="k">with</span> mlflow.start_run():
+    train_df = training_set.load_df()
+    model.fit(train_df.drop(<span class="s">"opted_out_open_enrollment"</span>),
+              train_df[<span class="s">"opted_out_open_enrollment"</span>])
+    fe.log_model(
+        model=model,
+        artifact_path=<span class="s">"model"</span>,
+        flavor=mlflow.sklearn,
+        training_set=training_set,              <span class="c"># links model ↔ feature tables</span>
+        registered_model_name=<span class="s">"prod.ml.benefits_churn_predictor"</span>
+    )</pre></div>
+    <div class="ps"><div class="pt">Online Store — Low-Latency Real-Time Serving</div>
+    <div class="cl">Python · Publish to Online Store (Lakebase Autoscaling, March 2026+)</div>
+<pre><span class="c"># Publish feature table for real-time inference (ms latency vs Delta seconds)
+# Online Store created after March 23, 2026 → Lakebase Autoscaling backend</span>
+fe.create_feature_serving_endpoint(
+    name=<span class="s">"employee-benefits-online"</span>,
+    config=EndpointCoreConfig(
+        served_entities=[ServedEntity(
+            feature_spec_name=<span class="s">"prod.ml.benefits_feature_spec"</span>,
+            scale_to_zero_enabled=<span class="n">True</span>
+        )]
+    )
+)
+<span class="c"># Serving endpoint queries Online Store at inference time
+# Offline (Delta) used for training; Online (Lakebase) used for prediction</span></pre></div>
+    <div class="ca ca-r"><strong>War Story — Training/Serving Skew from Duplicate Feature Computation</strong>Benefits churn model computed <span class="mono">pto_days_remaining</span> as "days remaining in fiscal year" during training, but the serving endpoint recomputed it as "days remaining in calendar year." Same column name, different logic. Model predictions in November (fiscal year-end) were unusably wrong. Fix: moved PTO feature into a Feature Store table with a single canonical computation function. Both <span class="mono">create_training_set</span> and the Online Store read the same logic. Training/serving skew eliminated. Feature Store lineage also revealed two other models with the same bug.</div>
+  </div>
+  <div class="dp">
+    <div class="ca ca-a"><strong>📖 Docs to Read</strong>
+      <a href="https://docs.databricks.com/aws/en/machine-learning/feature-store/uc/feature-tables-uc" target="_blank">Feature tables in Unity Catalog</a> · <a href="https://docs.databricks.com/aws/en/machine-learning/feature-store/python-api" target="_blank">Feature Engineering Python API</a> · <a href="https://docs.databricks.com/aws/en/machine-learning/feature-store/online-feature-store" target="_blank">Online Feature Store (Lakebase)</a><br>
+      <strong>Hands-on:</strong> Databricks has a Feature Store notebook example in their samples repo — the fraud detection example covers create_table → write_table → create_training_set → log_model → Online Store publish in one end-to-end flow.
+    </div>
+    <table class="ft"><tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>client</td><td>FeatureEngineeringClient — from databricks.feature_engineering; Runtime 13.3 LTS ML+</td></tr>
+      <tr><td>feature_table</td><td>Any Delta table in UC with primary key constraint; governed and discoverable</td></tr>
+      <tr><td>create_table</td><td>fe.create_table(name, primary_keys, description) — registers table in UC</td></tr>
+      <tr><td>write_table</td><td>fe.write_table(name, df, mode="merge"|"overwrite") — upserts on primary key</td></tr>
+      <tr><td>create_training_set</td><td>Point-in-time join: features as-of label_timestamp; prevents data leakage</td></tr>
+      <tr><td>log_model</td><td>fe.log_model — logs model WITH feature lineage; UC tracks which tables it uses</td></tr>
+      <tr><td>online_store</td><td>Lakebase Autoscaling (new stores after March 2026); 5–20ms feature lookup latency</td></tr>
+      <tr><td>offline_store</td><td>Delta table in UC — for training, batch inference, historical analysis</td></tr>
+      <tr><td>lineage</td><td>UC lineage: which notebooks/jobs created each feature table; which models depend on it</td></tr>
+      <tr><td>discovery</td><td>Search features via Catalog Explorer — prevents 5 teams computing the same feature differently</td></tr>
+      <tr><td>freshness</td><td>Track last_updated_time per feature table — alert when features go stale (&gt;1hr)</td></tr>
+    </table>
+    <div class="ca ca-b"><strong>Offline vs Online Store — When You Need Both</strong>Offline (Delta): training and batch inference where seconds latency is acceptable. Online (Lakebase): real-time serving where feature retrieval is on the critical path of a user-facing prediction. If your model serves real-time predictions and features change faster than your batch cadence, you need Online Store. If predictions are batch (overnight scoring), offline Delta is sufficient.</div>
+  </div>
+  <div class="dp">
+    <div class="eg">
+      <div class="ec"><div class="et dev">Dev</div><ul><li>Namespace: <span class="mono">dev.ml.*</span></li><li>Write: <span class="mono">mode="overwrite"</span></li><li>No Online Store (cost)</li><li>Browse in Feature Store UI</li></ul></div>
+      <div class="ec"><div class="et tst">Staging</div><ul><li>Namespace: <span class="mono">staging.ml.*</span></li><li>Test point-in-time join correctness</li><li>Validate Online Store latency</li><li>Integration test with model serving</li></ul></div>
+      <div class="ec"><div class="et prd">Prod</div><ul><li>Namespace: <span class="mono">prod.ml.*</span></li><li>Scheduled write job (Workflow)</li><li>Online Store for real-time endpoints</li><li>Alert on feature freshness &gt; 1hr</li></ul></div>
+    </div>
+  </div>
+  <div class="dp">
+    <ul class="qa">
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What problem does Feature Store solve that ad-hoc feature computation doesn't?</div><div class="qa-a">Three problems: (1) Training/serving skew — without Feature Store, training computes features one way and serving computes them differently; Feature Store ensures both use the same registered computation. (2) Duplicate computation — five teams computing "days since last purchase" five different ways with subtle differences; Feature Store makes features discoverable and reusable. (3) Lineage — you can't tell which models depend on which feature logic; Feature Store tracks it automatically in UC. When a feature computation changes, you know every impacted model.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">What is a point-in-time join and why does it matter for training?</div><div class="qa-a">When building a training set from historical labels (e.g., "employee X opted out on 2024-11-01"), you must use features as they existed on that date — not current values. Without timestamp_lookup_key, you'd join current feature values to past labels, accidentally giving the model "future" information it wouldn't have had at prediction time (data leakage). With timestamp_lookup_key, create_training_set joins features as-of the label_timestamp. Critical for any temporal ML problem: churn, fraud, attrition, forecasting.</div></li>
+      <li class="qi"><div class="qq" onclick="this.parentElement.classList.toggle('open')">When do you need an Online Store vs just reading from the offline Delta table?</div><div class="qa-a">Online Store: when feature retrieval is on the critical path of a real-time prediction (user-facing, sub-100ms SLA). The Lakebase Online Store returns features in 5–20ms. Reading a Delta table at inference time takes 2–5 seconds minimum. If your model endpoint receives live requests and needs current features instantly (fraud scoring on a live transaction, real-time recommendation), you need Online Store. If your inference is batch (overnight scoring, daily report), offline Delta is sufficient and cheaper.</div></li>
     </ul>
   </div>
 </div>
