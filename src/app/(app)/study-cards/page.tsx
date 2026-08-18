@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllCards, encodeKey } from "@/lib/content";
+import { getAllCards, getAllDecks, encodeKey } from "@/lib/content";
 import { getCardStateMap, resolveCardState } from "@/lib/state";
 import { getTopicsManifest, contentMatchesTopic } from "@/lib/topics";
 import ReviewClient from "../review-client";
@@ -9,11 +9,14 @@ export const dynamic = "force-dynamic";
 export default async function StudyCardsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ topic?: string }>;
+  searchParams: Promise<{ topic?: string; deck?: string }>;
 }) {
-  const { topic: activeTopicSlug } = await searchParams;
+  const { topic: activeTopicSlug, deck: activeDeckPath } = await searchParams;
   const manifest = getTopicsManifest();
   const activeTopic = manifest.topics.find((t) => t.slug === activeTopicSlug);
+  const activeDeck = activeDeckPath
+    ? getAllDecks().find((d) => d.sourcePath === activeDeckPath)
+    : undefined;
 
   const stateMap = await getCardStateMap();
   const now = new Date();
@@ -34,7 +37,11 @@ export default async function StudyCardsPage({
   }
 
   const cards = allCards
-    .filter((c) => !activeTopic || contentMatchesTopic(activeTopic, c.topicSlug))
+    .filter(
+      (c) =>
+        (!activeTopic || contentMatchesTopic(activeTopic, c.topicSlug)) &&
+        (!activeDeckPath || c.sourcePath === activeDeckPath)
+    )
     .map((c) => ({ c, state: resolveCardState(c.key, stateMap) }))
     .filter(({ state }) => !state.is_deleted && new Date(state.next_due_at) <= now)
     .sort((a, b) => +new Date(a.state.next_due_at) - +new Date(b.state.next_due_at))
@@ -55,7 +62,16 @@ export default async function StudyCardsPage({
 
   return (
     <div>
-      <h1 className="mb-4 font-serif text-2xl text-slate-200">Study Cards</h1>
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+        <h1 className="font-serif text-2xl text-slate-200">
+          {activeDeck?.topic ?? (activeTopic ? `${activeTopic.label} Study Cards` : "Study Cards")}
+        </h1>
+        {(activeDeckPath || activeTopicSlug) && (
+          <Link href="/study-cards" className="text-sm text-amber-400 hover:text-amber-300">
+            ← All study cards
+          </Link>
+        )}
+      </div>
 
       <div className="mb-6 flex flex-wrap gap-2">
         <Link

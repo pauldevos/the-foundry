@@ -55,23 +55,24 @@ export default async function TopicPage({ params }: PageProps<"/topics/[slug]">)
 
       {decks.length > 0 && (
         <section className="mb-8">
-          <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-400">
-            Card Decks
-          </h2>
-          <div className="space-y-2">
-            {decks.map((d) => (
-              <div
-                key={d.sourcePath}
-                className="rounded-lg border border-slate-700 bg-slate-900 p-4"
-              >
-                <p className="font-serif text-slate-200">{d.topic}</p>
-                <p className="mt-1 font-mono text-xs text-slate-500">
-                  {d.cardCount} cards · {d.starredCount} starred
-                  {d.tier && ` · ${d.tier}`}
-                </p>
-              </div>
-            ))}
-          </div>
+            <h2 className="mb-3 font-mono text-xs uppercase tracking-wide text-amber-400">
+              Card Decks
+            </h2>
+            <div className="space-y-2">
+              {decks.map((d) => (
+                <Link
+                  key={d.sourcePath}
+                  href={`/study-cards?deck=${encodeURIComponent(d.sourcePath)}`}
+                  className="block rounded-lg border border-slate-700 bg-slate-900 p-4 hover:border-amber-500"
+                >
+                  <p className="font-serif text-slate-200 hover:text-amber-300">{d.topic}</p>
+                  <p className="mt-1 font-mono text-xs text-slate-500">
+                    {d.cardCount} cards · {d.starredCount} starred
+                    {d.tier && ` · ${d.tier}`}
+                  </p>
+                </Link>
+              ))}
+            </div>
         </section>
       )}
 

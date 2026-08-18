@@ -60,11 +60,12 @@ export default async function DecksListPage({
 
       <div className="space-y-2">
         {decks.map((d) => (
-          <div
+          <Link
             key={d.sourcePath}
-            className="rounded-lg border border-slate-700 bg-slate-900 p-4"
+            href={`/study-cards?deck=${encodeURIComponent(d.sourcePath)}`}
+            className="block rounded-lg border border-slate-700 bg-slate-900 p-4 hover:border-amber-500"
           >
-            <p className="font-serif text-slate-200">{d.topic}</p>
+            <p className="font-serif text-slate-200 hover:text-amber-300">{d.topic}</p>
             {d.tier && <p className="mt-1 text-xs text-slate-400">{d.tier}</p>}
             <p className="mt-1 font-mono text-xs text-slate-500">
               {d.cardCount} cards ({d.starredCount} starred) · {d.topicSlug}
@@ -74,7 +75,7 @@ export default async function DecksListPage({
                 </span>
               )}
             </p>
-          </div>
+          </Link>
         ))}
         {decks.length === 0 && <p className="text-slate-500">No decks in this category.</p>}
       </div>
