@@ -23,11 +23,26 @@ For AppKit projects add a fifth contract: `appkit.plugins.json`. It maps a plugi
 
 Do not read all templates alphabetically. Read them as a sequence of architectural decisions.
 
-### 1. Runtime and framework comparisons
+### 1. Runtime and framework comparisons — compress this to one decision table
 
-Start with `streamlit-hello-world-app`, `dash-hello-world-app`, `gradio-hello-world-app`, `shiny-hello-world-app`, `flask-hello-world-app`, and `nodejs-fastapi-hello-world-app`.
+Do not spend a study session on six hello-world frameworks. They are scaffolds, not meaningful architecture examples. Read the table once, then use `nodejs-fastapi-hello-world-app` as the only runtime comparison worth reproducing.
 
-The goal is not to learn Streamlit or React. For each template, answer: what is the process entrypoint, how is the port selected, what does the app service principal receive, and how does the bundle differ between a one-process Python app and a Node/Python app?
+| Template | Process entrypoint in `app.yaml` | Port/host behavior in the template | Declared Databricks resources | Architectural verdict |
+| --- | --- | --- | --- | --- |
+| `streamlit-hello-world-app` | `streamlit run app.py` | No `DATABRICKS_APP_PORT`, host, or port is passed. Streamlit defaults are not a production Apps contract. | None; no `databricks.yml` | Skip as a framework choice. Use only to recognize a legacy/simple Python UI. |
+| `dash-hello-world-app` | `python app.py` | `dash_app.run(debug=True)` supplies no explicit Apps port/host. The hello app is using a development server. | None; no `databricks.yml` | Not a pattern for your React/TypeScript applications. |
+| `gradio-hello-world-app` | `python app.py` | `gradio_app.launch()` supplies no explicit Apps port/host. | None; no `databricks.yml` | Skip unless a client explicitly wants a model-demo UI. |
+| `shiny-hello-world-app` | `shiny run --reload app.py:app` | CLI command supplies no explicit Apps port/host and includes reload behavior. | None; no `databricks.yml` | R is not relevant to your target work; do not study it. |
+| `flask-hello-world-app` | `flask --app app.py run` | The `if __name__ == '__main__'` fallback uses `FLASK_RUN_PORT`/8000, but that block is not used by the Flask CLI command. The command does not set `0.0.0.0` or `DATABRICKS_APP_PORT`. | None; no `databricks.yml` | Flask’s dev server is not a production pattern. Use FastAPI/ASGI or a WSGI server only when a legacy dependency forces it. |
+| `nodejs-fastapi-hello-world-app` | `uvicorn backend.main:app` | The FastAPI command also does not explicitly pass `--host 0.0.0.0 --port $DATABRICKS_APP_PORT`; the README’s local command uses `0.0.0.0:8000`. Treat this as a scaffold to harden, not a final port example. | None; no `databricks.yml` | The only useful comparison: React/Vite build artifact served by FastAPI, with `/api/*` routes. This is closest to your target app shape. |
+
+**Common identity answer:** all six templates have an app identity when deployed, but none declares a warehouse, Volume, Genie space, serving endpoint, Lakebase database, secret, or other Databricks resource. Therefore the template-specific service-principal grant set is empty. They prove only “a process can start,” not governed data/AI access.
+
+**Important platform rule:** a Databricks App must listen on `0.0.0.0` and the runtime port in `DATABRICKS_APP_PORT`. These hello templates mostly omit that wiring, so do not copy their commands into a serious application without correcting the runtime contract. The current Databricks docs explicitly call out this requirement.
+
+**Bundle answer:** these six are direct app templates: they contain `manifest.yaml`, `app.yaml`, and dependencies, but no `databricks.yml`. They are initialized/deployed as an app and have no bundle-managed supporting resources. By contrast, a Node/Python production project should normally use a Bundle to manage the app plus its resources, permissions, targets, and CI/CD promotion.
+
+**Decision:** for your work, skip Streamlit, Dash, Gradio, Shiny, and Flask as learning tracks. Spend ten minutes on the table above, then move directly to `appkit-files`, `appkit-all-in-one`, `e2e-chatbot-app-next`, and the agent templates. Keep the Node/FastAPI example as a small reference for the “React frontend → Python API → Databricks services” boundary.
 
 ### 2. One-resource application patterns
 
@@ -194,4 +209,3 @@ You are ready to move on when you can draw the NFL workbench architecture and an
 - What changes between local `npm run dev`, `databricks apps run-local`, and a deployed App?
 - Why might Lakebase pgvector be the right prototype but AI Search the better governed production choice—or vice versa?
 - How would a Bundle promote the app without accidentally promoting demo data jobs or changing shared platform ownership?
-
