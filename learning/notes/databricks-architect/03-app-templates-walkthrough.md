@@ -56,7 +56,35 @@ Each template isolates one integration:
 - **Serving**: model serving endpoint access and the `serving.serving-endpoints` user scope.
 - **Lakebase**: managed Postgres connection, schema/data ownership, and connection pooling.
 
-For each, trace one button from browser to server route to the AppKit plugin to the declared resource in `databricks.yml`. Then remove the resource grant and observe the failure. That negative test is more memorable than a second successful deploy.
+“Trace one button” means trace one **user interaction** through every architectural boundary. It does not mean every template literally exposes a button, and several AppKit UI components hide the HTTP call inside a hook or packaged component.
+
+| Template | Start with this interaction | Client-to-server path | Plugin-to-Databricks path | Deployment contract |
+| --- | --- | --- | --- | --- |
+| `appkit-files` | Click **Upload** and select a file. | `FilesPage.handleUpload()` sends `POST /api/files/{volumeKey}/upload?path=...`. | The route is registered internally by `files()` in `server/server.ts`; the plugin operates on the Volume named by `DATABRICKS_VOLUME_FILES`. | `app.yaml` maps that environment variable from resource key `files`; `databricks.yml` grants `WRITE_VOLUME` on that UC Volume and declares `files.files` as a user API scope. |
+| `appkit-analytics` | Open Analytics or change the month selector. | `useAnalyticsQuery('hello_world', ...)` and chart components using query key `mocked_sales` call AppKit's packaged analytics endpoint. There is no hand-written Express route in the template. | `analytics()` loads the SQL under `config/queries/` and executes it through the configured SQL warehouse. | `DATABRICKS_WAREHOUSE_ID` comes from resource key `sql-warehouse`; the app resource has `CAN_USE`. The OBO `sql` scope is commented out, so this template is shaped around app identity. |
+| `appkit-genie` | Enter a question and submit it in `<GenieChat alias="default" />`. | `GenieChat` owns the client request and conversation mechanics; the template does not expose its internal fetch call. | The packaged request reaches `genie()` in `server/server.ts`, which targets `DATABRICKS_GENIE_SPACE_ID`. | Resource key `genie-space` grants `CAN_RUN`; `dashboards.genie` permits the App to request the corresponding user-authorized API scope. These are separate controls. |
+| `appkit-serving` | Enter a message and click **Send**. | `handleSubmit()` calls `invoke()` from `useServingInvoke`; the hook calls the packaged serving route. | `serving()` proxies/invokes the endpoint named by `DATABRICKS_SERVING_ENDPOINT_NAME`. | Resource key `serving-endpoint` grants `CAN_QUERY`; `serving.serving-endpoints` is the user API scope. A streaming UI would replace the hook with `useServingStream`. |
+| `appkit-lakebase` | Enter a todo and click **Add**. | `addTodo()` sends `POST /api/lakebase/todos`. This route is explicitly implemented in `server/routes/lakebase/todo-routes.ts`. | The route validates the body and calls `appkit.lakebase.query('INSERT ...')`; startup also creates schema `app` and table `app.todos` when needed. | `LAKEBASE_ENDPOINT` comes from resource key `postgres`; `databricks.yml` binds a branch/database with `CAN_CONNECT_AND_CREATE`. No user API scope is enabled in this example. |
+
+The trace is therefore:
+
+```text
+user interaction
+  → React event handler or AppKit UI hook
+  → HTTP request (explicit or hidden inside AppKit UI)
+  → Express route (custom or registered by an AppKit plugin)
+  → plugin SDK/client call
+  → environment value injected from app.yaml
+  → resource key and permission declared in databricks.yml
+  → Databricks service
+```
+
+The original “remove the resource grant” instruction was also imprecise. There are two different failure tests:
+
+1. **Configuration failure:** delete or rename the resource key in `databricks.yml` while `app.yaml` still contains `valueFrom: <key>`. Validation or deployment should reject the unresolved binding. This proves the configuration contract, but teaches little about runtime authorization.
+2. **Authorization failure:** keep the resource declaration and environment binding intact, deploy in a disposable development target, then temporarily revoke the App service principal's permission on the underlying resource. Files should fail on the Volume operation, Analytics on warehouse execution, Serving on endpoint invocation, and Lakebase during setup/query. Restore the grant immediately afterward.
+
+For Genie and Serving, test the app resource permission and the user API scope separately: a service-principal grant and permission to request an on-behalf-of-user token are not interchangeable. Do this only when the relevant service is available in a workspace; it is not prerequisite reading for Free Edition.
 
 ### 3. Composition
 
